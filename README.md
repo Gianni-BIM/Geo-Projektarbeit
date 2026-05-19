@@ -16,7 +16,8 @@ For further information [uv documentation jupyter lab](https://docs.astral.sh/uv
 
 ## Data Processing Workflow
 
-Step 1: run data-prep/data_preparation.ipynb --> several CSV-files with results are produced in the output folder
-Stip 2: run data-prep/data_exploration.ipynb --> a data_exploation_summary.txt is produced in the output folder
+**Step 1**: run data-prep/data_preparation.ipynb --> several CSV-files with results are produced in the output folder
+
+**Step 2**: run data-prep/data_exploration.ipynb --> a data_exploation_summary.txt is produced in the output folder
 
 
