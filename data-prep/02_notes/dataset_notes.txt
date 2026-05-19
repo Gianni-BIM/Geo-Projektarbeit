@@ -13,4 +13,4 @@ Index(['POINT_ID', 'BD 0-10', 'BD 10-20', 'BD 20-30', 'BD 0-20', 'Depth',
        'Elev', 'LC', 'LU', 'LC0_Desc', 'LC1_Desc', 'LU1_Desc',
        'NUTS_0_from_texture', 'Lucas2009', 'Lucas2012', 'Lucas2015',
        'Lucas2018', 'Coarse', 'Clay', 'Sand', 'Silt', 'PSDAvailable',
-       'TextureFromSurvey', 'USDA', 'ISSS'],)
+       'TextureFromSurvey', 'USDA', 'ISSS'],) + erosion_by_water (self created)

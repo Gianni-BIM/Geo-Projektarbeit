@@ -16,8 +16,11 @@ For further information [uv documentation jupyter lab](https://docs.astral.sh/uv
 
 ## Data Processing Workflow
 
-**Step 1**: run data-prep/data_preparation.ipynb --> several CSV-files with results are produced in the output folder
+**Step 1**: run data-prep/explore_indicator_data.ipynb --> several CSV-files used for inspection and transformation are produced in the output folder
 
-**Step 2**: run data-prep/data_exploration.ipynb --> a data_exploation_summary.txt is produced in the output folder
+**Step 2**: run data-prep/data_clean_and_transform.ipynb --> further CSV-files used for transformation and SHI calculation are produced in the output folder
++ Note: many of these CSV-files can be considered as "cleaning or calculation steps on the way to SHI"
+
+**Step 3**: run data-prep/calculate_shi.ipynb --> SHI calculation is done
 
 
