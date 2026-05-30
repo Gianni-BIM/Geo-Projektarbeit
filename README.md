@@ -7,7 +7,11 @@ Install uv from [uv homepage](https://docs.astral.sh/uv/getting-started/installa
 Clone the repository [github repository](https://github.com/Gianni-BIM/Geo-Projektarbeit)
 
 Run `uv sync` to install project dependencies
+Run `uv run nbstripout --install` to keep Jupyter notebooks clean in Git (i.e. remove outputs and execution metadata).
 
+## Info
+
+The repository uses .gitattributes to enforce consistent LF line endings across operating systems.
 
 ## Running jupyter lab
 
