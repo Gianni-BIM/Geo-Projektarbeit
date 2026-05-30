@@ -27,4 +27,6 @@ For further information [uv documentation jupyter lab](https://docs.astral.sh/uv
 
 **Step 3**: run data-prep/calculate_shi.ipynb --> SHI calculation is done
 
+**Step 4**: run data-prep/additional_expl.ipynb --> a CSV-file is created which can be used for pivot tables (Excel) to explore independent indicators
+
 
