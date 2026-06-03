@@ -7,7 +7,11 @@ Install uv from [uv homepage](https://docs.astral.sh/uv/getting-started/installa
 Clone the repository [github repository](https://github.com/Gianni-BIM/Geo-Projektarbeit)
 
 Run `uv sync` to install project dependencies
+Run `uv run nbstripout --install` to keep Jupyter notebooks clean in Git (i.e. remove outputs and execution metadata).
 
+## Info
+
+The repository uses .gitattributes to enforce consistent LF line endings across operating systems.
 
 ## Running jupyter lab
 
@@ -22,5 +26,7 @@ For further information [uv documentation jupyter lab](https://docs.astral.sh/uv
 + Note: many of these CSV-files can be considered as "cleaning or calculation steps on the way to SHI"
 
 **Step 3**: run data-prep/calculate_shi.ipynb --> SHI calculation is done
+
+**Step 4**: run data-prep/additional_expl.ipynb --> a CSV-file is created which can be used for pivot tables (Excel) to explore independent indicators
 
 
