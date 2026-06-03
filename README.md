@@ -23,10 +23,10 @@ For further information [uv documentation jupyter lab](https://docs.astral.sh/uv
 **Step 1**: run data-prep/explore_indicator_data.ipynb --> several CSV-files used for inspection and transformation are produced in the output folder
 
 **Step 2**: run data-prep/data_clean_and_transform.ipynb --> further CSV-files used for transformation and SHI calculation are produced in the output folder
-+ Note: many of these CSV-files can be considered as "cleaning or calculation steps on the way to SHI"
 
 **Step 3**: run data-prep/calculate_shi.ipynb --> SHI calculation is done
 
-**Step 4**: run data-prep/additional_expl.ipynb --> a CSV-file is created which can be used for pivot tables (Excel) to explore independent indicators
-
+**Step 4**: run data-prep/additional_expl.ipynb
+ --> preparation for pivot tables (Excel) to explore independent indicators, LC/LU reduction...
+ --> OUTPUT: df_SHI_with_LC_LU_reduced.csv = dataset with 4538 points (suggestion for further usage with columns contained: SHI, hoehe_m, Landcover, Landuse)
 
