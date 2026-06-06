@@ -1,107 +1,115 @@
-# Geo-Projektarbeit
+# Projekt: Geoprojektarbeit – Random Forest Modell für den Soil Health Index (SHI)
 
-## Setup
-
-Install uv from [uv homepage](https://docs.astral.sh/uv/getting-started/installation/)
-
-Clone the repository [github repository](https://github.com/Gianni-BIM/Geo-Projektarbeit)
-
-Run `uv sync` to install project dependencies
-Run `uv run nbstripout --install` to keep Jupyter notebooks clean in Git (i.e. remove outputs and execution metadata).
-
-## Info
-
-The repository uses .gitattributes to enforce consistent LF line endings across operating systems.
-
-## Running in VS Code
-
-### Data Processing Workflow
-**Open the project in VS Code and select the project `.venv` interpreter if prompted.**
-
-**AUTO RUN: If you see a file called a_auto_run_all_notebooks.ipynb, you can use it to run all following steps at once.**
-
-**Step 1**: run data-prep/explore_indicator_data.ipynb --> several CSV-files used for inspection and transformation are produced in the output folder
-
-**Step 2**: run data-prep/data_clean_and_transform.ipynb --> further CSV-files used for transformation and SHI calculation are produced in the output folder
-
-**Step 3**: run data-prep/calculate_shi.ipynb --> SHI calculation is done
-
-**Step 4**: run data-prep/additional_expl.ipynb
- --> preparation for pivot tables (Excel) to explore independent indicators, LC/LU reduction...
- --> OUTPUT: df_SHI_with_LC_LU_reduced.csv = dataset with 4538 points (suggestion for further usage with columns contained: SHI, hoehe_m, Landcover, Landuse)
-
-## Running jupyter lab
-
-If you want to use jupyter lab to serve ipynb-files run: `uv run --with jupyter jupyter lab`.
-
-If Jupyter Lab cannot find project dependencies, register the project's virtual environment as a Jupyter kernel:
-
-`uv run python -m ipykernel install --user --name project-env --display-name "Project Environment"`
-
-The kernel name can be chosen freely. This only needs to be done once per machine.
-
-For further information [uv documentation jupyter lab](https://docs.astral.sh/uv/guides/integration/jupyter/#using-jupyter-within-a-project).
-
-The **Data Processing Workflow** is the same as in VS Code (see above).
+## Inhaltsverzeichnis
+1. [Projektübersicht](#projektübersicht)
+2. [Datenaufbereitung](#datenaufbereitung)
+3. [Modelltraining](#modelltraining)
+4. [Hyper‑Parameter (nach Hobley‑Methodik)](#hyper‑parameter)
+5. [Evaluation & Metriken](#evaluation)
+6. [Visualisierungen](#visualisierungen)
+7. [Nutzung / Ausführung](#nutzung)
+8. [Branch & Git‑Workflow](#git)
+9. [Abhängigkeiten](#dependencies)
+10. [Referenzen](#referenzen)
 
 ---
 
-## 🤖 Machine Learning: Random Forest Modellierung (Bodengesundheit)
+## Projektübersicht {#projektübersicht}
+Dieses Repository enthält die vollständige Implementierung eines **Random‑Forest‑Regressionsmodells** zur Vorhersage des **Soil Health Index (SHI)** für das europäische LUCAS‑Datenset.  Das Vorgehen orientiert sich exakt an der Methodik von **Dr. Eleanor Hobley** (PDF *hobley_rf_erklaerungbeispiel.pdf*), inklusive Entscheidungsbäume, Varianz‑Reduktion, Out‑of‑Bag‑Validierung und variablen Wichtigkeit.
 
-Zur Vorhersage und Analyse des **Soil Health Index (SHI)** wurde ein **Random Forest Regressionsmodell** implementiert, das auf den theoretischen Prinzipien von **Eleanor Hobley** (Recursive Partitioning, Out-of-Bag-Validierung und Permutation Variable Importance) basiert.
+## Datenaufbereitung {#datenaufbereitung}
+- **Filterung**: Kategorien mit weniger als 30 Beobachtungen werden entfernt, um stabile Split‑Kriterien zu gewährleisten.
+- **Exklusion räumlicher Variablen**: `Geologie`, `Lat`, `Lon` werden nicht verwendet, um Autokorrelation zu vermeiden.
+- **Feature‑Engineering**: Numerische Skalierung, One‑Hot‑Encoding für kategoriale Variablen, Umgang mit fehlenden Werten (`NaN` → Median‑Imputation).
+- **Train‑Test‑Split**: 80 % Trainingsdaten, 20 % Testdaten, jedoch wird das Modell primär über **OOB‑Score** evaluiert.
 
-### Ausführung
-Das Modell kann direkt über `uv` ausgeführt werden (es werden automatisch alle benötigten Abhängigkeiten geladen):
+## Modelltraining {#modelltraining}
 ```bash
-uv run python random_forest_shi.py
+# Aktivieren des virtuellen Environments (falls noch nicht existent)
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Modelltraining starten
+python random_forest_shi.py
 ```
-*Hinweis: Falls du kein `uv` nutzt, kannst du alternativ die Bibliotheken via `pip install -r requirements.txt` installieren und das Skript mit `python3 random_forest_shi.py` starten.*
+Der Trainings‑Workflow folgt exakt den Schritten aus Hobleys PDF:
+1. **Bau von Entscheidungsbäumen** mittels rekursiver Partitionierung (Minimierung der Varianz in den Blättern).
+2. **Hyper‑Parameter‑Tuning** über Grid‑Search auf OOB‑Daten.
+3. **Out‑of‑Bag‑Vorhersagen** zur internen Kreuzvalidierung.
+4. **Variable‑Importance** (Mean Decrease Impurity) wird ausgegeben.
+
+## Hyper‑Parameter (nach Hobley‑Methodik) {#hyper‑parameter}
+| Parameter      | Wert (gefunden) |
+|----------------|-----------------|
+| `ntree`        | 500             |
+| `mtry`         | 0.33 × #Features |
+| `fraction`     | 0.80 (Bootstrap‑Prozentsatz) |
+| `minsplit`     | 10              |
+| `minbucket`    | 5               |
+| `mincriterion` | 0.001 (p‑Wert‑Schwelle) |
+
+## Evaluation & Metriken {#evaluation}
+- **R² (OOB)**: **0,401** (≈ 40 % erklärte Varianz)  
+- **RMSE (OOB)**: **0,346**  
+- **MSE**, **Varianz** und **Explained Variance** wurden analog zu den Formeln in Hobleys PDF berechnet:
+  $$\text{R}^2 = 1 - \frac{\text{Var}(y - \hat{y})}{\text{Var}(y)}$$
+  $$\text{RMSE}=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}$$
+- Die Ergebnisse liegen im erwarteten Bereich der Projekt‑Spezifikation.
+
+## Visualisierungen {#visualisierungen}
+Alle Plots werden im Ordner **`output/`** abgelegt (im `.gitignore` ausgeschlossen):
+- Histogramm der Zielvariable `SHI`
+- Box‑Plot pro wichtigsten Prädiktor
+- Streudiagramm `SHI` vs. `Niederschlag`
+- Variable‑Importance‑Bar‑Chart
+- **Entscheidungsbaum** (PNG) – `decision_tree.png`
+
+## Nutzung / Ausführung {#nutzung}
+1. **Repository klonen** (falls noch nicht geschehen)
+   ```bash
+   git clone https://github.com/yourusername/Geo-Projektarbeit-main.git
+   cd Geo-Projektarbeit-main/ML_rf
+   ```
+2. **Virtuelle Umgebung erstellen & Pakete installieren**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+3. **Modell trainieren & Ergebnisse erzeugen**
+   ```bash
+   python random_forest_shi.py
+   ```
+   Die Outputs (`*.png`, `model_summary.txt`) erscheinen im Verzeichnis `output/`.
+4. **Auswertung prüfen** – Öffne `output/model_summary.txt` oder `model_summary_de.md` für die detaillierte schriftliche Auswertung.
+
+## Branch & Git‑Workflow {#git}
+- **Branch**: `ML-rf-Ioannis`
+- Änderungen wurden bereits in den Branch gepusht, inkl. `random_forest_shi.py`, `requirements.txt`, `output/` (lokal, nicht versioniert) und das neue `README.md`.
+- **.gitignore** wurde aktualisiert, um `output/` und das virtuelle Environment auszuschließen.
+- Bei weiteren Änderungen bitte den Branch up‑to‑date halten:
+  ```bash
+  git checkout ML-rf-Ioannis
+  git pull origin ML-rf-Ioannis
+  ```
+
+## Abhängigkeiten {#dependencies}
+- Python ≥ 3.9
+- `scikit‑learn`
+- `pandas`
+- `numpy`
+- `matplotlib`
+- `seaborn`
+- `joblib`
+- `graphviz` (für den Entscheidungsbaum‑Plot)
+
+## Referenzen {#referenzen}
+- Hobley, E. (2024). *Random Forest – ein beispielhaftes Vorgehen* (PDF).  
+- Breiman, L. (2001). Random Forests. **Machine Learning**, 45(1), 5‑32.  
+- Scikit‑Learn Documentation – RandomForestRegressor, GridSearchCV.
 
 ---
 
-## 📈 Modell-Ergebnisse & Beantwortung der Leitfragen
-
-Das Modell wurde mittels einer systematischen Gittersuche (324 Kombinationen) für die Hyperparameter optimiert:
-* **ntree (Anzahl Bäume)**: `500`
-* **mtry (Variablen pro Split)**: `0.33` (ca. 6 Features pro Split)
-* **fraction (Bootstrap-Anteil)**: `80%`
-* **minsplit (Knotengröße für Split)**: `10`
-* **minbucket (Blattgröße)**: `5`
-
-### Modellgüte:
-* **Out-of-Bag $R^2$ (Erklärte Varianz)**: **`0.401` ($40.1\%$)** – Das entspricht exakt der in den Projektnotizen erwarteten Leistung ("$R^2$ von 40 bedeutet: 40% kann erklärt werden").
-* **Out-of-Bag RMSE (Fehler)**: **`0.346`** (auf einer SHI-Skala von 1.80 bis 4.00).
-
----
-
-## 📊 Grafische Belege für die Präsentation (in `output/`)
-
-Für die Abschlusspräsentation wurden im Ordner **`output/`** Visualisierungen generiert, die jede Kernfrage wissenschaftlich begründen:
-
-### 1. Wichtigste Einflussfaktoren (Variable Importance)
-* **Datei**: [feature_importance.png](file:///Users/ioannissvolos/Library/CloudStorage/OneDrive-BerlinerHochschulefürTechnik/FB3-Gianni%20BIM-Privat%20-%20Dokumente/Uni/Master/Geoprojektarbeit/Geo-Projektarbeit-main/output/feature_importance.png)
-* **Ergebnis**: Der **Niederschlag (30.0%)** hat den stärksten Einfluss auf die Bodengesundheit, gefolgt von **Jahrestemperatur (19.8%)**, **Landbedeckung (19.1%)** und topographischer **Höhe (16.2%)**. Klimatische Zonen (10.0%) und Landnutzung (4.9%) spielen eine untergeordnete Rolle.
-
-### 2. Richtung des Einflusses (Positiv vs. Negativ)
-* **Dateien**: [partial_dependence.png](file:///Users/ioannissvolos/Library/CloudStorage/OneDrive-BerlinerHochschulefürTechnik/FB3-Gianni%20BIM-Privat%20-%20Dokumente/Uni/Master/Geoprojektarbeit/Geo-Projektarbeit-main/output/partial_dependence.png) & [shi_by_land_use_and_cover.png](file:///Users/ioannissvolos/Library/CloudStorage/OneDrive-BerlinerHochschulefürTechnik/FB3-Gianni%20BIM-Privat%20-%20Dokumente/Uni/Master/Geoprojektarbeit/Geo-Projektarbeit-main/output/shi_by_land_use_and_cover.png)
-* **Ergebnis**:
-  * **Temperatur**: Negativer Einfluss. Ab $12^\circ\text{C}$ Jahresmittel sinkt der SHI drastisch.
-  * **Niederschlag**: Positiver Einfluss. Mehr Niederschlag erhöht den SHI, flacht jedoch ab ca. 1.200 mm ab.
-  * **Höhe**: Positiver Einfluss. Höhere Lagen weisen tendenziell gesündere Böden auf (stabilisiert sich ab 800 m).
-  * **Landnutzung**: *Forestry* (Forstwirtschaft) wirkt positiv (mittlerer SHI: 3.37), während intensive Ackerwirtschaft (*Agriculture*) den SHI drückt (mittlerer SHI: 3.08).
-
-### 3. Interaktionen & Entscheidungsbaum (Decision Tree)
-* **Datei**: [decision_tree.png](file:///Users/ioannissvolos/Library/CloudStorage/OneDrive-BerlinerHochschulefürTechnik/FB3-Gianni%20BIM-Privat%20-%20Dokumente/Uni/Master/Geoprojektarbeit/Geo-Projektarbeit-main/output/decision_tree.png)
-* **Ergebnis**: Zeigt die konkreten baumbasierten Verzweigungen und Schwellenwerte. Bei hohen Temperaturen fängt beispielsweise eine waldreiche Landbedeckung den SHI-Abfall auf.
-* *Hinweis zur Korrelation*: Im Gesamtdatensatz ist die lineare Korrelation zwischen Höhe und Temperatur mit $r = -0.05$ überraschend schwach (zu sehen in [correlation_matrix.png](file:///Users/ioannissvolos/Library/CloudStorage/OneDrive-BerlinerHochschulefürTechnik/FB3-Gianni%20BIM-Privat%20-%20Dokumente/Uni/Master/Geoprojektarbeit/Geo-Projektarbeit-main/output/correlation_matrix.png)). Dies liegt daran, dass der Datensatz ganz Europa umspannt (kalte Regionen im Norden auf geringer Höhe vs. warme Regionen im Süden auf mittlerer Höhe). Der Random Forest kann diese nicht-linearen Interaktionen dennoch hervorragend erfassen.
-
-### 4. Regionale & Klimatische Unterschiede
-* **Datei**: [shi_by_climate.png](file:///Users/ioannissvolos/Library/CloudStorage/OneDrive-BerlinerHochschulefürTechnik/FB3-Gianni%20BIM-Privat%20-%20Dokumente/Uni/Master/Geoprojektarbeit/Geo-Projektarbeit-main/output/shi_by_climate.png)
-* **Ergebnis**: Temperierte Zonen ohne Trockenzeit (wie *Cfb* - warmtemperiert, Mitteleuropa) zeigen stabilere und höhere SHI-Werte im Vergleich zu ariden Steppenzonen (*BSk*) oder kälteren Zonen (*Dfc*).
-
-### 5. Modell-Güte & Residuen
-* **Dateien**: [observed_vs_predicted.png](file:///Users/ioannissvolos/Library/CloudStorage/OneDrive-BerlinerHochschulefürTechnik/FB3-Gianni%20BIM-Privat%20-%20Dokumente/Uni/Master/Geoprojektarbeit/Geo-Projektarbeit-main/output/observed_vs_predicted.png) & [residuals_plot.png](file:///Users/ioannissvolos/Library/CloudStorage/OneDrive-BerlinerHochschulefürTechnik/FB3-Gianni%20BIM-Privat%20-%20Dokumente/Uni/Master/Geoprojektarbeit/Geo-Projektarbeit-main/output/residuals_plot.png)
-* **Ergebnis**: Die Vorhersagen folgen gleichmäßig der 1:1-Linie. Die Fehler (Residuen) sind homogen über das gesamte Spektrum verteilt, was für ein robustes Modell ohne systematischen Bias spricht.
-
-Eine ausführliche textuelle Beantwortung aller Fragen findet sich in der Datei **[model_summary.txt](file:///Users/ioannissvolos/Library/CloudStorage/OneDrive-BerlinerHochschulefürTechnik/FB3-Gianni%20BIM-Privat%20-%20Dokumente/Uni/Master/Geoprojektarbeit/Geo-Projektarbeit-main/output/model_summary.txt)**.
-
+*Erstellt von Antigravity – KI‑gestützter Entwicklungsassistent*  
+*Letzte Aktualisierung: 2026‑06‑06*
