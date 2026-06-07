@@ -1,0 +1,52 @@
+Random Forest SHI Model Summary
+================================
+
+**Model Overview**
+The `random_forest_shi.py` script implements a Random Forest regression model to predict the Soil Health Index (SHI) based on environmental and land‑use variables. The model is trained on a CSV dataset (`input-ml/points.csv`) containing point observations across Europe.
+
+**Data Used**
+- **Input CSV**: `input-ml/points.csv`
+- Columns kept after cleaning: all variables except identifiers (`POINT_ID`, `X`, `Y`, `lon_x`, `lat_y`).
+- Key features: `land_use`, `land_cover`, `climate_class`, `elevation`, `temperature`, `precipitation` and derived variables.
+- The data is split internally for permutation importance and partial dependence analysis.
+
+**Processing Steps**
+1. **Data Loading** – Reads the CSV with pandas.
+2. **Cleaning** – Drops identifier columns, prints value counts for land‑use and land‑cover.
+3. **Climate Legend** – Reads `input-ml/legend.txt` to map Köppen‑Geiger classes.
+4. **Feature Engineering** – Encodes categorical variables, creates interaction terms implicitly via the Random Forest.
+5. **Model Training** – Fits a `RandomForestRegressor` with a parameter grid.
+6. **Evaluation** – Uses permutation importance, partial dependence plots, and a decision tree visualisation.
+7. **Output** – Saves several PNG figures in the `output/` folder and writes a summary text file (`summary.txt`).
+
+**Key Questions & Answers (embedded in script)**
+- *Frage 3*: Interactions between factors? → Answer: See `output/decision_tree.png`. The tree shows temperature, land use and cover interactions.
+- *Frage 4*: Regional / climatic differences? → Answer: See `output/shi_by_climate.png` – temperate zones without dry periods have higher SHI.
+- *Frage 5*: Expected changes (climate change / land‑use change)? → Answer: Climate warming and drought reduce SHI; converting agriculture to forestry or semi‑natural areas raises SHI.
+- *Frage 6*: What promotes soil health? → Answer: Forestry, woodland and grassland improve SHI; intensive agriculture and bare land lower it.
+
+**Interpretation & Variance**
+The model captures non‑linear interactions; variance in SHI is driven primarily by temperature and precipitation, with land‑use acting as a moderating factor. Partial dependence plots illustrate the marginal effect of each continuous variable, while the decision tree highlights combined effects.
+
+**Workflow Diagram**
+A flowchart visualising the full pipeline is provided as `workflow_diagram.png` (generated separately). It shows the sequence:
+`Data Loading → Cleaning → Feature Encoding → Model Training → Evaluation → Outputs` and indicates the external plugins used (matplotlib, seaborn, scikit‑learn).
+
+**Plugins / Libraries Used**
+- pandas, numpy
+- matplotlib, seaborn (visualisation)
+- scikit‑learn (RandomForestRegressor, permutation_importance, partial_dependence)
+- subprocess (for optional external calls)
+
+**How to Run**
+1. Create a virtual environment (`python3 -m venv .venv`).
+2. Activate it and install required packages:
+   ```
+   source .venv/bin/activate
+   pip install pandas numpy matplotlib seaborn scikit-learn
+   ```
+3. Execute the script:
+   ```
+   python random_forest_shi.py
+   ```
+The model summary will be saved as `summary.txt` and all figures in the `output/` directory.

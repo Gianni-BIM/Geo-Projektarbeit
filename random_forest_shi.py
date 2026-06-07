@@ -31,10 +31,14 @@ print("--- Schritt 1: Datenaufbereitung ---")
 df = pd.read_csv("input-ml/points.csv")
 print(f"Ursprüngliche Zeilenanzahl: {len(df)}")
 
-# Spalten ausschließen (Identifiers und Koordinaten)
+# Drop identifier columns for modeling
 exclude_cols = ['POINT_ID', 'X', 'Y', 'lon_x', 'lat_y']
 df_clean = df.drop(columns=exclude_cols)
 print(f"Ausgeschlossene Spalten: {exclude_cols}")
+
+# Preserve coordinates for export (with reset index)
+coords_df = df[['X', 'Y']].copy()
+coords_df.reset_index(drop=True, inplace=True)
 
 # Landnutzung und Landbedeckung
 print("\nVerteilung Landnutzung (land_use):")
@@ -79,6 +83,10 @@ for col in ['land_use', 'land_cover', 'kg_climate_class']:
         print(f"  Entferne Kategorien aus {col}: {cat_names} (Anzahl: {counts[low_count_cats].values})")
         df_clean = df_clean[~df_clean[col].isin(low_count_cats)]
 
+# Update coords_df to match filtered rows (keep same indices)
+coords_df = coords_df.loc[df_clean.index].reset_index(drop=True)
+df_clean.reset_index(drop=True, inplace=True)
+
 print(f"Zeilenanzahl nach Filterung: {len(df_clean)} (Entfernt: {len(df) - len(df_clean)} Zeilen)")
 
 # Map Köppen-Geiger Klassen zu Namen für bessere Lesbarkeit in Diagrammen
@@ -100,9 +108,18 @@ print("\n--- Schritt 2: Explorative Datenanalyse (EDA) ---")
 
 # Frage: Wie hoch ist die Kovarianz/Korrelation zwischen den Umweltfaktoren?
 numerical_cols = ['height_m', 'temp_c_mean_1995_2024', 'rain_mmsqm_mean_1995_2024']
-corr_matrix = df_clean[numerical_cols].corr()
-print("\nKorrelationsmatrix der numerischen Variablen:")
+# Nur numerische Spalten für Korrelation verwenden
+df_numeric = df_clean[numerical_cols + ['SHI']].copy()
+corr_matrix = df_numeric.corr()
+print("Korrelationsmatrix der numerischen Variablen:")
 print(corr_matrix)
+# Save correlation matrix heatmap
+plt.figure(figsize=(8,6))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Korrelationsmatrix')
+plt.tight_layout()
+plt.savefig(os.path.join(output_dir, "correlation_matrix.png"), dpi=150)
+plt.close()
 
 plt.figure(figsize=(8, 6))
 sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", vmin=-1, vmax=1, fmt=".2f", square=True)
@@ -154,11 +171,11 @@ plt.close()
 # 3. MODELLOPTIMIERUNG (Grid Search über OOB-Score)
 print("\n--- Schritt 3: Hyperparameter-Optimierung ---")
 param_grid = {
-    'n_estimators': [100, 200, 500],
-    'max_features': [0.25, 0.33, 0.5, 'sqrt'], # mtry
-    'max_samples': [0.5, 0.632, 0.8],           # fraction
-    'min_samples_split': [10, 20, 30],          # minsplit
-    'min_samples_leaf': [5, 10, 15]             # minbucket
+    'n_estimators': [200, 500],           # Reduziert von [100, 200, 500]
+    'max_features': [0.33, 'sqrt'],       # Reduziert von [0.25, 0.33, 0.5, 'sqrt']
+    'max_samples': [0.632],                # Reduziert von [0.5, 0.632, 0.8]
+    'min_samples_split': [10, 20],        # Reduziert von [10, 20, 30]
+    'min_samples_leaf': [5, 10]           # Reduziert von [5, 10, 15]
 }
 
 grid = ParameterGrid(param_grid)
@@ -208,6 +225,22 @@ print(f"\nBeste Parameter gefunden:")
 print(best_params)
 print(f"Bester OOB R²: {best_oob_r2:.4f}")
 print(f"Bester OOB RMSE: {best_oob_rmse:.4f}")
+
+
+# -----------------------------------------------------------------
+# 4b. HINWEIS: ArcGIS Pro Datensätze
+# -----------------------------------------------------------------
+print("\n--- HINWEIS: ArcGIS Pro Datensätze ---")
+print("Für die Verwendung mit dem 'Forest-based Classification and Regression' Tool")
+print("in ArcGIS Pro führe bitte aus:")
+print("  python prepare_arcgis_dataset.py")
+print("\nDies erzeugt:")
+print("  • training_full_dataset.csv (für Modelltraining in ArcGIS)")
+print("  • training_set_80pct.csv & test_set_20pct.csv (Train/Test Split)")
+print("  • points_for_visualization.csv (für räumliche Visualisierung)")
+print("\nSiehe: arcgis-development/ Ordner")
+
+
 
 # Visualisierung der Parameteroptimierung
 plt.figure(figsize=(10, 6))
