@@ -1,0 +1,887 @@
+X,Y,HEIGHT_M,TEMP_C_MEAN,RAIN_MM,LAND_USE,LAND_COVER,CLIMATE_CLASS,SHI_OBSERVED,POINT_ID
+-1.5575095393876,48.2313488499948,58.7,11.76,764.17,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.15,34662858
+-5.8573427461659,41.5609036853781,729.08,13.14,434.4,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.6,30042190
+8.35017682863754,44.6981961130753,370.2,13.38,800.22,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.25,41902400
+24.6341329123669,41.657854195242,1407.9,6.56,839.31,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.55,55362180
+27.444158359987,57.8589570683824,79.97,6.51,613.01,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.0,53463988
+-8.81542282576245,42.9797131474837,321.1,13.0,2146.18,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.75,28002400
+-1.33555118924206,41.4505760100005,400.02,15.08,321.38,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,3.5,33742110
+-3.104566198566,37.1667198887935,1296.82,12.18,469.1,Semi-natural and natural areas not in use,Woodland,8,2.5,31541666
+22.2929383671008,56.2131285223241,91.85,7.47,600.33,Fallow land,Grassland,26,2.95,50803744
+-3.56016676539844,39.5592446909659,693.54,14.92,307.08,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.85,31561934
+-5.4529595131663,40.4498226185748,1048.38,11.4,554.92,Forestry,Woodland,9,2.5,30142062
+0.153095764158141,41.9367320864506,299.47,14.72,378.09,Fallow land,Grassland,14,3.45,35042146
+-5.86525550284137,36.6830559085958,27.42,18.66,573.24,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.35,29021660
+16.2946977705435,53.3103417690965,119.24,8.63,633.26,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.85,47403374
+22.1053519623389,38.9480385074342,232.74,16.04,366.05,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.65,53721846
+4.43987825152299,46.2246572607897,661.67,10.2,972.62,Forestry,Woodland,15,3.65,38922584
+-7.62326541386124,43.3804704849365,531.43,12.13,1263.64,Semi-natural and natural areas not in use,Shrubland,15,3.75,29042420
+10.0161908458127,56.4214192555378,52.93,8.63,686.51,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.0,43223702
+-3.91822779536568,37.030945207755,768.7,15.47,438.06,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.6,30801664
+-3.23475571403616,38.5420533309426,843.7,15.34,413.03,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.85,31661818
+-2.89370448425588,42.4105841852695,752.0,12.74,527.39,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.65,32622236
+26.5504068915207,57.8824171906901,90.6,6.52,643.76,Agriculture (excluding fallow land and kitchen gardens),Bareland,26,3.0,52943978
+8.43955805777972,40.454066467167,643.46,14.95,707.93,Semi-natural and natural areas not in use,Shrubland,8,3.8,41881930
+-7.00475848977414,42.492635508594,1197.32,12.29,1093.62,Forestry,Woodland,9,3.35,29322312
+9.44511280424472,48.5280377805134,692.62,8.73,962.33,Forestry,Woodland,26,3.75,42802824
+4.77026311893138,47.8830637644196,330.53,10.51,867.76,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.35,39302766
+-7.64959359677461,41.808857987701,926.91,11.75,1100.63,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,3.15,28642250
+-0.435986509395832,51.2996994933384,56.51,10.79,730.93,Forestry,Woodland,15,3.0,35963184
+-5.548783094901,41.4080121997433,734.73,13.24,378.25,Fallow land,Bareland,7,2.5,30262168
+22.6074634028495,55.8725773588988,129.0,7.29,590.17,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.1,51063710
+-3.64217927197527,37.5856288691097,1330.2,14.53,500.63,Forestry,Woodland,8,3.4,31141720
+15.4016402554105,47.2253273649806,743.07,8.54,895.7,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.95,47302694
+-0.747106693216113,43.9726268704069,72.91,13.48,1011.24,Forestry,Woodland,15,2.6,34602380
+22.0384428963853,53.0533199585542,138.55,8.1,571.09,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.85,51243394
+-0.338243351023813,47.7361757447803,33.18,12.24,683.77,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,35482790
+-0.356913337151421,45.6837049179116,6.84,13.57,775.51,Fallow land,Grassland,15,3.5,35162564
+22.8418214735604,51.6762782514423,161.74,8.68,555.34,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.55,52043252
+16.3474514109555,39.4261743152223,1245.74,12.33,984.11,Forestry,Woodland,9,3.65,48701838
+-1.16935991686138,40.6673343360582,1245.95,10.83,410.48,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.55,33762022
+11.1382102480304,54.9243815457087,2.3,9.64,559.76,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.85,43943536
+6.10104370199024,52.4394642906804,3.57,10.3,830.41,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.4,40563266
+13.3948209341856,42.2536611441082,1397.19,8.08,1211.37,Semi-natural and natural areas not in use,Shrubland,26,3.3,46022134
+-2.5314760245997,52.4564504526775,167.52,9.5,812.0,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.35,34743334
+1.64054156611691,45.4803418346082,406.1,11.81,1112.22,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.4,36682522
+24.3547459464984,56.8022298256074,28.67,7.57,596.3,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.8,51923832
+5.96067995880685,44.9760058145308,1045.51,5.62,1063.09,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.75,40022438
+2.90823198545023,46.2060769645745,438.85,11.08,743.86,Forestry,Woodland,15,3.9,37742592
+11.5550757773328,44.9160494234987,5.43,14.18,623.99,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.5,44442424
+16.466494078258,48.5390660950449,241.32,10.67,542.32,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.4,47982846
+21.9010452631393,52.6670759464844,97.1,8.52,553.01,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.7,51223350
+10.9642132219323,45.8423988621297,583.61,11.0,1235.32,Forestry,Woodland,14,3.4,43962526
+0.507355978661091,44.5859881637822,112.73,13.25,762.93,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.4,35682434
+-1.27602264431757,41.9129603534395,243.95,15.55,321.86,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,3.0,33862160
+8.8588413005144,45.6964829984018,289.43,13.45,992.67,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.15,42322510
+21.3146158575542,55.6673691135106,23.28,8.36,699.88,Fallow land,Grassland,26,2.8,50303674
+-3.75071541446548,39.678853635845,745.22,15.13,323.74,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.85,31421950
+6.74619762291169,48.8058013507237,217.42,10.56,753.84,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.5,40822860
+-5.48747382525613,41.9316542198016,709.68,12.65,385.74,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.5,30422224
+19.2303281357143,47.5639037564948,233.48,11.33,535.01,Semi-natural and natural areas not in use,Shrubland,26,3.1,50142760
+-0.267423987685385,47.6521815435386,26.03,12.27,675.93,Agriculture (excluding fallow land and kitchen gardens),Shrubland,15,3.05,35522780
+-8.38035309790189,43.2820536856514,43.36,14.27,1090.62,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.4,28422424
+14.3232856504885,46.6606156496114,533.44,10.0,932.95,Forestry,Woodland,26,2.65,46522626
+-0.1405543631049,38.8471090837339,80.39,17.7,586.62,Fallow land,Grassland,8,3.5,34381810
+-4.28908962770897,43.2825246636754,304.64,12.51,1124.99,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.35,31662352
+25.7653154881996,58.3834742701532,64.4,6.49,689.81,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.6,52364022
+9.90033651190905,50.9753042583015,392.76,9.1,710.22,Forestry,Woodland,15,3.75,43143096
+17.1535790686314,48.9663502148439,188.3,10.08,528.82,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.6,48442898
+5.6627728277135,44.5669079787761,1231.43,8.34,1053.39,Forestry,Woodland,26,3.9,39762394
+21.8395010170222,52.109693146882,145.93,8.47,561.38,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.05,51283288
+10.5269467620169,45.8274485257426,459.63,9.24,1408.27,Forestry,Woodland,15,3.85,43622524
+1.40493618987366,41.6525967332358,719.92,13.12,444.96,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.75,36042102
+21.2093930697731,50.6644984805694,282.87,8.3,617.1,Forestry,Woodland,26,2.5,51103122
+-3.80569213133747,41.5571242772331,885.05,11.9,435.94,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.9,31722156
+-3.18132710139173,39.3187841519805,631.94,15.6,317.57,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,3.35,31841902
+3.9426315810775,45.3304603087522,856.11,8.88,813.58,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.4,38462488
+17.7891775343661,50.369206837332,212.69,9.42,619.44,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.1,48743058
+-3.80374555148197,43.3497915844321,138.34,14.21,1190.56,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.4,32062352
+-2.25532707062138,40.1173079486203,940.86,13.21,485.01,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.45,32761976
+-7.18595598235605,40.2688858038446,580.04,14.27,823.28,Forestry,Woodland,8,3.5,28662074
+-2.88747866260672,42.7217875696719,531.5,12.35,689.37,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.45,32682270
+22.4782079241344,55.2660183596073,45.71,7.92,644.98,Forestry,Woodland,26,3.65,51103642
+-2.7538799523804,43.3592861341836,428.11,13.75,1263.42,Forestry,Woodland,15,3.55,32902338
+-1.60857335552301,47.8624252468907,34.79,12.08,740.92,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.6,34562818
+5.45519512448206,44.9552946791107,1273.05,7.47,1282.88,Forestry,Woodland,26,3.7,39622438
+12.1061474152678,52.5026489708837,35.04,10.05,548.48,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.65,44643268
+-7.28610456632935,41.0622622324804,453.75,14.11,600.09,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.35,28762162
+1.16115444498837,44.1360020968576,79.82,13.43,676.48,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.3,36142378
+23.9680716647889,43.5101446401846,164.83,12.29,526.49,Agriculture (excluding fallow land and kitchen gardens),Cropland,25,3.35,54462372
+16.0496758678673,48.6888977301284,249.38,10.54,502.17,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.45,47662860
+9.3790323103467,45.0519490631055,93.6,13.8,687.92,Fallow land,Grassland,14,3.15,42722438
+-2.68585936668398,37.480912799039,859.38,15.14,261.41,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.85,31961694
+0.351624145625228,41.7560969171072,221.23,15.09,320.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,3.05,35182124
+9.74558346617563,47.9892901095301,587.33,8.67,923.87,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.55,43022764
+-1.82243798762707,39.1843757679325,697.94,15.21,329.98,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.75,32981868
+5.55968984851026,49.2692570923875,211.21,10.51,813.7,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,39982916
+3.80186366063684,47.020213344566,257.87,11.12,1035.94,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.9,38502676
+10.062999258322,44.7292400855274,328.78,13.24,861.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.1,43262402
+22.7072005412741,55.6803254207324,147.66,7.18,617.19,Fallow land,Grassland,26,3.65,51163690
+6.5938311822548,47.0359808888906,759.37,7.75,1408.57,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.9,40622664
+-1.39754920499468,42.5550631229234,426.35,13.75,563.45,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.55,33862232
+12.6055603304321,45.7427100689109,2.77,13.66,883.21,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.15,45242518
+21.0607894136838,39.639914247666,1219.45,10.21,771.36,Semi-natural and natural areas not in use,Shrubland,9,2.55,52721908
+-5.70653688759908,41.6401124055513,673.31,13.14,410.9,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.5,30182196
+-3.52357978310432,42.2543689259757,1035.02,10.86,554.83,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,3.5,32082228
+-2.87994322026358,37.1795005257381,1083.35,14.5,318.21,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.2,31741664
+-1.28313104818783,42.986788925231,867.75,10.06,1398.21,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.6,34022278
+-2.74031052621585,37.5285478570911,767.68,15.94,256.67,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,3.2,31921700
+27.7741998346145,43.5383308491254,283.48,11.89,477.76,Forestry,Woodland,14,3.7,57462440
+13.7829512375229,47.1496280307465,1132.49,6.28,859.84,Forestry,Woodland,26,3.75,46082678
+21.7561717412662,40.6169739951767,590.06,12.97,451.53,Agriculture (excluding fallow land and kitchen gardens),Bareland,14,2.6,53162024
+0.803694353739083,49.7394926137512,119.23,10.88,850.74,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.3,36603000
+-2.54684208900629,42.3998305330557,512.12,12.25,515.33,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.7,32902230
+-3.5798106331498,42.3930124785881,914.57,10.9,564.97,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.25,32062244
+-4.72286015921483,42.1211967927537,747.71,11.95,390.07,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.55,31082232
+6.69891703218561,47.0392372520692,1098.69,7.38,1401.21,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,4.0,40702664
+21.620989920326,37.1056958157118,268.08,16.14,503.51,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.75,53581638
+1.04269252321553,45.3586543857811,205.1,12.42,971.1,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.25,36202514
+5.70008173562519,52.6236507652628,-3.03,10.35,840.05,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.95,40303288
+26.1219863116411,45.1363172160976,366.7,10.19,533.32,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.35,55802584
+-1.55385053690411,38.8515671966206,867.72,14.31,336.2,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,3.45,33161828
+10.6610464051287,52.3935966867622,77.32,10.2,629.07,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.75,43663254
+24.4998616457219,43.8199524028435,47.84,12.66,497.17,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.35,54822414
+25.0183641545133,55.1865722048802,171.67,7.13,584.77,Forestry,Woodland,26,3.85,52703664
+-1.37589339350873,48.0323150690476,64.61,11.85,742.03,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,34762834
+13.0672120710661,45.7303625732661,-0.28,13.72,943.84,Fallow land,Grassland,14,3.65,45602518
+-2.36815339127861,52.6192559102074,74.52,10.15,707.28,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,34883350
+16.7368556337971,38.9273827974862,187.39,17.43,736.85,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.75,49081786
+25.6802455596318,54.1686828985295,173.38,7.33,598.65,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.9,53363562
+27.6449169341208,43.4504042175428,310.79,11.87,488.49,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.95,57382428
+-1.74628273834687,42.8247435292262,419.99,13.19,883.58,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.15,33622266
+22.911503896723,45.8200702135644,276.86,10.77,568.17,Agriculture (excluding fallow land and kitchen gardens),Grassland,25,3.6,53202610
+3.27729125733274,49.2277975826274,188.61,10.98,681.69,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.95,38322924
+-3.10676856421209,40.7928048122529,700.15,13.93,440.38,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,3.1,32162062
+-7.91236746203199,38.49264561759,224.05,17.04,536.38,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.45,27641896
+21.4672337622118,55.4172739149644,4.73,8.35,704.99,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.9,50443648
+25.7401861413651,56.5846874934878,92.24,6.92,588.78,Forestry,Woodland,26,3.4,52803826
+26.8108113214663,43.2062187597951,100.99,12.18,535.63,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.0,56782386
+24.1054342073252,43.4545900577453,151.56,12.49,521.14,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.9,54582368
+16.7550135662246,49.2619535880851,474.98,9.13,555.27,Forestry,Woodland,26,2.6,48122928
+-8.9989017667478,39.3918453530377,181.13,16.09,713.8,Forestry,Woodland,9,2.75,26942016
+12.8165429155622,53.9267159539582,15.68,9.22,606.68,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.65,45063428
+24.5579291737078,57.2374118484027,30.62,7.22,618.8,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.15,51943882
+2.59997238547436,50.2325574153078,141.64,10.57,773.35,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.05,37943040
+21.9808509230502,46.3302731764503,223.33,11.18,542.43,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.15,52402654
+14.4926049984967,41.3962663743752,1273.12,12.24,929.21,Forestry,Woodland,15,3.6,46982044
+2.07259702147705,44.264342471319,418.94,12.21,841.12,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,36882384
+4.42159246712208,49.3446472508035,141.49,10.75,748.66,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.0,39162930
+18.8200001031864,46.257993561065,95.11,11.51,561.84,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.45,50002612
+3.94493176193543,44.8426388743227,1059.02,8.27,850.79,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.35,38422434
+-4.46653448472083,40.7478707322961,1208.15,11.19,484.84,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,2.6,31022078
+17.9396731724652,53.8817502991547,133.83,8.18,609.25,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.65,48423448
+22.308785743459,48.9501568528577,320.82,8.47,886.42,Forestry,Woodland,26,2.3,52182946
+-3.91862661045534,42.3647521274671,924.96,11.17,489.68,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.1,31782246
+-3.0461162130361,41.0751495083728,1016.45,12.1,543.28,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.65,32262092
+-6.24660361585898,40.4491651033148,1023.96,12.61,717.39,Forestry,Woodland,8,3.45,29482076
+25.7085437156507,58.3349959591525,57.24,6.49,689.81,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.55,52344016
+-3.36963452048811,39.5492072763497,659.63,15.16,305.22,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.65,31721930
+21.6964868165923,56.8331752880883,60.84,7.56,652.72,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.35,50323806
+10.8954023017647,46.3474519968414,1015.64,6.68,1020.72,Forestry,Woodland,26,3.2,43902582
+4.8193043734369,47.3984451863896,547.97,10.42,829.18,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,4.0,39302712
+5.50359478528634,47.1584336317615,305.13,11.43,932.84,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.9,39802682
+-1.93336281632375,38.6404594227958,859.9,14.75,342.94,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.55,32801810
+16.2026057777486,49.2577857730596,536.64,8.52,558.14,Forestry,Woodland,26,3.5,47722924
+18.3068625901322,52.7909077367779,88.21,9.03,512.05,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.95,48803330
+16.7616313833307,48.1061657115361,188.11,11.19,548.54,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.2,48242800
+-7.32030349969919,42.7146223600285,796.45,12.32,1167.23,Forestry,Woodland,9,3.55,29122342
+2.47681159186943,45.9413515416113,644.33,9.87,924.07,Forestry,Woodland,15,3.4,37382566
+-1.40938088906697,40.6761910496284,1095.05,10.92,411.77,Forestry,Woodland,14,3.1,33562026
+18.1317531282319,53.2908466363631,91.25,8.71,536.52,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.65,48623384
+14.8403704137392,52.6929927068293,64.14,9.84,543.91,Forestry,Woodland,15,3.55,46483298
+-2.03527544769372,40.4552528779098,1402.78,10.55,586.01,Forestry,Woodland,9,3.2,33002010
+25.6885786922378,58.4477188673937,68.69,6.34,707.55,Forestry,Woodland,26,4.0,52304028
+-2.20915551526905,37.617160130303,1028.57,13.14,318.08,Forestry,Woodland,7,3.3,32401702
+-2.91719094072385,39.7571907915212,794.13,14.71,343.95,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.0,32141946
+26.5459941499316,58.5467759082106,59.66,6.19,639.19,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.05,52764050
+-5.68863533633265,42.3223158412703,800.03,11.93,423.97,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.7,30342270
+-1.63258236892912,41.1060824867786,1037.3,11.9,403.31,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.85,33442076
+-2.39588026910417,55.8206127764647,204.37,8.75,770.41,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.65,35483702
+5.80230993929892,47.7111521165165,264.14,10.84,887.04,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,40062742
+8.2652883374441,55.7445274371637,8.65,9.42,820.87,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.25,42123628
+-2.64855968624598,41.6019356507111,1016.6,11.39,520.63,Forestry,Woodland,15,3.65,32682144
+15.566138477538,49.237079673538,671.15,7.9,641.08,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.4,47262918
+-2.91820462926767,41.3844332793315,1083.72,10.72,556.62,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,32422124
+20.8551031170818,47.2500862359648,84.42,11.4,507.88,Agriculture (excluding fallow land and kitchen gardens),Bareland,25,3.35,51402742
+0.665769811618473,45.3076901792253,239.8,13.0,892.86,Forestry,Woodland,15,3.6,35902512
+5.91385731692674,47.9856763294457,308.24,10.6,865.74,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.7,40162772
+18.2197491865038,48.6034559991128,175.83,10.16,601.61,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.85,49262866
+14.7249958799461,49.3657398147999,427.85,8.69,611.74,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.35,46642928
+11.65145058003,49.75858497028,516.2,8.31,835.19,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.9,44402962
+19.6006093849014,50.3577713182617,331.75,8.27,750.02,Forestry,Woodland,26,2.05,50023072
+-4.54424723736832,43.0997193319094,933.28,9.61,924.14,Forestry,Woodland,15,3.2,31422336
+12.6291409119671,49.8660726825856,597.62,7.92,664.78,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.25,45102976
+-3.479703863508,40.8520114390247,696.37,13.52,491.49,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.8,31862074
+0.561452087401271,48.8321322456271,261.05,10.44,742.34,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.35,36302902
+2.44091813192172,45.2693760975019,649.99,9.77,1152.3,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,37282492
+15.6146923585821,50.1360607909676,270.31,10.01,556.61,Semi-natural and natural areas not in use,Grassland,26,3.1,47223018
+-3.90895599580165,41.6890814906267,772.83,12.3,384.13,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.35,31662172
+23.8549838510954,47.9275416296994,274.55,9.67,758.76,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.5,53502854
+-7.84516880716317,37.6363711691343,182.0,17.57,478.75,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.95,27501802
+9.362034855394,50.7758189527906,349.62,8.82,692.01,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.55,42763074
+2.14329533410806,42.2759431916607,1195.68,10.87,823.31,Semi-natural and natural areas not in use,Woodland,15,3.65,36722164
+2.88065824828229,48.1558261175108,127.67,11.65,684.39,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.8,37922808
+-5.37783884858939,41.6000224489654,763.67,12.73,380.88,Fallow land,Bareland,8,2.4,30442186
+4.02400963517327,49.8832559693129,173.82,10.31,886.16,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.55,38922992
+5.61616838802217,49.253462970366,205.42,10.48,783.85,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.75,40022914
+24.1169777058009,41.9525774926911,1110.48,8.02,655.55,Forestry,Woodland,26,3.85,54882204
+22.9416035944878,56.0941574548785,105.96,7.27,559.64,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.35,51223738
+22.9124228539198,52.1238804895647,165.36,8.41,560.37,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.1,52003302
+25.5809403763968,59.2329358288498,100.63,6.13,658.32,Forestry,Woodland,26,2.75,52044112
+23.838700860311,56.3101898645623,44.71,7.33,527.86,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.95,51723772
+-1.22686769117791,48.3383448383823,86.83,11.42,838.06,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,34922866
+20.3130879315964,46.268861922247,78.0,12.12,510.4,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.45,51142628
+-5.10863753339015,41.9900227735063,776.9,12.22,396.15,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.95,30742224
+26.3562481131197,57.1515475688234,190.15,6.23,603.32,Forestry,Woodland,26,3.55,53023896
+27.3725213924773,44.8786470185266,52.21,12.37,463.42,Agriculture (excluding fallow land and kitchen gardens),Cropland,25,2.9,56822578
+12.2478602960476,45.7869433275017,57.61,13.73,995.11,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.4,44962522
+7.38426860892657,44.3356535643766,767.53,9.72,783.89,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.5,41122362
+14.2390429918792,47.2409121177925,1254.52,5.53,982.68,Forestry,Woodland,26,3.65,46422690
+3.68171547789383,45.152442441213,1090.45,8.25,816.72,Forestry,Woodland,15,3.75,38242470
+22.8306716218047,55.26674694719,57.43,7.76,601.62,Forestry,Woodland,26,3.75,51323646
+19.4275924299983,52.5808545481235,74.07,9.15,503.88,Forestry,Woodland,26,2.6,49583316
+0.871655193596885,48.6408223423201,225.98,10.61,696.69,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.35,36502878
+4.04284919201542,49.9563766027331,203.11,10.22,899.97,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,38943000
+12.3659428490782,43.7460872629356,587.72,13.24,1004.36,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.6,45122296
+20.4733500291363,51.7133945027443,169.2,8.74,558.41,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.15,50423230
+-2.21753351042535,41.5099339988679,976.67,11.47,427.36,Semi-natural and natural areas not in use,Grassland,15,2.45,33022128
+7.63222898332216,50.7712783030965,173.82,9.99,986.61,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.45,41543076
+4.31769811747147,48.0950493044653,216.4,11.27,769.12,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.0,38982792
+21.7097677029435,40.1114153348518,705.93,12.71,487.41,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.2,53201968
+-1.23623162729244,40.641460486981,1184.35,11.08,396.13,Semi-natural and natural areas not in use,Woodland,15,3.05,33702020
+2.61373673665939,49.7819910836614,87.43,10.75,633.91,Agriculture (excluding fallow land and kitchen gardens),Bareland,15,3.25,37902990
+-0.988474600673118,51.3030105193172,76.2,10.82,697.83,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.9,35583190
+15.2752518223188,45.9683601038639,503.94,11.16,1091.15,Forestry,Woodland,15,2.8,47302554
+5.63479327908993,45.2517372223402,195.71,10.73,1140.79,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.75,39782470
+3.99916325169874,44.8096190713296,1173.36,8.27,850.79,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.9,38462430
+5.12692398058732,45.5182798919317,454.88,11.72,875.7,Forestry,Woodland,15,2.95,39402502
+1.15529410093021,47.0346845184805,138.83,12.07,712.68,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,2.95,36502698
+13.9667321708288,49.5390932093031,479.2,8.52,561.18,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.0,46082944
+19.1211708568978,53.8171701606705,73.74,8.32,571.02,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.65,49203450
+25.8327297699275,41.8403940632607,183.51,13.91,537.39,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.5,56302220
+-4.10204635537983,43.2355703898005,501.36,12.21,1179.56,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.6,31802344
+20.221581025916,50.3399833389055,287.1,8.69,624.88,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.1,50463076
+-1.96794930794073,54.0970436872725,338.46,8.67,1178.05,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.75,35423508
+-5.72088332565231,41.6010989789081,692.85,13.14,410.9,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.25,30162192
+-2.69548191458421,47.8684857154088,140.4,11.65,935.65,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.4,33762832
+19.2643933292885,52.231717002919,111.18,9.18,512.86,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.1,49523276
+-5.26899954818154,42.4240862286422,861.77,11.24,455.36,Fallow land,Grassland,9,2.55,30702274
+24.5193701225821,59.1849920867633,56.47,6.31,661.97,Forestry,Woodland,26,3.75,51464094
+17.9859188415394,53.3186549314923,102.98,8.61,547.63,Forestry,Woodland,26,3.55,48523386
+28.1583385352433,44.650773434476,86.42,12.3,433.56,Agriculture (excluding fallow land and kitchen gardens),Cropland,25,3.3,57482568
+9.3101638782407,54.2267042575227,8.41,9.41,875.57,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.85,42763458
+22.5837645454771,37.4213082967915,503.36,14.14,464.34,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.75,54381686
+10.7902851944987,48.0047426602857,620.7,8.87,937.09,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.9,43802766
+0.016372070887334,43.6318150468254,125.58,13.63,807.92,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.1,35162334
+-2.21131062007244,39.3917632097598,741.61,14.57,348.47,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.75,32681896
+19.8169624448197,51.118284849442,229.96,8.62,583.57,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.7,50063158
+10.1889974685928,44.7290881384083,168.56,13.75,778.32,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.15,43362402
+0.469051187634723,46.2873530346038,146.02,12.3,792.14,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.25,35882622
+20.2943473038086,53.5965780290933,181.0,7.95,626.6,Forestry,Woodland,26,3.65,50003436
+8.70021247688342,40.3311423345772,551.82,14.2,758.43,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,3.7,42101916
+23.2925592747453,42.9796517241461,649.26,9.37,575.94,Semi-natural and natural areas not in use,Grassland,26,3.15,54022304
+15.1222076238432,50.7718427884213,624.75,7.12,1006.32,Forestry,Woodland,26,3.75,46823086
+14.5932897326181,46.7576344849698,1163.48,8.54,940.93,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.85,46722638
+-2.18683290596782,48.2359078793145,99.93,11.64,748.51,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,34202866
+-2.07982937199795,40.0661770896979,1256.03,12.54,510.29,Forestry,Woodland,8,3.85,32901968
+3.09804513087275,46.1462356095451,327.9,11.25,710.33,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.0,37882584
+10.8873319394029,48.9576873321434,528.77,9.09,756.48,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.1,43862872
+-3.07937346168648,38.1053965764772,797.31,16.64,450.22,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.1,31721768
+-5.14732396140077,37.446995738307,271.27,18.36,493.99,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.3,29801730
+-4.98985237176377,38.3917209764911,591.38,16.07,484.39,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.9,30121830
+5.02391485333965,49.9315129070801,394.95,9.29,1123.92,Forestry,Woodland,15,3.65,39642992
+4.1746139914855,46.7521389320589,375.61,11.05,868.75,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.45,38762644
+-1.42582423085333,38.6476379372246,765.5,15.31,308.26,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.55,33241804
+15.7541778375211,48.2536663279296,228.83,10.85,668.65,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,47482810
+0.16332542893839,43.3554147035466,225.72,12.94,887.68,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.15,35242302
+-0.352757804320908,47.009074269337,94.44,12.44,653.78,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.45,35362710
+-3.82687719768979,43.2369492877776,203.79,12.99,1252.74,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,32022340
+-1.03546194112955,40.7189471365051,1248.69,10.65,432.2,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.55,33882026
+-1.00501281386159,52.4448958872519,158.58,10.06,673.21,Fallow land,Grassland,15,3.5,35763316
+-2.30509388481002,37.7695260213433,1091.79,14.52,282.97,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.45,32341720
+-0.470558615457527,44.6553414927985,52.28,13.81,837.23,Semi-natural and natural areas not in use,Woodland,15,3.1,34922452
+26.9528021608754,45.3714395298042,324.39,10.92,498.75,Agriculture (excluding fallow land and kitchen gardens),Grassland,25,3.3,56382624
+14.2600704656496,49.0961148412119,404.42,8.87,617.54,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.95,46322896
+17.547326146171,53.4010316154489,126.88,8.44,545.75,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.6,48223392
+25.2375003249406,55.0865231029758,137.64,7.14,591.14,Forestry,Woodland,26,2.9,52863656
+21.6034952926516,56.4231509470754,49.15,7.54,676.75,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.7,50343760
+4.49707583548619,46.173464178004,648.31,9.99,939.35,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.5,38962578
+-5.06296052393046,38.5088263401742,518.55,16.62,410.35,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.15,30081844
+14.3646089924749,46.2080508941741,388.42,10.35,1415.01,Forestry,Woodland,15,3.0,46582576
+-5.87500718740282,41.907103306455,759.07,12.52,432.33,Fallow land,Grassland,9,2.3,30102228
+13.0810147518678,42.263743284081,687.65,12.27,1126.27,Agriculture (excluding fallow land and kitchen gardens),Grassland,14,3.0,45762134
+6.03204902436785,49.2149046170124,287.41,10.4,778.37,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.45,40322908
+-3.5319650199366,42.3994901924922,912.65,10.9,564.97,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.15,32102244
+-4.78341782626781,37.6704981682783,314.83,17.76,528.84,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.9,30161748
+-8.53874929493044,53.6335683714017,85.07,9.78,1133.11,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,31103548
+7.98931788452163,50.3823678798627,185.85,9.85,686.05,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.05,41783032
+6.38617301512999,48.8847455104058,215.24,10.74,712.54,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.55,40562870
+23.2721087232099,45.9029151412954,208.25,10.05,564.4,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.2,53462624
+-2.61288190318196,37.9487726475505,1258.57,11.72,450.4,Forestry,Woodland,8,3.2,32101744
+-1.17213558374015,47.1087292883668,86.94,12.4,768.57,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.95,34762730
+15.1085577228289,46.3915875045991,470.06,9.4,1217.34,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.4,47142600
+22.1283646800292,56.210672912144,104.54,7.45,618.47,Forestry,Woodland,26,3.7,50703742
+-3.29879990931659,41.3522181744007,1158.82,11.01,570.79,Fallow land,Bareland,9,2.6,32102126
+18.7139645007724,47.0453272173512,121.54,11.41,520.2,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.2,49822698
+21.5608901896469,46.5767784401383,92.64,11.59,525.59,Agriculture (excluding fallow land and kitchen gardens),Grassland,14,3.8,52042676
+16.1602964811894,47.8166423321964,289.68,10.42,689.83,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.85,47822764
+21.6228245603284,40.6693744337771,607.68,13.12,457.1,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.25,53042028
+26.056859652667,47.5316562594684,474.26,8.53,531.52,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.5,55202844
+0.478741244082784,48.1185916757434,88.18,11.7,717.47,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.65,36142824
+21.5834590407887,56.897915229401,55.27,7.65,652.06,Forestry,Woodland,26,3.2,50243812
+-5.52465386608707,40.2546806192819,1239.99,9.36,977.15,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,3.8,30042042
+5.75544779642031,53.2736011612651,0.55,10.12,856.88,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.75,40383360
+-0.369028840167527,43.8297380039295,96.5,13.56,884.19,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.7,34882360
+3.2876930877148,49.5532860505492,94.73,11.18,667.0,Forestry,Woodland,15,3.35,38362960
+-0.091609460059822,41.8031590999118,363.08,14.59,359.69,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.35,34822134
+-3.034163273068,43.1593874935109,247.91,13.28,1078.61,Forestry,Woodland,15,3.15,32642320
+2.20095043404253,48.1820051968607,122.43,11.47,621.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,37422816
+16.8657242522991,39.281806440963,470.5,16.18,779.01,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.25,49161826
+-9.16526973994864,39.2288779544659,47.67,16.52,677.81,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.8,26762002
+21.5261287459054,50.6693400304402,207.13,8.79,575.91,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.8,51323126
+-3.47605879384865,40.7244197908151,713.94,13.85,459.67,Fallow land,Bareland,8,2.5,31842060
+-8.28832517664631,38.0690873422752,77.01,17.4,513.25,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.6,27221858
+-1.3131229914621,41.197922645308,869.4,12.59,403.76,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.0,33722082
+16.2242260162123,52.1961500542751,85.63,9.32,549.09,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,4.0,47463250
+9.33517590307468,52.6452135904825,47.35,10.32,690.45,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.25,42763282
+15.6340316449592,40.2867572654146,485.53,13.62,948.14,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,3.3,48021928
+-8.22738567970118,39.2831807229555,175.54,16.34,632.93,Forestry,Woodland,8,3.05,27561988
+12.9644536219225,46.6705922152132,782.34,6.73,1412.23,Forestry,Woodland,26,3.7,45482622
+18.9014623103271,52.0425653628373,109.19,9.4,520.48,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.85,49303252
+23.3262760855562,44.6369194293902,174.15,12.17,550.39,Agriculture (excluding fallow land and kitchen gardens),Cropland,25,2.55,53742486
+15.3587023351623,47.0650825669219,520.56,10.65,832.58,Forestry,Woodland,26,3.35,47282676
+13.0318270097523,47.3894108205911,1262.95,6.5,1246.78,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.8,45502702
+-6.57561499251306,53.1852422305786,220.45,9.49,982.51,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,32243468
+-6.02244537741265,36.9695719136814,11.63,18.77,499.79,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.45,28941694
+13.1377396570797,53.7390477920989,83.26,9.22,574.01,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.85,45283408
+-4.45492675722069,37.9603504737646,151.8,18.35,500.44,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.55,30501774
+-0.198093569534743,48.1120998228159,152.15,11.59,767.41,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.45,35642830
+-2.32624829851243,43.2297038582997,393.4,13.29,1328.47,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.35,33222318
+-4.7315957678054,42.1565542064085,757.18,11.95,390.07,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.0,31082236
+10.4725848576368,51.2440537216988,247.75,9.18,611.78,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,43543126
+22.0003167525218,53.4572623253956,180.22,7.88,571.07,Forestry,Woodland,26,2.8,51143438
+1.24835599047022,45.3578669140107,342.81,12.1,1017.33,Forestry,Woodland,15,3.55,36362512
+-2.28778631110735,40.0401174118432,1016.39,13.75,457.05,Forestry,Woodland,8,3.35,32721968
+21.1718357075564,46.2365647365883,102.08,11.62,536.39,Agriculture (excluding fallow land and kitchen gardens),Grassland,14,3.45,51802634
+-7.22839340906318,42.2332101111496,1155.01,9.89,1222.57,Semi-natural and natural areas not in use,Shrubland,9,3.55,29082288
+16.7413532936161,46.9334739415939,253.84,10.95,625.52,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.75,48342670
+17.9034955589689,51.0479026491814,181.35,9.42,551.13,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.1,48743134
+21.8667298393075,47.343564236532,116.13,11.11,519.65,Agriculture (excluding fallow land and kitchen gardens),Cropland,25,2.8,52142764
+22.5942078738689,56.7305621637087,110.09,6.96,584.93,Forestry,Woodland,26,3.5,50883804
+-3.05954319539791,41.3658568958455,1245.67,10.72,578.12,Semi-natural and natural areas not in use,Shrubland,9,3.75,32302124
+-2.38725170036332,53.8367213276764,115.28,9.26,1292.56,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,35103484
+28.5300409848323,43.9748751766089,42.28,12.8,412.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.6,57942502
+-4.1814279665198,48.5978065431826,82.85,11.61,1097.34,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.45,32822932
+-2.96411700975424,40.6837775009822,975.43,12.91,474.61,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.5,32262048
+-7.7042880607905,42.5735668104391,543.23,12.87,998.75,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,3.5,28782334
+23.2098828173871,50.7236555892645,210.06,8.55,610.29,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.65,52483152
+21.1782082114813,54.0447226334289,127.71,8.13,602.36,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.0,50503494
+7.30826873071262,52.922471412981,5.41,10.2,781.41,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.25,41403316
+25.7361536787725,46.4057219154919,706.89,6.42,547.21,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.35,55222716
+25.6772150160566,41.8100372410705,181.75,13.72,566.27,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.45,56182214
+21.4766401356641,40.5223884181828,1420.26,10.72,590.87,Semi-natural and natural areas not in use,Grassland,26,3.55,52942010
+6.5913804636996,43.7710103325854,1017.25,10.54,933.77,Forestry,Woodland,9,3.95,40462302
+-2.18677596406324,41.1121401894071,1234.67,11.22,447.95,Fallow land,Bareland,15,3.4,32982084
+-1.00756288921992,40.8314573649589,1171.81,10.99,431.1,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.55,33922038
+26.8645613746991,46.1763309217184,244.14,9.38,545.29,Forestry,Woodland,25,3.4,56122710
+15.9084744700671,48.8768751555002,422.24,9.97,498.34,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.85,47542880
+22.0136026195756,56.3671618397636,101.29,7.44,631.69,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.75,50603758
+11.836375850274,51.6800590247196,71.58,10.11,517.25,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,44483176
+5.30596975318149,48.466061459121,313.35,10.26,925.96,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.05,39742828
+0.366464860497167,42.5754975127128,1379.28,6.56,1118.71,Semi-natural and natural areas not in use,Woodland,26,3.65,35302214
+0.620746522680467,45.7207217261134,224.99,12.31,982.62,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,2.75,35922558
+1.48107468207299,49.2320027135487,121.8,11.09,683.64,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.75,37022938
+-0.762490596043274,40.2388504644999,1025.96,11.92,418.66,Semi-natural and natural areas not in use,Woodland,14,2.15,34041970
+4.11156612171845,48.2465782292012,113.77,11.48,679.04,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.5,38842810
+21.0952923962763,54.1975539939423,55.02,8.32,606.19,Forestry,Woodland,26,3.05,50423510
+-4.63440877202581,42.2624757330144,815.58,11.64,408.48,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.5,31182246
+24.07015098141,44.9403712794395,298.27,11.03,614.92,Agriculture (excluding fallow land and kitchen gardens),Cropland,25,2.65,54262530
+8.24889442451911,44.7145820515469,192.73,13.74,734.84,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.6,41822402
+0.122836491912772,41.8246261236339,251.37,14.92,344.11,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.9,35002134
+0.699282610144159,45.56450416751,256.78,12.56,966.21,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.25,35962540
+6.44333735584496,49.2286939627091,212.4,10.61,743.43,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.4,40622908
+1.07175531516567,49.2000701354233,157.65,11.22,702.74,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.85,36722938
+-2.27580053317779,39.2372864896763,719.64,14.77,338.2,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.9,32601880
+8.44101676188727,56.9334758852416,15.0,8.93,820.42,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,42263760
+-7.10832651197955,40.688115700088,635.62,13.19,756.69,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.2,28822118
+26.5471398366524,57.348344943099,102.1,6.45,581.53,Forestry,Woodland,26,2.55,53083920
+-3.01758815683337,37.3072294393699,1282.41,14.33,355.91,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.4,31641680
+19.1362740231734,47.3364027546395,102.53,11.99,516.28,Fallow land,Bareland,25,3.25,50102734
+-3.2800917683077,37.8391116760301,469.61,17.78,383.07,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.35,31501742
+-7.76037646079744,39.0571036112347,182.4,16.81,569.22,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.45,27901954
+21.6084709637587,50.4248015076031,156.5,9.09,606.94,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.5,51423100
+-0.621481788485435,41.7845025060874,401.03,14.83,341.97,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.65,34382138
+-2.47021571383085,41.204526152641,1113.15,10.94,454.73,Fallow land,Grassland,9,3.65,32762098
+-1.37909645793637,41.5549601053544,402.25,15.44,309.41,Semi-natural and natural areas not in use,Grassland,7,3.4,33722122
+11.3240294021309,43.6925674113903,203.18,13.07,974.23,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.15,44282288
+24.0556890800217,55.3721717958862,48.77,7.61,535.91,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.45,52063672
+25.0136985803354,55.6819475036406,108.5,7.22,585.65,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.75,52583718
+-0.443187539871599,49.2861735793622,49.55,11.49,712.79,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.5,35642962
+-3.03428666491238,38.9359968578936,890.1,14.87,360.89,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.45,31901858
+21.6861579424458,50.9620218791994,190.55,8.69,567.05,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.05,51383160
+-2.63273357107939,39.6301204333043,857.6,14.29,371.19,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.65,32361928
+-6.49386145181375,53.5274983645168,93.48,9.99,813.24,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.75,32383504
+25.6560271828324,56.9440912762901,177.07,6.2,686.04,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.25,52663864
+22.1356322375705,48.5872378794397,104.25,10.43,621.48,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.3,52122904
+10.3615170366913,55.252550050826,41.7,9.26,646.39,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.65,43443572
+25.2245522576144,41.4769685111141,779.28,12.32,618.87,Forestry,Woodland,15,3.4,55882170
+-2.89906078008854,48.0267306786394,95.42,11.5,907.44,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.2,33642852
+21.3801198101345,56.2249907781516,45.79,8.1,705.21,Forestry,Woodland,26,3.8,50243736
+15.4726103900668,49.3859051079218,545.46,8.09,653.52,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.45,47182934
+19.024462098483,52.358853663999,121.22,9.18,514.31,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.8,49343288
+15.5619823015274,46.2426132939998,276.5,10.77,1082.18,Forestry,Woodland,15,3.35,47502586
+-6.5052755089594,40.5160091026569,785.8,13.49,534.13,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,3.0,29282088
+2.57730942648884,45.2067280162383,1176.23,8.48,1349.82,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.85,37382484
+2.35147282114541,50.7218891632055,24.12,11.08,768.33,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.95,37823096
+-7.76783505220918,42.6175852002968,555.85,13.0,1007.54,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.35,28742340
+23.7835341589293,55.1467298872684,48.03,7.72,549.27,Agriculture (excluding fallow land and kitchen gardens),Bareland,26,3.3,51943644
+-3.28379154999437,38.9017039398004,697.97,15.42,340.34,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.7,31681858
+25.8576313088165,55.6697823799123,156.29,6.86,606.28,Forestry,Woodland,26,3.4,53103728
+5.94129953038561,45.5887856940643,375.89,10.81,1235.02,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.05,40042506
+0.666521989707498,46.5041983298251,128.36,12.45,705.89,Agriculture (excluding fallow land and kitchen gardens),Bareland,15,3.05,36062644
+-3.47528475886931,41.822089709864,980.52,11.31,524.66,Fallow land,Grassland,9,2.75,32042180
+7.81492574199467,49.8934766780426,213.88,10.77,553.61,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.05,41642978
+-4.89631787704622,42.2237067406007,811.44,11.68,409.9,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.45,30962246
+5.3879976100198,45.764611069108,273.64,11.98,977.47,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.85,39622528
+9.32110034282275,55.4309818821106,38.13,8.98,852.15,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.9,42783592
+-7.6004539946436,40.0282754889334,418.27,14.5,926.44,Forestry,Woodland,8,3.55,28262056
+13.2032151662648,49.7073373425316,335.44,8.76,524.27,Semi-natural and natural areas not in use,Grassland,26,3.4,45522960
+-3.53550537887888,37.5092684466878,1087.82,14.27,491.77,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.8,31221710
+-0.733277388415252,40.6248609946566,1412.88,10.78,440.16,Forestry,Woodland,15,3.15,34122012
+-5.90766917302392,42.1222957958297,762.08,11.79,454.12,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.6,30122252
+9.52766788907269,48.3844723779158,779.74,7.88,868.28,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.85,42862808
+-2.86106242655115,39.9476021518705,884.42,14.12,376.74,Fallow land,Bareland,8,2.9,32221966
+20.7589664937415,51.5604099386119,187.7,8.65,561.09,Fallow land,Grassland,26,3.05,50643216
+27.1581631431221,43.1844467950666,305.95,12.3,506.58,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.25,57062390
+-4.42444902190091,41.0839865016886,834.95,12.78,372.45,Fallow land,Bareland,8,2.4,31122114
+-6.7025610324951,41.5132613851001,503.06,13.75,650.2,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.7,29342200
+5.88420832337296,48.0206080256829,316.3,10.22,871.05,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.35,40142776
+14.5033049776887,49.9512414826808,355.05,9.65,561.42,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.8,46442992
+-3.15305344938113,37.8935481196704,483.62,17.64,382.51,Fallow land,Bareland,8,2.25,31621746
+22.8196281034328,55.9241813694335,123.92,7.27,570.39,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.85,51183718
+-2.75867828407879,48.2253798240527,244.87,10.93,921.07,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.55,33782872
+21.1945691799174,49.2859881490048,499.25,6.85,843.56,Forestry,Woodland,26,2.5,51322970
+14.3544005700377,49.8489877807488,358.51,9.83,511.65,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.05,46342980
+21.748496253891,49.1563188765241,295.82,8.58,783.05,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.8,51742962
+-3.34636360050773,39.0945300975802,646.96,15.63,326.29,Agriculture (excluding fallow land and kitchen gardens),Bareland,7,3.25,31661880
+22.6704267225006,39.2226988895312,120.96,15.21,270.42,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.85,54161884
+23.1899900924506,54.9009223448921,58.18,7.76,575.95,Agriculture (excluding fallow land and kitchen gardens),Bareland,26,2.95,51623610
+6.86179778060584,48.7010917062652,291.63,10.41,799.29,Forestry,Woodland,15,3.5,40902848
+23.3893904629201,55.5913225409554,144.73,7.2,572.78,Agriculture (excluding fallow land and kitchen gardens),Bareland,26,2.85,51603688
+22.8137710156959,51.9889952234808,146.24,8.56,561.62,Semi-natural and natural areas not in use,Woodland,26,3.75,51963286
+-5.07490511869162,42.3435410516459,797.89,11.69,427.67,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.6,30842262
+18.3688413972806,49.9665862441368,195.49,9.57,704.14,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.65,49203018
+27.1149507588309,58.62274278141,74.95,6.17,616.35,Forestry,Woodland,26,3.55,53064066
+-1.0920497970452,46.6083264123321,72.18,12.56,818.32,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.0,34742674
+4.32537424044216,46.8143423644144,322.83,10.45,887.44,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,38882650
+-8.370764946444,37.7753477573333,123.33,17.04,521.57,Forestry,Woodland,8,2.35,27081828
+1.72976125264822,43.3311510048653,280.79,13.56,649.56,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.45,36502284
+26.3002148907997,58.8534870294755,85.2,5.91,651.23,Forestry,Woodland,26,3.95,52544080
+11.6972888701085,51.05282373137,161.07,9.86,573.43,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.2,44403106
+13.6675041897005,46.6308940254672,1066.15,7.34,1230.88,Forestry,Woodland,26,3.65,46022620
+-3.35179924001481,38.892239582184,684.63,15.54,343.85,Fallow land,Bareland,7,2.85,31621858
+22.5635204371659,52.6715080230999,133.89,8.22,555.57,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.65,51663358
+22.9849834801912,42.4901158354462,652.06,10.72,528.11,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.25,53862246
+15.4012849153628,48.7403377371372,569.06,8.8,625.36,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.15,47182862
+23.1515710261093,38.0037517736321,396.33,15.39,288.45,Forestry,Woodland,8,3.55,54781758
+24.2021761219245,42.1052130992573,586.18,12.94,471.64,Forestry,Woodland,14,3.55,54922222
+24.5614649807956,43.6647467788316,30.44,12.58,515.33,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.3,54902398
+11.9507597989082,50.2934712774085,485.93,8.05,728.67,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.1,44603022
+-5.06380053101709,41.0246453547657,831.98,12.69,342.92,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.3,30582118
+4.03592538661588,47.9718658543109,204.41,11.01,793.25,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,38762780
+19.5311537042627,49.1683576802698,726.14,6.98,989.49,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.95,50142940
+-0.049494683736799,47.3642545686086,41.85,12.47,633.38,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.85,35642746
+5.15457672465019,48.9101129700627,252.94,10.62,887.92,Fallow land,Grassland,15,2.55,39662878
+-3.69487819898049,43.4193759367851,11.39,14.42,1128.47,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.85,32162358
+-3.58703211598711,37.5385463154036,1241.76,14.27,491.77,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.75,31181714
+8.07320470742387,44.6934522909595,268.0,12.97,738.31,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.7,41682400
+2.37727414820133,45.174287441069,694.56,10.22,1178.5,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.55,37222482
+-1.41660601985046,49.0455017921533,53.64,11.53,960.88,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.7,34902946
+15.4437323402019,49.6216493352834,460.34,8.71,646.47,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.3,47142960
+21.794491557425,55.3323629955595,64.66,8.07,717.96,Forestry,Woodland,26,3.8,50663642
+-7.50431486701957,42.240247596991,1260.7,10.91,1135.04,Semi-natural and natural areas not in use,Shrubland,9,3.35,28862294
+-3.69238516596091,38.6240593058357,650.97,15.49,392.73,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.2,31281834
+16.2971270813534,50.6234129842258,446.13,6.75,770.27,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.45,47663076
+-3.54546575160443,56.5060775412981,96.09,8.37,925.22,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.4,34923790
+18.4488397281318,49.9425680936668,234.12,9.52,737.78,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.15,49263016
+11.4040365785391,45.9456162476514,1329.61,8.72,1393.29,Forestry,Woodland,26,3.6,44302538
+22.8220678789893,51.9152314252701,149.29,8.56,561.62,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.05,51983278
+1.1383659983069,41.8290725512624,410.65,13.92,382.69,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.3,35842124
+17.8188937928766,48.8312867462804,425.09,9.19,703.66,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.2,48942888
+23.8279946413012,41.974865192651,1386.75,7.55,634.48,Forestry,Woodland,26,2.95,54642202
+22.0372572857398,46.9244108651275,234.87,10.58,551.69,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.05,52342720
+21.6469231370999,45.7671394771854,102.83,11.94,558.0,Agriculture (excluding fallow land and kitchen gardens),Grassland,14,2.9,52242588
+-3.39326789300758,42.9846123644882,683.83,11.16,982.37,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.6,32322306
+-8.6748126387108,41.3609836547542,66.31,15.48,1355.57,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.75,27702222
+-8.72738881983227,40.5741589299934,20.07,15.91,1010.22,Forestry,Woodland,9,2.45,27462138
+-4.55813030055688,43.3540302724376,306.95,14.01,996.6,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.55,31462364
+22.9257743740767,38.6210784126116,245.41,15.26,256.34,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.6,54481822
+23.606621702858,55.7506078573268,133.77,7.29,538.03,Forestry,Woodland,26,3.65,51703708
+4.36875941719266,49.3239813444673,124.32,10.76,735.56,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.5,39122928
+24.8649732011482,55.9744920651666,75.2,7.27,572.78,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.7,52423748
+-2.83504629193456,41.1028910426339,1023.85,11.34,495.16,Semi-natural and natural areas not in use,Woodland,8,3.5,32442092
+14.8539222604748,45.5913648612714,666.64,9.26,1532.25,Forestry,Woodland,26,2.95,47002510
+4.19832774474142,48.4315666204121,162.59,11.29,665.55,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,38922830
+22.8526886222395,38.9605323720368,190.28,15.73,240.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.85,54361858
+14.1931553890028,48.9545391713166,729.37,7.4,768.15,Forestry,Woodland,26,3.4,46282880
+24.0193730881273,55.6321869137778,65.62,7.46,534.81,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.1,51983700
+-2.28560738406935,41.2459375748568,967.88,12.64,378.28,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.9,32922100
+-0.71635098364925,41.082247033183,863.71,13.48,360.05,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.95,34202062
+1.15848400405195,45.2778536618816,186.69,12.54,929.29,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.55,36282504
+3.98646553538959,43.7420841437934,97.11,14.37,796.76,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.45,38362312
+22.0997200822137,40.666438081197,113.67,13.87,399.46,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.05,53442034
+27.0497352700075,57.6892663807811,256.54,5.84,667.97,Forestry,Woodland,26,3.6,53283964
+-4.42585107567857,39.9471312559902,576.08,16.09,425.88,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.5,30901990
+21.7812776665174,49.0619637213565,205.93,9.33,711.36,Forestry,Woodland,26,1.8,51782952
+12.7426757777654,46.4241946924971,1434.77,6.3,1454.81,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.65,45322594
+12.9880423889952,42.8268065372967,1208.24,12.09,1059.79,Semi-natural and natural areas not in use,Shrubland,15,3.3,45662196
+14.1393353482733,41.4658805967054,195.02,14.76,918.45,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.15,46682050
+6.45613504708375,45.949939594376,1423.18,6.09,1753.62,Forestry,Woodland,26,3.8,40462544
+-1.10835490924917,42.0592771164552,381.02,15.07,350.98,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.65,34022174
+22.9459511625737,40.9421350138107,228.5,14.73,383.92,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.65,54102076
+26.2811141078968,41.859572433054,218.26,13.99,540.91,Agriculture (excluding fallow land and kitchen gardens),Grassland,14,2.75,56662230
+24.3020307871509,43.5368594531053,126.24,12.34,527.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.2,54722380
+-3.42328640719554,37.6354264751854,1026.68,14.69,472.71,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.5,31341722
+6.73005160973325,50.2813571576013,514.62,8.4,792.5,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.85,40883024
+10.737479757811,44.2757828786316,632.86,11.14,1095.17,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,43802352
+19.8493719843473,51.8039002228978,186.65,8.84,560.54,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.7,49983234
+26.7371927364607,55.8865935307161,97.0,6.61,603.09,Forestry,Woodland,26,3.15,53583764
+17.3300527966909,46.0452874553915,126.56,11.48,698.94,Forestry,Woodland,14,2.65,48882576
+13.8852506468021,48.5153912038751,593.52,8.6,1043.72,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.3,46082830
+-2.10568620160581,39.0759992265398,696.05,14.98,331.62,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.85,32721860
+-7.77772976859328,37.556732133506,162.93,17.69,475.72,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.25,27541792
+1.80374459174857,50.5937464285721,126.51,10.67,947.66,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.5,37423086
+20.084222965286,51.6751574424811,191.97,8.76,569.21,Fallow land,Grassland,26,2.4,50163222
+-3.57804043178613,39.9780048655944,616.79,14.93,352.85,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.75,31621980
+12.3082093059038,42.284398737007,252.41,15.37,820.5,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.65,45122134
+-3.61206398301989,41.016742294567,1062.79,10.72,662.05,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,2.6,31782094
+-6.22803345853367,41.2983358036037,758.27,13.08,526.65,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.65,29682168
+-3.9797484784303,42.1000583008042,798.11,11.79,434.17,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.9,31682218
+18.1061608424703,49.2445813410238,745.48,7.35,956.87,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.1,49102936
+-5.27445713131438,41.9646619713691,749.12,12.47,388.54,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.7,30602224
+25.165640485116,54.3072642639303,154.84,7.43,602.63,Forestry,Woodland,26,3.4,53003570
+-2.96877682865212,39.3110496896366,648.73,15.42,328.98,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.85,32021898
+-0.756275918425986,45.0804527114168,22.19,13.98,822.16,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.95,34762502
+-0.708390262867493,42.1393090847274,421.06,14.57,425.27,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.1,34362178
+-4.54399015673068,37.3033909975704,447.01,17.51,450.31,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.6,30301704
+13.9559898254208,50.4216995417442,192.45,9.71,469.71,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.65,46023042
+-2.07563070919372,38.6591646100579,1098.93,14.0,365.02,Forestry,Woodland,8,3.75,32681814
+10.7648720257241,46.2944235506983,1297.68,3.73,1218.91,Forestry,Woodland,26,3.85,43802576
+0.441591871838159,45.4144703605571,152.18,13.06,871.14,Forestry,Woodland,15,3.65,35742526
+-0.789881314470099,40.399909456238,1566.29,9.45,495.06,Forestry,Woodland,15,3.25,34041988
+-3.01512623605507,40.2380642535142,719.8,14.67,365.72,Fallow land,Bareland,7,2.95,32142000
+-3.08429700807745,48.0046582230309,113.69,11.33,962.59,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.7,33502852
+4.49900674115357,49.6369003214904,216.43,10.26,939.09,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,39242962
+27.3215173643298,57.1732304057186,120.79,6.43,563.27,Forestry,Woodland,26,3.8,53583912
+22.8509537049579,42.7812240841078,911.94,9.31,589.27,Forestry,Woodland,26,2.9,53702276
+18.1388942641662,47.4339293986553,232.5,10.84,564.52,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.4,49342736
+-8.55976934156486,40.421467435198,69.61,15.77,1016.28,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.85,27562118
+-1.76054890980796,41.2733407143367,802.94,13.12,361.25,Semi-natural and natural areas not in use,Grassland,14,3.0,33362096
+5.39862059644457,45.6387498377605,238.98,12.23,925.9,Forestry,Woodland,14,3.75,39622514
+-4.66415981002464,41.580098680956,701.05,13.17,394.89,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.75,31022172
+-7.80226462563007,37.7369957717208,164.14,17.5,485.42,Forestry,Woodland,8,2.4,27561812
+14.1733404163674,37.2559860492391,401.69,17.13,556.39,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.75,46941586
+22.5269400967133,38.4728904871549,367.1,13.17,384.8,Agriculture (excluding fallow land and kitchen gardens),Shrubland,8,3.05,54161800
+9.72990393014496,50.9031182775071,237.39,9.47,669.49,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.85,43023088
+-2.7795847345785,40.0132355979411,936.6,13.7,403.12,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.3,32301972
+-0.664105867110457,41.8891856798072,412.99,14.83,353.29,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.65,34362150
+0.752451765392431,45.0977776098597,221.74,12.81,870.44,Forestry,Woodland,15,3.5,35942488
+25.9203243265335,41.0545927404576,703.95,13.04,556.8,Forestry,Woodland,8,3.5,56542136
+9.48423865543015,44.6378249480405,761.73,9.88,1315.29,Forestry,Woodland,15,3.7,42802392
+-4.87432025760333,40.539899570021,1202.81,11.11,531.91,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,2.85,30642062
+9.78612631881283,57.0324812250619,5.21,8.6,702.66,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.3,43083770
+-5.91389922735281,37.1909300739001,19.67,19.18,487.16,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.35,29081716
+22.5745305757926,36.8725880436914,214.16,17.04,411.89,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.45,54461626
+27.3852949921341,46.4596302442548,256.9,9.86,529.68,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.8,56442750
+0.605120702402763,45.2116007438609,123.17,12.99,882.82,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.25,35842502
+18.3496037706849,51.9203207057758,135.97,9.23,526.1,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.9,48943234
+-5.60633220003507,40.7744236918557,913.34,11.68,430.16,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.65,30082100
+23.7670523324039,51.0409903159787,185.74,8.63,571.83,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.05,52803194
+-4.63411128728726,41.8594351218186,789.39,12.07,392.19,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.7,31102202
+12.8902348666421,52.324340832284,88.96,10.14,555.44,Forestry,Woodland,15,2.6,45183250
+-0.660526058692396,42.1444171633374,423.74,14.51,436.95,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.35,34402178
+21.0194961544807,51.1911592472664,196.68,8.43,578.65,Forestry,Woodland,26,3.0,50883178
+27.0318697911335,57.2117522318351,132.01,6.38,599.8,Forestry,Woodland,26,3.65,53403912
+21.375225735648,51.3382765954641,169.8,8.67,573.3,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.3,51103198
+19.4830862873578,52.2867621573601,113.98,9.14,507.31,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.45,49663284
+4.99981812540046,51.7498781752623,-0.18,10.72,839.11,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.85,39763194
+-4.35570795033405,41.2039888527814,806.39,12.71,385.44,Fallow land,Grassland,7,2.65,31202126
+-4.1755123471394,37.8373971402226,306.02,17.88,479.35,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.7,30721756
+6.42507414814316,49.1020762199343,277.98,10.57,735.63,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,40602894
+-0.613553347779314,42.5679569023672,763.86,12.04,796.24,Fallow land,Grassland,15,3.2,34502224
+23.9982390791712,41.0174033065239,101.95,14.89,362.81,Agriculture (excluding fallow land and kitchen gardens),Bareland,8,2.8,54962100
+-1.0620033661255,40.7341924734222,1333.42,10.65,432.2,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.8,33862028
+26.2649626391785,45.0038193313497,222.18,10.67,531.67,Agriculture (excluding fallow land and kitchen gardens),Grassland,25,3.35,55942572
+-5.33692846210966,42.3036158461757,856.51,11.65,424.62,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.15,30622262
+0.058831696212778,45.9595730001433,90.54,12.35,820.93,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.5,35522590
+-6.3984006613362,38.3425556451598,516.12,16.13,481.31,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.55,28901850
+-5.66647413086681,43.1700476651399,529.13,10.98,1063.68,Forestry,Woodland,15,3.55,30542362
+11.2573780468354,54.7434914084979,-0.03,9.65,553.29,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.95,44023516
+9.44863989122133,55.3417318268743,29.49,9.09,827.36,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.5,42863582
+24.8817409459991,41.2725118528686,694.62,12.4,511.47,Fallow land,Grassland,9,2.8,55642142
+9.7352343455371,44.7649859223879,903.03,11.3,993.66,Forestry,Woodland,15,3.65,43002406
+-4.95888820442078,40.6921088844187,1252.89,10.46,522.5,Agriculture (excluding fallow land and kitchen gardens),Shrubland,9,3.1,30602080
+-2.49586127232582,41.8038637374207,1067.34,11.44,514.43,Forestry,Woodland,15,2.6,32842164
+9.87196040569393,50.9393196739146,268.16,9.23,699.8,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.35,43123092
+14.7042264436078,37.4856444563146,185.95,18.56,533.8,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.6,47401614
+23.3334513425589,55.1410191743644,75.69,7.67,574.24,Forestry,Woodland,26,3.8,51663638
+24.6666296263039,42.0928476791582,191.27,11.6,552.85,Agriculture (excluding fallow land and kitchen gardens),Grassland,14,2.55,55302228
+-8.74520635438689,39.0161933879893,21.95,17.25,595.61,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.7,27061970
+-2.14903807662423,41.773829119106,1025.07,11.35,456.81,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.75,33122156
+20.6224918097197,39.3971195232534,368.47,13.69,791.5,Semi-natural and natural areas not in use,Woodland,8,3.8,52381876
+-1.60567244784192,46.899216925395,26.42,12.46,867.31,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.3,34402712
+16.5601469053543,50.8792833015813,207.54,9.55,587.28,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.05,47823106
+-2.4623894505797,37.2542099006421,1301.99,12.45,357.02,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.35,32121666
+-3.49493090861903,41.6914114745865,894.48,12.0,468.79,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.55,32002166
+-2.76563022255526,40.1796569175435,833.99,13.89,399.55,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.5,32341990
+12.2746978454218,47.6419600095547,677.57,7.48,1716.72,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.8,44922728
+18.22232593647,48.7840886776233,310.78,9.8,643.37,Forestry,Woodland,26,2.5,49242886
+-0.427722489733805,46.1850730510301,84.06,12.7,832.9,Forestry,Woodland,15,3.7,35182620
+10.6667328686034,52.7710194889988,83.14,9.71,673.33,Forestry,Woodland,15,3.25,43663296
+9.26161601941305,40.3912688205942,783.51,14.27,687.84,Forestry,Woodland,8,3.9,42581922
+-1.46298342916092,38.8624780320498,906.79,14.29,333.84,Fallow land,Grassland,7,2.4,33241828
+-0.184269062455764,42.06663302608,451.61,14.6,432.02,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.0,34782164
+14.2906323472706,37.3416508979407,494.48,16.69,576.09,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.25,47041596
+3.13118181136696,48.6953889625225,134.79,11.22,700.53,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.9,38162866
+-8.47497554865512,42.4704887854045,366.87,12.29,2139.32,Semi-natural and natural areas not in use,Shrubland,9,3.9,28142338
+-4.82867777140427,39.9413008915011,368.49,16.05,458.35,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.65,30561996
+-3.14545959836281,41.4275857888971,1088.73,11.57,523.49,Semi-natural and natural areas not in use,Shrubland,15,3.35,32242132
+3.77497574885046,45.682083430752,1305.68,8.0,1073.13,Forestry,Woodland,26,3.75,38362528
+17.8027457597845,48.3805760567432,224.46,10.6,555.93,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.95,48982838
+-5.16761822302915,41.8342949901039,748.66,12.43,392.24,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.8,30662208
+-5.54997088281175,40.8385146379792,893.86,12.17,386.2,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.3,30142106
+24.754086775469,41.5483871738621,1035.91,9.6,644.36,Forestry,Woodland,26,3.4,55482170
+0.025247389701599,43.8688259857623,158.13,13.37,802.16,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.55,35202360
+-1.25907276779688,47.2632052590251,73.44,12.35,767.85,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.7,34722748
+24.1378577015093,54.1563777555684,91.42,7.76,577.59,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.25,52383540
+2.89494468895019,45.5180926749424,1264.98,6.74,1844.06,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.85,37662516
+17.360411817966,52.3113557674492,100.41,9.19,536.6,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.4,48223270
+5.82273624628071,47.4596094799123,268.0,11.18,961.31,Forestry,Woodland,15,3.2,40062714
+19.7757942814946,51.465925249272,198.19,8.81,569.78,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.55,49983196
+19.7548896532193,51.5039056399188,181.23,8.85,570.16,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.9,49963200
+-7.84847230208562,42.1420544859967,794.85,12.15,1067.25,Semi-natural and natural areas not in use,Woodland,9,3.7,28562290
+17.5017053086109,53.3135916132502,116.32,8.52,532.77,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.7,48203382
+16.9621304263623,52.0286773232349,84.55,9.54,532.38,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.25,47983236
+1.02670541220394,49.5945901187412,176.48,10.88,819.23,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.85,36742982
+12.9389946272953,45.7339939085683,0.72,13.69,927.99,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.6,45502518
+10.0163277980409,56.7450042761073,48.9,8.57,691.99,Forestry,Woodland,15,3.65,43223738
+15.4385579539475,51.0456690142987,346.52,8.64,737.87,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.2,47023118
+-2.47386396976888,41.6970876873627,1004.82,11.65,478.1,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.25,32842152
+-2.66545738267269,48.1815744696795,183.9,11.35,866.64,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.25,33842866
+8.36539946932653,45.0410589488916,225.85,13.43,735.28,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.4,41922438
+13.0544799091823,49.549467679952,366.51,8.88,581.5,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.8,45422942
+12.8195111555809,49.7895247538595,507.17,8.38,587.44,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.95,45242968
+11.1775763762606,47.371233629405,1306.15,5.54,1257.77,Forestry,Woodland,26,3.65,44102696
+11.593348356383,44.4826387496288,25.24,14.61,681.06,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.4,44482376
+16.4243893055455,53.7723854211362,116.04,8.48,654.19,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.7,47443426
+26.4403720254314,42.8812953128781,603.7,10.97,577.36,Forestry,Woodland,26,3.4,56562344
+-3.1866936412754,50.9450463180713,267.85,10.39,961.13,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.6,34003176
+-2.21648459912757,51.2160654615335,139.83,10.51,785.6,Forestry,Woodland,15,3.25,34723194
+-2.71295469347834,38.9608655070728,927.65,14.26,378.51,Fallow land,Bareland,8,3.2,32181856
+15.6788913917244,54.1156943610798,37.37,9.16,670.54,Fallow land,Grassland,15,3.2,46923460
+16.3289666508991,41.1331718012327,310.56,16.09,571.93,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.6,48542026
+1.4712394526769,49.9184943360571,89.98,10.89,798.97,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.5,37103014
+21.2037784704403,38.5642896211489,119.22,17.23,615.04,Fallow land,Grassland,8,2.75,53001792
+17.524226129172,51.8857674084821,143.52,9.29,541.81,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.25,48383224
+-5.86913061291126,41.0445169031975,781.76,12.67,404.18,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.2,29922134
+13.483842376664,46.6189768161077,631.04,7.07,1264.86,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.8,45882618
+16.8049917815024,49.6199210140503,507.49,8.24,610.29,Forestry,Woodland,26,3.75,48122968
+-0.055954103557623,41.7339921199437,236.09,15.2,319.63,Fallow land,Bareland,7,2.3,34842126
+2.28671273616999,48.1519040457832,118.97,11.47,621.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.05,37482812
+-3.2445455196648,42.547527735059,836.85,11.43,662.88,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.35,32362256
+21.324276698639,39.9380096811462,859.25,12.96,588.93,Forestry,Woodland,8,2.75,52901944
+9.0141862034025,48.4170805270297,476.44,9.84,758.4,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.85,42482812
+1.76980391848418,49.9767380409551,101.48,10.9,785.83,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.6,37323018
+19.6675282014228,52.4529058693348,81.84,9.1,492.96,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.9,49763304
+-2.84575248574317,39.1628238909818,701.57,15.08,344.12,Agriculture (excluding fallow land and kitchen gardens),Bareland,7,3.1,32101880
+26.3062138233023,56.8080991253841,103.1,6.53,578.54,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.25,53083858
+22.7680022646378,51.8300972895479,147.56,8.63,554.53,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.9,51963268
+-7.83518549719619,42.9190851866119,610.89,12.11,1250.17,Forestry,Woodland,9,3.65,28762374
+13.9277820482132,48.7120312030182,840.19,6.98,1070.91,Forestry,Woodland,26,3.65,46102852
+21.326525103781,40.0837448047573,738.88,13.29,568.7,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.9,52881960
+24.1941892902173,56.2893703889857,32.94,7.36,511.32,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,4.0,51943774
+26.7600303048125,43.8951403279796,137.91,12.24,529.38,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.95,56582460
+-1.2550641777412,40.347455428414,1100.56,11.95,380.74,Semi-natural and natural areas not in use,Woodland,14,3.7,33641988
+14.8753670869863,47.538783707628,797.9,6.81,1314.22,Forestry,Woodland,26,3.75,46882726
+12.9856692210912,47.9670456156598,459.46,10.12,1103.73,Forestry,Woodland,26,3.75,45442766
+-7.68746079014013,38.4425553803499,186.7,17.2,505.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.7,27821886
+2.81086059886064,44.1915481790455,890.65,9.55,950.76,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.2,37462370
+21.9153674732809,50.2839950889453,209.07,8.97,651.51,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.15,51663088
+0.864560091347994,43.4750809289248,274.47,13.32,656.81,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.2,35822308
+-0.912289122927326,40.6962541240537,1306.44,10.91,419.08,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.7,33982022
+21.9885402305333,52.2218466388591,151.81,8.52,556.26,Forestry,Woodland,26,2.8,51363302
+9.70409907022651,45.882396813218,1215.67,9.08,1127.28,Forestry,Woodland,26,3.65,42982530
+22.3333741205338,48.1649058204668,110.94,10.28,597.01,Forestry,Woodland,26,3.55,52342860
+-2.00820784195643,39.1796423137449,709.36,14.97,332.92,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.8,32821870
+-0.381027338060943,41.9372276605848,314.5,15.14,378.4,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.9,34602152
+24.8830492909544,42.1707000668006,152.11,13.41,495.07,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.4,55462240
+10.2977154507082,55.1269038934162,71.99,9.2,660.81,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.65,43403558
+-7.57566371199525,37.2251362190188,168.56,17.87,470.85,Forestry,Woodland,8,3.4,27641752
+-2.23807990411366,37.7782271474356,1154.58,13.97,291.78,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.55,32401720
+-2.4057008027628,38.6900636319652,1130.28,13.41,414.61,Semi-natural and natural areas not in use,Woodland,8,3.4,32401822
+8.56297077662824,40.1843923238265,363.65,15.07,718.12,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.75,41981900
+14.932630578701,53.2474803925867,24.76,9.37,549.91,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.25,46503360
+-2.32040829866879,41.8987492292945,1122.28,11.21,493.71,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.8,33002172
+5.9680417852399,48.6542639359598,316.11,10.77,775.92,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.65,40242846
+-5.9318156766492,41.842874784569,720.3,12.25,476.34,Fallow land,Grassland,9,2.75,30042222
+6.51599820220406,47.8082632612606,451.54,9.92,1426.15,Forestry,Woodland,15,3.55,40602750
+1.48108453987002,41.2776995583982,200.4,15.74,449.35,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.75,36062060
+14.3670095672834,52.4052014410334,91.94,9.79,543.27,Forestry,Woodland,15,2.85,46183264
+-3.20604803487939,40.4685033885648,874.48,13.84,428.1,Fallow land,Bareland,8,2.6,32022028
+23.9790678781367,56.422876907642,24.35,7.35,529.43,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.5,51783786
+2.56380216606441,50.103791500369,148.28,10.38,812.92,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,37903026
+25.6766503382593,41.9019357797283,202.56,13.62,551.27,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.2,56162224
+-2.89239128315871,47.6813456326447,43.18,12.44,856.07,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.55,33582814
+23.2149220684993,56.8874504495853,55.69,7.34,574.44,Forestry,Woodland,26,3.25,51223828
+17.0784285988619,46.6950022480464,131.36,10.9,659.32,Forestry,Woodland,14,3.85,48622646
+21.0591511977675,49.7896409488982,319.28,8.38,802.07,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.5,51143024
+-5.62760925003499,42.1850483015235,777.4,12.39,399.19,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.25,30362254
+23.6640616554407,44.4466824463964,88.17,12.39,545.73,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.3,54042470
+21.072634525647,50.9319477516566,316.29,7.96,624.53,Agriculture (excluding fallow land and kitchen gardens),Bareland,26,2.4,50963150
+-2.40970036735442,37.5909869533542,1096.28,14.35,283.68,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,3.25,32221702
+4.56362118625456,46.2851844252354,414.58,10.54,953.61,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,39022590
+-1.50745880172863,41.7224642951136,574.29,13.78,354.09,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.85,33642142
+-4.97042043035745,41.0389381808637,804.81,12.78,340.85,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.65,30662118
+18.2275363988225,47.9879943223193,115.7,11.23,545.86,Agriculture (excluding fallow land and kitchen gardens),Cropland,25,3.2,49342798
+-7.63052680124387,42.992159872301,452.17,12.44,1091.88,Forestry,Woodland,9,3.45,28942378
+3.2176127084497,49.4588451166734,78.04,10.99,680.96,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.7,38302950
+-8.59517567925534,40.3776834422683,69.22,15.76,987.89,Forestry,Woodland,9,2.4,27522114
+5.62433711368601,47.9204591927099,389.97,10.15,890.45,Forestry,Woodland,15,2.95,39942766
+12.5720400660032,41.6633080967614,62.43,16.63,761.48,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.7,45362066
+11.6503513965896,44.7162226930713,5.94,14.18,610.06,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.95,44522402
+22.9612230222017,52.5922116452967,172.27,8.08,579.2,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.0,51943354
+23.8137721992964,38.202966135485,522.48,16.23,271.34,Forestry,Woodland,8,3.85,55321790
+-4.97060837191103,39.9378010022815,401.14,15.84,496.34,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.4,30441998
+-5.87235738169635,41.3380101546986,784.07,12.9,420.95,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,2.4,29982166
+-3.69494841009079,38.9720480692246,631.83,15.63,352.37,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,3.2,31341872
+-7.15319114127224,42.7434204383253,1133.71,10.49,1404.68,Forestry,Woodland,9,2.9,29262342
+2.04378422284142,50.5203114936236,177.58,10.33,994.9,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.2,37583076
+-5.64865365879219,40.271520100983,1284.58,9.5,1059.44,Agriculture (excluding fallow land and kitchen gardens),Shrubland,9,3.75,29942046
+9.75842820181299,50.8852026682823,345.55,9.24,666.05,Forestry,Woodland,15,3.1,43043086
+21.6475867928498,52.0562013791032,160.4,8.59,570.84,Forestry,Woodland,26,2.85,51163280
+26.458862055938,55.3897038482635,147.57,6.87,608.36,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.0,53543706
+5.55204341888215,47.8274332635548,253.42,10.45,883.12,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,4.0,39882756
+18.1413544112855,52.2240612508312,83.2,9.34,507.58,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,2.65,48763266
+18.9368643823887,46.1757883151051,87.44,11.53,567.56,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.0,50102604
+8.11510394206383,44.9467003234962,244.86,13.71,703.3,Forestry,Woodland,14,3.3,41722428
+-4.78075047557144,42.5524064109001,929.25,10.63,520.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.4,31122280
+21.2158360532049,46.9406586847512,87.9,11.46,517.84,Forestry,Woodland,25,3.75,51722712
+21.662295231321,45.8382050929746,150.24,11.54,570.83,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.6,52242596
+26.2660734257785,58.2494836380155,65.17,6.43,660.26,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.15,52684014
+-6.40696320501887,43.3830012479434,884.5,11.74,1126.42,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.75,30002398
+-6.74687852041265,40.6956709807278,722.93,13.19,559.99,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.55,29122112
+-2.09827597038874,41.3968186333261,946.11,12.77,364.77,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.25,33102114
+17.444589420308,48.8931002275791,222.66,9.05,616.23,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.55,48662892
+-6.82374794966372,38.7289598716677,248.05,17.29,454.48,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.75,28621900
+22.8644410701351,47.3567041066147,256.49,10.47,586.86,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.15,52882778
+9.18579859652227,47.8245846313783,693.1,8.75,862.97,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.8,42602746
+16.3843717833459,50.2217703279909,627.49,7.1,900.27,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.5,47763032
+4.16303356429083,48.5018639043023,129.12,11.36,651.25,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.5,38902838
+17.1487537261751,50.2485923479869,622.92,7.7,871.28,Forestry,Woodland,26,3.75,48303040
+-7.68323919589858,42.0056960311306,643.92,12.27,886.05,Fallow land,Grassland,9,2.55,28662272
+-7.30253545403917,42.5703385281,767.99,12.66,1130.57,Forestry,Woodland,9,3.45,29102326
+5.28232435382899,48.1406255170208,390.0,9.84,979.45,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.75,39702792
+-8.73481880034019,42.810009686464,316.72,13.63,2200.27,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.9,28022380
+15.4363788137454,46.2851844252354,341.56,10.75,1113.68,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.9,47402590
+-1.14188676586899,53.7938191417851,9.11,10.3,643.04,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.0,35903466
+27.0246579167607,56.0138477989775,169.66,6.56,544.8,Fallow land,Grassland,26,3.0,53723782
+16.4256846838805,50.1112140453414,457.92,7.86,884.51,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.3,47803020
+21.5432495428505,40.4963084953409,673.82,10.3,585.24,Fallow land,Grassland,14,2.2,53002008
+20.3873736983605,51.8479920385164,166.38,8.82,565.03,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.65,50343244
+-6.48785437246864,41.7149824270114,642.98,12.18,696.36,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,3.3,29562218
+11.6907114547307,46.0495666223694,1011.0,8.28,1351.41,Forestry,Woodland,26,3.8,44522550
+-3.69893694094856,41.4072831433558,1109.5,11.22,538.99,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,3.1,31782138
+21.0257396433177,50.3737743940903,164.58,9.05,618.37,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.15,51023088
+22.1837966989196,51.4196053304499,168.36,8.81,587.59,Forestry,Woodland,26,3.15,51643216
+1.47695980119833,48.7794978079,138.38,11.2,587.58,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,36962888
+4.67462337127456,49.5551970072755,189.46,10.31,971.99,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.05,39362952
+3.34823025416245,47.6795207618446,262.51,11.12,810.73,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.95,38222752
+-2.3320099978865,40.8749274039466,1147.19,11.4,491.08,Semi-natural and natural areas not in use,Woodland,8,3.65,32822060
+9.93121467095519,49.3389391637495,469.95,9.56,796.2,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.15,43162914
+2.46295061669444,45.1080919986719,853.23,9.36,1267.45,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.8,37282474
+9.11174101423026,45.915134792014,1059.58,11.15,1291.03,Semi-natural and natural areas not in use,Woodland,15,3.65,42522534
+-0.311295630189917,43.5084222954041,151.42,13.46,1006.73,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.25,34882324
+8.76771090718214,54.941465990851,-0.19,9.41,832.44,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.8,42423538
+10.7688142116786,44.7444623003161,33.31,13.68,673.13,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.35,43822404
+25.0427857232802,43.283178220696,75.09,12.07,549.75,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.65,55362364
+-5.05247016885787,42.2552535923314,787.01,11.86,411.84,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.35,30842252
+12.5066987169589,42.4061718400196,147.11,14.44,906.51,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.75,45282148
+-5.65070185699587,38.7265732003763,444.66,16.79,429.59,Agriculture (excluding fallow land and kitchen gardens),Grassland,7,2.6,29621878
+1.66548541907569,44.1235870202604,264.06,13.03,754.75,Semi-natural and natural areas not in use,Woodland,15,3.6,36542372
+9.18373777091697,51.2421515731669,278.06,8.88,634.45,Agriculture (excluding fallow land and kitchen gardens),Bareland,15,3.05,42643126
+14.6388653789702,48.1619972408436,278.53,10.6,842.99,Forestry,Woodland,15,3.65,46662794
+-3.91946295418832,40.8821096239361,1477.18,8.17,1059.18,Forestry,Woodland,9,3.75,31502084
+26.9366205108591,43.4611419053265,362.42,11.81,542.19,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.35,56822416
+16.645752667548,50.2790052884278,360.21,8.25,735.5,Semi-natural and natural areas not in use,Woodland,26,3.85,47943040
+10.8948397465134,44.7434591327253,25.62,13.63,648.98,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.6,43922404
+2.51938845822227,50.0286376249365,102.24,10.59,750.61,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.4,37863018
+9.36940362310079,45.8989564821952,1003.85,12.65,1072.73,Semi-natural and natural areas not in use,Woodland,26,3.65,42722532
+24.5342495643131,44.0529730936229,65.24,12.46,498.63,Agriculture (excluding fallow land and kitchen gardens),Cropland,25,2.85,54802440
+11.352522328555,45.9462833874407,1435.22,8.5,1373.34,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.7,44262538
+22.3712677026558,55.6408872741456,182.42,7.18,675.37,Forestry,Woodland,26,3.8,50963682
+17.0955765384062,50.2699653558463,498.2,7.0,951.83,Forestry,Woodland,26,3.6,48263042
+-8.49089270396444,42.8369770180558,285.5,13.8,1638.99,Forestry,Woodland,9,3.55,28222378
+24.07760677018,55.9731059555449,52.05,7.42,524.16,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.95,51943738
+5.02189634034598,44.1226958230738,95.79,13.82,673.54,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.8,39222348
+-2.12887200900583,39.2010665953406,708.08,14.74,339.42,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.7,32721874
+-1.11179360859594,41.147862485636,1006.74,12.08,416.36,Fallow land,Grassland,15,3.15,33882074
+12.6362494797874,48.462096425562,483.92,9.29,796.8,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.1,45162820
+0.345802758357161,46.9651847402082,86.19,12.43,650.37,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.4,35882698
+-0.599421766850006,46.2588645590779,14.59,12.92,807.89,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.4,35062630
+10.566802592723,44.7096897886218,47.18,14.04,668.8,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.9,43662400
+18.3041526946682,51.8331718021961,137.41,9.35,509.91,Forestry,Woodland,26,3.3,48923224
+-5.72809054625052,42.0039659952095,707.11,12.56,408.72,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,3.75,30242236
+-5.08949014951259,37.8058544349856,73.49,18.18,545.09,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.8,29921768
+21.746547584658,39.6686853651059,193.03,15.55,440.98,Fallow land,Grassland,8,2.85,53301920
+16.7528605129871,50.6336014946942,341.65,8.94,627.85,Semi-natural and natural areas not in use,Grassland,26,3.55,47983080
+-5.47467042380623,41.7868175559703,699.25,12.82,381.7,Fallow land,Bareland,8,2.4,30402208
+-8.06202698317674,43.5610583065537,199.1,13.99,1163.1,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,3.85,28742448
+9.03791644557289,51.3668858135798,277.4,9.12,645.74,Forestry,Woodland,15,3.4,42543140
+10.8220133858525,48.3104487105838,499.16,9.1,846.07,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.35,43822800
+-3.08559114428216,40.1188448910779,600.69,15.27,331.06,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.15,32061988
+3.7806561440657,48.3005876210571,173.98,11.29,676.86,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.6,38602818
+-0.451258876890235,45.3656828045956,73.82,13.25,873.21,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.4,35042530
+6.4209889156131,46.8681971379378,1108.45,6.89,1481.77,Forestry,Woodland,26,3.75,40482646
+1.40198309280362,48.1042981474001,124.65,11.3,597.86,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.0,36822814
+22.3816149466231,39.4248992563895,212.94,15.56,321.81,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.8,53881902
+22.1167099579308,56.4849052671234,60.71,7.49,605.12,Fallow land,Grassland,26,2.65,50643772
+9.05380399841475,50.5938962332909,302.66,9.36,799.79,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.6,42543054
+27.843374123983,43.433947713951,308.74,11.78,467.66,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.95,57542430
+22.5705471406636,37.8444958891891,492.67,13.94,431.28,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,3.2,54301732
+-2.38715784501031,55.384347545666,296.56,7.38,1134.13,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.75,35403654
+17.9059056715178,48.5178473690917,247.97,9.94,610.45,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.65,49042854
+23.7876981084915,41.0471702436157,267.74,14.7,384.61,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,3.0,54782100
+17.9820864432414,46.4144873929122,143.54,11.44,614.74,Forestry,Woodland,14,3.55,49342622
+25.4816275311521,57.7366955353755,72.25,6.66,639.3,Forestry,Woodland,26,3.65,52363948
+0.996693479437046,49.7550603171445,120.91,10.95,832.78,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.6,36743000
+25.2269787386396,55.1428183617216,161.13,7.02,598.59,Forestry,Woodland,26,2.95,52843662
+-7.46851810073708,41.5276685656271,785.6,12.7,861.35,Agriculture (excluding fallow land and kitchen gardens),Grassland,9,3.45,28722216
+0.019054895008619,40.9772832204658,542.03,14.22,394.76,Semi-natural and natural areas not in use,Shrubland,14,3.2,34802042
+21.6875908591451,57.125131284173,21.49,7.77,643.13,Forestry,Woodland,26,3.75,50263838
+16.2164401055179,48.9322836340381,240.63,10.18,482.64,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.35,47762888
+-5.03528600868008,42.7711354688981,1081.58,10.01,655.85,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,2.65,30962308
+21.9015348642437,40.124680325549,720.98,13.03,449.74,Agriculture (excluding fallow land and kitchen gardens),Shrubland,14,3.2,53361972
+-8.88033763603209,43.022951970426,317.65,12.64,2021.52,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.85,27962406
+-5.87375303199707,42.7337262968882,1134.92,10.4,686.47,Semi-natural and natural areas not in use,Woodland,9,3.5,30282318
+2.72562176992632,43.6786145081545,1210.51,9.71,1177.74,Forestry,Woodland,15,3.65,37342314
+27.4759719759155,57.2817441702135,137.87,6.35,579.27,Forestry,Woodland,26,3.8,53643926
+9.85482253013485,56.277529634714,73.88,8.5,731.73,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.4,43123686
+2.45110884285616,49.5725537263872,127.46,10.77,647.66,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.0,37762968
+-1.96838789796024,41.1023886332784,1155.96,11.84,409.78,Semi-natural and natural areas not in use,Woodland,15,3.85,33162080
+-5.25440850294314,41.6925459551213,788.39,12.55,384.83,Agriculture (excluding fallow land and kitchen gardens),Cropland,8,2.85,30562194
+0.538858618056618,47.797705441273,119.92,11.98,666.71,Forestry,Woodland,15,3.75,36142788
+-0.817463486608463,40.5609292596387,1314.89,10.0,456.22,Semi-natural and natural areas not in use,Shrubland,15,2.2,34042006
+-5.83707612285107,41.9499041715483,715.69,12.52,432.33,Semi-natural and natural areas not in use,Grassland,9,2.2,30142232
+-1.90153486424372,40.124680325549,1350.86,10.94,554.22,Forestry,Woodland,9,3.25,33061972
+14.4435706097871,49.3051562370184,410.3,8.78,569.66,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,2.7,46442920
+25.5656032041299,42.2314708628064,186.14,13.16,530.17,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,3.5,56002258
+5.23727166854864,47.4716389289168,307.65,11.01,761.53,Forestry,Woodland,15,3.4,39622718
+21.5161392172184,52.6868746317287,125.47,8.62,560.66,Forestry,Woodland,26,3.3,50963348
+5.75069298894708,47.3666955412138,260.23,11.28,964.29,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.6,40002704
+-3.12531213719935,42.3439748847619,1218.24,10.15,711.68,Forestry,Woodland,9,3.2,32422232
+18.523174260537,47.8206402253601,125.48,10.92,544.04,Agriculture (excluding fallow land and kitchen gardens),Grassland,25,3.35,49582782
+-1.55637051988264,40.5677500731129,1422.81,9.85,488.1,Semi-natural and natural areas not in use,Shrubland,15,3.85,33422016
+2.24439849322695,44.2954753232434,646.38,11.63,910.71,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.1,37022386
+22.7871758247904,55.7269221215103,126.43,7.33,588.64,Agriculture (excluding fallow land and kitchen gardens),Cropland,26,3.0,51203696
+26.2934639164373,41.2691175483612,77.67,14.78,512.43,Forestry,Woodland,8,2.85,56802166
+-1.44065644941529,38.0608847179392,285.47,17.92,274.97,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.7,33141740
+2.52968009719317,50.4988530844893,89.35,10.65,783.3,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.9,37923070
+14.433660820757,48.8912002952996,479.84,8.52,690.38,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.05,46462874
+2.78825848760934,44.1718720425446,896.71,9.83,963.64,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.65,37442368
+15.4491691673792,46.4108847120886,672.79,7.83,1189.23,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.9,47402604
+10.7276306721321,43.4999927553089,81.5,15.02,781.7,Agriculture (excluding fallow land and kitchen gardens),Grassland,8,2.2,43802266
+19.455977856837,49.0660894927314,604.2,7.13,961.38,Agriculture (excluding fallow land and kitchen gardens),Grassland,26,3.2,50102928
+19.8625088264877,54.2304045529704,62.99,8.6,620.9,Forestry,Woodland,26,3.5,49623502
+-3.35216491177562,48.7015397304687,98.68,11.73,875.87,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.2,33442932
+-2.67545036688749,42.3106305936805,1271.88,10.91,635.17,Forestry,Woodland,9,3.5,32782222
+-5.03527937625082,39.9094095395385,409.31,15.86,525.19,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.5,30381996
+9.96161985328505,45.5764756594439,168.06,13.78,760.43,Agriculture (excluding fallow land and kitchen gardens),Cropland,14,2.75,43182496
+-3.2362822880301,39.1280958537751,653.92,15.59,319.95,Agriculture (excluding fallow land and kitchen gardens),Cropland,7,2.8,31761882
+22.046199273112,51.8886170801891,190.85,8.53,574.8,Forestry,Woodland,26,3.65,51463266
+-1.5526041651981,42.7195666397906,488.12,12.56,750.25,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,2.9,33762252
+10.1681415866434,46.1709295040995,1502.38,6.59,1119.49,Semi-natural and natural areas not in use,Woodland,26,3.75,43342562
+-4.62122531436358,42.0079173694922,868.91,12.09,376.93,Agriculture (excluding fallow land and kitchen gardens),Cropland,9,3.45,31142218
+14.0344148087976,48.3479276311268,267.17,10.16,781.49,Agriculture (excluding fallow land and kitchen gardens),Cropland,15,3.1,46202812
+22.230353970115,53.0884089463601,124.27,8.24,556.98,Semi-natural and natural areas not in use,Woodland,26,2.9,51363400
+-0.565051050633123,47.6599594384574,28.88,12.29,685.94,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.5,35302784
+2.5495729618719,45.2228569074657,1078.88,8.48,1349.82,Agriculture (excluding fallow land and kitchen gardens),Grassland,15,3.9,37362486
