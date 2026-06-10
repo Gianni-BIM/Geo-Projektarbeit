@@ -1,6 +1,27 @@
 # Analyse der Einflussfaktoren auf den Soil Health Index mittels Conditional Inference Forest
 
-## Projektübersicht
+---
+
+## Inhaltsverzeichnis
+
+* [Projektübersicht](#projektübersicht)
+* [Projektziele](#projektziele)
+* [Projektstruktur](#projektstruktur)
+* [Datengrundlage](#datengrundlage)
+* [Datenaufbereitung](#datenaufbereitung)
+* [Machine-Learning-Ansatz](#machine-learning-ansatz)
+* [Modellierung](#modellierung)
+* [Modellbewertung](#modellbewertung)
+* [Ergebnisse](#ergebnisse)
+* [Ergebnisse und Abbildungen](#ergebnisse-und-abbildungen)
+* [Workflow](#workflow)
+* [Einschränkungen](#einschränkungen)
+* [Verwendete Technologien](#verwendete-technologien)
+* [Autorinnen und Autoren](#autorinnen-und-autoren)
+
+---
+
+# Projektübersicht
 
 Die Bodengesundheit ist ein zentraler Indikator für die Funktionsfähigkeit von Ökosystemen, die landwirtschaftliche Produktivität und die nachhaltige Nutzung natürlicher Ressourcen. Ziel dieses Projekts ist die Analyse von Umweltfaktoren, die den **Soil Health Index (SHI)** beeinflussen.
 
@@ -12,7 +33,7 @@ Zur Untersuchung der Zusammenhänge wird ein **Conditional Inference Forest (cFo
 
 ---
 
-## Projektziele
+# Projektziele
 
 * Identifikation der wichtigsten Einflussfaktoren auf die Bodengesundheit
 * Quantifizierung des Einflusses von Klima-, Landnutzungs- und Topographievariablen
@@ -20,9 +41,9 @@ Zur Untersuchung der Zusammenhänge wird ein **Conditional Inference Forest (cFo
 * Bewertung der Vorhersageleistung von Machine-Learning-Modellen
 * Interpretation der Ergebnisse im Kontext räumlicher Umweltprozesse
 
+---
 
-
-## Projektstruktur
+# Projektstruktur
 
 ```text
 Geo-Projektarbeit/
@@ -33,19 +54,19 @@ Geo-Projektarbeit/
 └── README.md
 ```
 
+---
 
-
-## Datengrundlage
+# Datengrundlage
 
 Für die Analyse wurden verschiedene Umwelt- und Geodatenquellen zusammengeführt.
 
-### Zielvariable
+## Zielvariable
 
 | Variable | Beschreibung      |
 | -------- | ----------------- |
 | SHI      | Soil Health Index |
 
-### Einflussvariablen
+## Einflussvariablen
 
 | Variable                  | Beschreibung                |
 | ------------------------- | --------------------------- |
@@ -56,9 +77,9 @@ Für die Analyse wurden verschiedene Umwelt- und Geodatenquellen zusammengeführ
 | land_cover                | Landbedeckung               |
 | climate_name              | Klimazone                   |
 
+---
 
-
-## Datenaufbereitung
+# Datenaufbereitung
 
 Die Datenaufbereitung bildet die Grundlage der Analyse und umfasst folgende Arbeitsschritte:
 
@@ -72,11 +93,11 @@ Die Datenaufbereitung bildet die Grundlage der Analyse und umfasst folgende Arbe
 
 ### Ergebnis
 
-Ein bereinigter und modellfähiger Datensatz für die weitere Analyse.
+> Ein bereinigter und modellfähiger Datensatz für die weitere Analyse.
 
+---
 
-
-## Machine-Learning-Ansatz
+# Machine-Learning-Ansatz
 
 Für die Modellierung wird ein **Conditional Inference Forest (cForest)** verwendet.
 
@@ -88,19 +109,21 @@ Im Vergleich zu klassischen Random-Forest-Modellen bietet dieser Ansatz mehrere 
 * Berücksichtigung von Interaktionen zwischen Variablen
 * Interpretation der Bedeutung einzelner Einflussgrößen
 
+---
 
+# Modellierung
 
-## Modellierung
-
-### Ziel des Modells
+## Ziel des Modells
 
 Das Modell beschreibt den Zusammenhang zwischen Bodengesundheit und Umweltbedingungen:
 
+```text
 SHI = f(Klima, Landnutzung, Landbedeckung, Höhe, ...)
+```
 
-Dabei steht nicht die Suche nach den „besten Böden“ im Vordergrund, sondern die Erklärung von Unterschieden im Soil Health Index.
+> Das Ziel des Modells ist nicht die Identifikation der „besten Böden“, sondern die Erklärung von Unterschieden im Soil Health Index.
 
-### Hyperparameter
+## Hyperparameter
 
 | Parameter    | Beschreibung                       |
 | ------------ | ---------------------------------- |
@@ -108,7 +131,7 @@ Dabei steht nicht die Suche nach den „besten Böden“ im Vordergrund, sondern
 | mtry         | Anzahl der Variablen pro Split     |
 | mincriterion | Signifikanzniveau für Aufteilungen |
 
-### Optimierung
+## Optimierung
 
 Zur Verbesserung der Modellleistung wurde eine Grid Search über verschiedene Parameterkombinationen durchgeführt.
 
@@ -118,27 +141,27 @@ Die Ergebnisse werden gespeichert unter:
 output/parameter_grid_results.csv
 ```
 
+---
 
-
-## Modellbewertung
+# Modellbewertung
 
 Die Bewertung erfolgt mithilfe folgender Kennzahlen:
 
-### Out-of-Bag R² (OOB-R²)
+## Out-of-Bag R² (OOB-R²)
 
 Maß für die erklärte Varianz des Modells.
 
-### Root Mean Squared Error (RMSE)
+## Root Mean Squared Error (RMSE)
 
 Maß für den durchschnittlichen Vorhersagefehler.
 
-### Observed vs. Predicted
+## Observed vs. Predicted
 
 Vergleich zwischen beobachteten und vorhergesagten SHI-Werten zur Beurteilung der Modellgüte.
 
+---
 
-
-## Ergebnisse
+# Ergebnisse
 
 Das Modell liefert Informationen zu:
 
@@ -147,16 +170,16 @@ Das Modell liefert Informationen zu:
 * Interaktionen zwischen Klima und Landnutzung
 * Verteilungsmustern des Soil Health Index
 
-### Zentrale Erkenntnisse
+## Zentrale Erkenntnisse
 
 * Der Niederschlag stellt den stärksten Einflussfaktor auf den SHI dar.
 * Landnutzungsformen beeinflussen die Bodengesundheit auf lokaler Ebene.
 * Klimatische Bedingungen erklären einen großen Teil der SHI-Variation.
 * Die Wechselwirkungen mehrerer Umweltfaktoren sind entscheidend für die Ausprägung der Bodengesundheit.
 
+---
 
-
-## Ergebnisse und Abbildungen
+# Ergebnisse und Abbildungen
 
 Im Verzeichnis `output/` werden die wichtigsten Resultate gespeichert:
 
@@ -170,29 +193,44 @@ model_summary.txt
 parameter_grid_results.csv
 ```
 
+---
 
+# Workflow
 
-## Workflow
+```text
+Rohdaten
+    │
+    ▼
+Datenaufbereitung
+    │
+    ▼
+Explorative Analyse (EDA)
+    │
+    ▼
+Training des cForest-Modells
+    │
+    ▼
+Hyperparameter-Optimierung
+    │
+    ▼
+Modellbewertung
+    │
+    ▼
+Interpretation der Ergebnisse
+```
 
-1. Zusammenführung und Aufbereitung der Rohdaten
-2. Explorative Datenanalyse (EDA)
-3. Training des cForest-Modells
-4. Hyperparameter-Optimierung
-5. Modellbewertung
-6. Interpretation der Ergebnisse
+---
 
-
-
-## Einschränkungen
+# Einschränkungen
 
 * Das Modell beschreibt statistische Zusammenhänge, keine Kausalitäten.
 * Relevante Bodenparameter wie Bodenchemie oder Bodenstruktur sind nicht enthalten.
 * Räumliche Autokorrelation wird nicht explizit berücksichtigt.
 * Die Aussagekraft hängt von Qualität und Vollständigkeit der Eingangsdaten ab.
 
+---
 
-
-## Verwendete Technologien
+# Verwendete Technologien
 
 * R
 * tidyverse
@@ -201,9 +239,9 @@ parameter_grid_results.csv
 * cForest
 * GIS-basierte Umwelt- und Geodaten
 
+---
 
-
-## Autorinnen und Autoren
+# Autorinnen und Autoren
 
 * Ivonne Giske
 * Nora König
@@ -211,6 +249,8 @@ parameter_grid_results.csv
 * Yannick Trog
 * Ioannis Svolos
 
-Berliner Hochschule für Technik (BHT)
+---
+
+**Berliner Hochschule für Technik (BHT)**
 
 Geo-Projektarbeit
