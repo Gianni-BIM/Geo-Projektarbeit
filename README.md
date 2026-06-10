@@ -1,189 +1,217 @@
-# Geo-Projektarbeit – Soil Health Index (SHI) & Machine Learning
+# Analyse der Einflussfaktoren auf den Soil Health Index mittels Conditional Inference Forest
 
 ## Projektübersicht
 
-In diesem Projekt wird der **Soil Health Index (SHI)** mithilfe von
-**Machine Learning (Random Forest)** modelliert und analysiert.
+Die Bodengesundheit ist ein zentraler Indikator für die Funktionsfähigkeit von Ökosystemen, die landwirtschaftliche Produktivität und die nachhaltige Nutzung natürlicher Ressourcen. Ziel dieses Projekts ist die Analyse von Umweltfaktoren, die den **Soil Health Index (SHI)** beeinflussen.
 
-Ziel ist es, zu untersuchen:
+Zur Untersuchung der Zusammenhänge wird ein **Conditional Inference Forest (cForest)** eingesetzt, eine erweiterte Form des Random-Forest-Algorithmus. Das Modell ermöglicht die Identifikation wichtiger Einflussgrößen sowie die Analyse komplexer, nichtlinearer Beziehungen zwischen Umweltvariablen und Bodengesundheit.
 
-> **Welche Umweltfaktoren beeinflussen die Bodengesundheit (SHI), wie stark und auf welche Weise?**
+### Forschungsfrage
 
-Dabei werden verschiedene Einflussgrößen wie **Klima, Landnutzung und Topographie**
-kombiniert, um komplexe Zusammenhänge zu identifizieren.
+> Welche Umweltfaktoren beeinflussen den Soil Health Index (SHI), wie stark wirken sie und welche Wechselwirkungen bestehen zwischen ihnen?
+
+---
+
+## Projektziele
+
+* Identifikation der wichtigsten Einflussfaktoren auf die Bodengesundheit
+* Quantifizierung des Einflusses von Klima-, Landnutzungs- und Topographievariablen
+* Untersuchung nichtlinearer Zusammenhänge und Interaktionen
+* Bewertung der Vorhersageleistung von Machine-Learning-Modellen
+* Interpretation der Ergebnisse im Kontext räumlicher Umweltprozesse
 
 ---
 
 ## Projektstruktur
 
+```text
 Geo-Projektarbeit/
 │
-├── data-prep/        # Aufbereitung der Rohdaten
-├── src/              # Machine Learning (Random Forest)
-├── output/           # Ergebnisse & Plots
-├── input-ml/         # Eingabedaten für ML
-├── README.md
+├── data-prep/        # Datenaufbereitung und Bereinigung
+├── input-ml/         # Aufbereitete Datensätze für das Modell
+├── src/              # Skripte für Modellierung und Auswertung
+├── output/           # Ergebnisse, Abbildungen und Modelloutputs
+└── README.md
+```
 
 ---
 
-## 1. Data Preparation (data-prep)
+## Datengrundlage
 
-Die Datenaufbereitung ist der **erste und entscheidende Schritt** im Projekt.
+Für die Analyse wurden verschiedene Umwelt- und Geodatenquellen zusammengeführt.
 
-### Aufgaben:
-- Zusammenführen verschiedener Datensätze (SHI, Klima, Landnutzung etc.)
-- Entfernen irrelevanter Variablen (IDs, Koordinaten)
-- Bereinigung von Daten (fehlende Werte, Ausreißer)
-- Filterung kleiner Kategorien (<30 Beobachtungen, Hobley-Regel)
-- Umwandlung von Variablen in geeignete Formate (Faktoren)
+### Zielvariable
 
-### Ergebnis:
-→ Ein konsistenter Datensatz für das Machine Learning Modell  
+| Variable | Beschreibung      |
+| -------- | ----------------- |
+| SHI      | Soil Health Index |
 
----
+### Einflussvariablen
 
-## 2. Machine Learning (src)
-
-Der Machine Learning Teil basiert auf einem:
-
-> **Conditional Inference Forest (cforest)**
-
-### Warum dieser Algorithmus?
-
-- basiert auf Random Forest
-- vermeidet Bias bei Variablen
-- nutzt statistisch signifikante Splits
-- erkennt **nichtlineare Zusammenhänge und Interaktionen**
+| Variable                  | Beschreibung                |
+| ------------------------- | --------------------------- |
+| rain_mmsqm_mean_1995_2024 | Mittlerer Niederschlag      |
+| temp_c_mean               | Mittlere Temperatur         |
+| height_m                  | Höhe über dem Meeresspiegel |
+| land_use                  | Landnutzung                 |
+| land_cover                | Landbedeckung               |
+| climate_name              | Klimazone                   |
 
 ---
 
-## Modellziel
+## Datenaufbereitung
 
-Das Modell beschreibt:
-SHI = f(Klima, Landnutzung, Höhe, etc.)
+Die Datenaufbereitung bildet die Grundlage der Analyse und umfasst folgende Arbeitsschritte:
 
--  Zielvariable:
-  - `SHI` (Soil Health Index)
+* Zusammenführung verschiedener Datensätze
+* Entfernung von Identifikations- und Koordinatenfeldern
+* Behandlung fehlender Werte
+* Erkennung und Bereinigung von Ausreißern
+* Filterung seltener Kategorien (weniger als 30 Beobachtungen)
+* Umwandlung kategorialer Variablen in Faktoren
+* Erstellung eines konsistenten Datensatzes für das Machine Learning
 
--  Einflussvariablen:
-  - Niederschlag (`rain_mmsqm_mean_1995_2024`)
-  - Temperatur (`temp_c_mean`)
-  - Höhe (`height_m`)
-  - Landnutzung (`land_use`)
-  - Landbedeckung (`land_cover`)
-  - Klimazone (`climate_name`)
+### Ergebnis
 
----
-
-##  Modellansatz
-
-Der Random Forest:
-
-- erstellt viele Entscheidungsbäume
-- nutzt **Bootstrapping (zufällige Stichproben)**
-- wählt zufällig Variablen pro Split (`mtry`)
-- minimiert Varianz innerhalb von Gruppen
-
- WICHTIG:
-> Das Modell sucht **nicht die besten Böden**,  
-> sondern erklärt Unterschiede im SHI.
+Ein bereinigter und modellfähiger Datensatz für die weitere Analyse.
 
 ---
 
-##  Modelltraining & Optimierung
+## Machine-Learning-Ansatz
 
-### Hyperparameter:
-- `ntree` → Anzahl der Bäume (z. B. 500)
-- `mtry` → Anzahl Variablen pro Split
-- `mincriterion` → Signifikanzniveau
+Für die Modellierung wird ein **Conditional Inference Forest (cForest)** verwendet.
 
-### Optimierung:
-→ Grid Search über verschiedene Parameterkombinationen
+Im Vergleich zu klassischen Random-Forest-Modellen bietet dieser Ansatz mehrere Vorteile:
 
-Ergebnisse gespeichert in:
+* Reduzierung von Verzerrungen bei der Variablenauswahl
+* Nutzung statistisch signifikanter Splits
+* Erkennung komplexer und nichtlinearer Zusammenhänge
+* Berücksichtigung von Interaktionen zwischen Variablen
+* Interpretation der Bedeutung einzelner Einflussgrößen
+
+---
+
+## Modellierung
+
+### Ziel des Modells
+
+Das Modell beschreibt den Zusammenhang zwischen Bodengesundheit und Umweltbedingungen:
+
+SHI = f(Klima, Landnutzung, Landbedeckung, Höhe, ...)
+
+Dabei steht nicht die Suche nach den „besten Böden“ im Vordergrund, sondern die Erklärung von Unterschieden im Soil Health Index.
+
+### Hyperparameter
+
+| Parameter    | Beschreibung                       |
+| ------------ | ---------------------------------- |
+| ntree        | Anzahl der Bäume                   |
+| mtry         | Anzahl der Variablen pro Split     |
+| mincriterion | Signifikanzniveau für Aufteilungen |
+
+### Optimierung
+
+Zur Verbesserung der Modellleistung wurde eine Grid Search über verschiedene Parameterkombinationen durchgeführt.
+
+Die Ergebnisse werden gespeichert unter:
+
+```text
 output/parameter_grid_results.csv
+```
 
 ---
 
-##  Modellbewertung
+## Modellbewertung
 
-Zur Bewertung werden verwendet:
+Die Bewertung erfolgt mithilfe folgender Kennzahlen:
 
--  **Out-of-Bag (OOB) R²**
-  → erklärte Varianz
+### Out-of-Bag R² (OOB-R²)
 
--  **RMSE**
-  → Vorhersagefehler
+Maß für die erklärte Varianz des Modells.
 
--  **Observed vs Predicted Plot**
-  → Vergleich Modell vs Realität
+### Root Mean Squared Error (RMSE)
 
----
+Maß für den durchschnittlichen Vorhersagefehler.
 
-##  Ergebnisse
+### Observed vs. Predicted
 
-Das Modell liefert:
-
--  Feature Importance (wichtigste Faktoren)
--  Entscheidungsbaum (Interpretation)
--  Verteilungsanalysen (Boxplots)
--  Interaktionen zwischen Variablen
-
-### Beispiel:
-
-- Niederschlag = stärkster Einflussfaktor
-- Landnutzung beeinflusst SHI lokal
-- Kombinationen (z. B. Regen + Nutzung) sind entscheidend
+Vergleich zwischen beobachteten und vorhergesagten SHI-Werten zur Beurteilung der Modellgüte.
 
 ---
 
-##  Output
+## Ergebnisse
 
-Im Ordner `output/` befinden sich:
+Das Modell liefert Informationen zu:
 
--  `feature_importance.png`
--  `correlation_matrix.png`
--  `shi_by_climate.png`
--  `observed_vs_predicted.png`
--  `decision_tree.png`
--  `model_summary.txt`
+* der Bedeutung einzelner Einflussfaktoren
+* Zusammenhängen zwischen Umweltvariablen
+* Interaktionen zwischen Klima und Landnutzung
+* Verteilungsmustern des Soil Health Index
+
+### Zentrale Erkenntnisse
+
+* Der Niederschlag stellt den stärksten Einflussfaktor auf den SHI dar.
+* Landnutzungsformen beeinflussen die Bodengesundheit auf lokaler Ebene.
+* Klimatische Bedingungen erklären einen großen Teil der SHI-Variation.
+* Die Wechselwirkungen mehrerer Umweltfaktoren sind entscheidend für die Ausprägung der Bodengesundheit.
 
 ---
 
-##  Workflow
+## Ergebnisse und Abbildungen
 
-1. Datenaufbereitung (`data-prep`)
-2. Explorative Analyse (EDA)
-3. Modelltraining (Random Forest)
+Im Verzeichnis `output/` werden die wichtigsten Resultate gespeichert:
+
+```text
+feature_importance.png
+correlation_matrix.png
+shi_by_climate.png
+observed_vs_predicted.png
+decision_tree.png
+model_summary.txt
+parameter_grid_results.csv
+```
+
+---
+
+## Workflow
+
+1. Zusammenführung und Aufbereitung der Rohdaten
+2. Explorative Datenanalyse (EDA)
+3. Training des cForest-Modells
 4. Hyperparameter-Optimierung
-5. Evaluation (OOB)
-6. Interpretation & Data Mining
+5. Modellbewertung
+6. Interpretation der Ergebnisse
 
 ---
 
-##  Einschränkungen
+## Einschränkungen
 
-- Modell zeigt **keine Kausalität**, sondern statistische Zusammenhänge
-- wichtige Variablen (z. B. Bodenchemie) fehlen
-- räumliche Effekte sind nicht direkt modelliert
-
----
-
-##  Fazit
-
-Das Projekt zeigt:
-
-- Klima ist der wichtigste Einflussfaktor für SHI
-- Landnutzung beeinflusst Bodenqualität lokal
-- Random Forest ist geeignet, um komplexe Umweltzusammenhänge zu analysieren
+* Das Modell beschreibt statistische Zusammenhänge, keine Kausalitäten.
+* Relevante Bodenparameter wie Bodenchemie oder Bodenstruktur sind nicht enthalten.
+* Räumliche Autokorrelation wird nicht explizit berücksichtigt.
+* Die Aussagekraft hängt von Qualität und Vollständigkeit der Eingangsdaten ab.
 
 ---
 
-##  Autoren
+## Verwendete Technologien
 
-Ivonne Giske, Nora König, Sina Philipowski, Yannick Trog & Ioannis Svolos
-Projekt im Rahmen der Geo-Projektarbeit  
-Berliner Hochschule für Technik Berlin
+* R
+* tidyverse
+* ggplot2
+* partykit
+* cForest
+* GIS-basierte Umwelt- und Geodaten
 
+---
 
+## Autorinnen und Autoren
 
+* Ivonne Giske
+* Nora König
+* Sina Philipowski
+* Yannick Trog
+* Ioannis Svolos
+
+Berliner Hochschule für Technik (BHT)
+
+Geo-Projektarbeit
