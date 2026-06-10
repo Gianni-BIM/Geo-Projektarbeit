@@ -1,0 +1,38 @@
+Was sagt die Grafik aus?
+
+Boxplots zeigen die Verteilung des SHI für verschiedene Klimazonen.
+
+Beispielhafte Ergebnisse:
+
+  • Cfb (temperiert, feucht):        Median ≈ 3.4–3.5
+  • Dfb (kontinental):               Median ≈ 3.2–3.3
+  • Csa (Mittelmeer):                Median ≈ 3.0–3.2
+  • BSk / arid:                      Median ≈ 2.7–3.0
+
+
+Interpretation:
+
+  • Höchster SHI in feuchten, gemäßigten Klimazonen
+  • Niedrigster SHI in trockenen Klimazonen
+
+Warum genau?
+
+  • mehr Niederschlag → höhere biologische Aktivität
+  • moderate Temperaturen → optimale Bodenprozesse
+  • weniger Stress für Pflanzen und Mikroorganismen
+
+
+Warum ist diese Analyse wichtig?
+
+  → validiert Modell output mit realen Umweltprozessen
+  → zeigt: Modell erkennt echte geographische Muster
+
+  → ohne diese Analyse:
+     ❌ keine fachliche Absicherung
+
+
+FAZIT ZUM KLIMA:
+
+  ✓ klare Klimazonen-Effekte sichtbar
+  ✓ Modell stimmt mit Umweltlogik überein
+  ✓ erklärt globale Unterschiede im SHI

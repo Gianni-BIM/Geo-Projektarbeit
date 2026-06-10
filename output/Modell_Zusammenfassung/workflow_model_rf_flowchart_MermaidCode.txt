@@ -1,0 +1,50 @@
+flowchart TD
+
+A[Datensatz: SHI + Klima + Nutzung + Höhe] --> B[Cleaning]
+
+B --> B1[IDs & Koordinaten entfernen]
+B --> B2[Kategorien <30 entfernen]
+B --> B3[Faktoren setzen]
+
+B --> C[EDA]
+
+C --> C1[Korrelationsmatrix]
+C --> C2[Boxplots]
+C --> C3[SHI Verteilung]
+
+C --> D[Random Forest]
+
+D --> D1[Bootstrapping]
+D --> D2[Splits: Varianzreduktion]
+D --> D3[Conditional Inference]
+
+D --> E[Hyperparameter]
+
+E --> E1[mtry]
+E --> E2[mincriterion]
+E --> E3[ntree]
+E --> E4[OOB Optimierung]
+
+E --> F[Evaluation]
+
+F --> F1[OOB R²]
+F --> F2[RMSE]
+F --> F3[Predicted vs Observed]
+
+F --> G[Interpretation]
+
+G --> G1[Feature Importance]
+G --> G2[Decision Tree]
+G --> G3[Interaktionen]
+
+G --> H[Data Mining]
+
+H --> H1[Hauptfaktoren]
+H --> H2[Kombinationen]
+H --> H3[Szenarien]
+
+H --> I[Output]
+
+I --> I1[SHI Erklärung]
+I --> I2[Faktoren Ranking]
+I --> I3[Model Bewertung]

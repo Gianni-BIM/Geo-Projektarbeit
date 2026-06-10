@@ -1,0 +1,50 @@
+Was sagt die Grafik aus?
+
+Zwei Boxplots zeigen den Einfluss von:
+- Landnutzung (land_use)
+- Landbedeckung (land_cover)
+
+auf den SHI.
+
+
+Welche Landnutzungen fördern hohe Bodengesundheit?
+
+  • HÖCHSTE SHI: Forestry (Median ≈ 3.50, n = 827)
+  • Rang 2: Semi-natural (Median ≈ 3.40, n = 299)
+  • Rang 3: Agriculture (Median ≈ 3.05, n = 3083)
+  • NIEDRIGSTE SHI: Fallow land (Median ≈ 2.75, n = 217)
+
+
+Interpretation:
+
+  • FORSTWIRTSCHAFT:
+    → höchste Bodenqualität
+    → Humusaufbau, stabile Struktur
+
+  • NATURNAHE FLÄCHEN:
+    → hohe Biodiversität
+    → wenig Störung
+
+  • LANDWIRTSCHAFT:
+    → mittlere Werte
+    → Nutzung reduziert Bodengesundheit
+
+  • BRAChLAND:
+    → niedrigste Werte
+    → oft degradierte Böden
+
+
+Warum ist diese Analyse wichtig?
+
+  → isoliert Einfluss der Landnutzung
+  → relevant für praktische Anwendungen (Landwirtschaft, Planung)
+
+  → beantwortet direkt:
+     „Wie beeinflusst Nutzung den SHI?“
+
+
+FAZIT ZUR LANDNUTZUNG:
+
+  ✓ klare Rangfolge erkennbar
+  ✓ natürliche Systeme → besserer Boden
+  ✓ Nutzung wirkt lokal und negativ

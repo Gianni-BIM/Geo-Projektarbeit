@@ -1,0 +1,37 @@
+Was sagt die Grafik aus?
+
+Ein Entscheidungsbaum zeigt die hierarchische Struktur der Modell-
+entscheidungen.
+
+Beispiel:
+
+Root Node:
+Rain ≤ 783 mm
+
+
+Interpretation:
+
+  • Niederschlag steht an erster Stelle
+  → größte Varianzreduktion
+
+Weitere Splits:
+
+  • Cropland:
+    → wichtig in trockenen Gebieten
+
+  • Temperatur:
+    → wichtig in feuchten Gebieten
+
+
+Warum ist der Tree wichtig?
+
+  → zeigt Reihenfolge der Faktoren
+  → zeigt Interaktionen
+  → macht Modell interpretierbar
+
+
+FAZIT ZUM TREE:
+
+  ✓ erklärt Modell logisch
+  ✓ zeigt Wechselwirkungen
+  ✓ bestätigt Feature Importance

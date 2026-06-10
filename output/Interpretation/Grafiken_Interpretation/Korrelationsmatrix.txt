@@ -1,0 +1,45 @@
+Was sagt die Grafik aus?
+
+Die Korrelationsmatrix zeigt die linearen Zusammenhänge zwischen:
+- Höhe
+- Temperatur
+- Niederschlag
+- SHI
+
+Jeder Wert liegt zwischen:
+- -1 (stark negativ)
+-  0 (kein Zusammenhang)
+- +1 (stark positiv)
+
+
+Beobachtete Werte (Beispiele aus dem Modell):
+
+  • Höhe ↔ Temperatur:      r ≈ 0.05 (sehr schwach)
+  • Höhe ↔ Niederschlag:    r ≈ 0.30 (schwach positiv)
+  • Temperatur ↔ Niederschlag: r ≈ -0.15 (schwach negativ)
+  • Variablen ↔ SHI:        r ≈ 0.20–0.40 (moderat)
+
+
+Interpretation:
+
+  • KEINE starke Korrelation (> |0.8|)
+    → Variablen sind NICHT redundant ✅
+
+  • SHI korreliert nur moderat mit einzelnen Variablen
+    → SHI entsteht durch mehrere Faktoren gleichzeitig
+
+  • Höhe und Temperatur sind überraschend schwach korreliert
+    → da europaweite Daten (Nord vs. Süd)
+
+
+Warum ist diese Analyse wichtig?
+
+  → prüft Multikollinearität
+  → stellt sicher, dass das Modell stabile Splits machen kann
+  → notwendig für korrekte Interpretation der Feature Importance
+
+
+FAZIT ZUR KORRELATION:
+  ✓ keine problematischen Abhängigkeiten
+  ✓ Variablen liefern unabhängige Information
+  ✓ Modell ist methodisch stabil

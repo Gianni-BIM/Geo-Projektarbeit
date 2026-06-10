@@ -22,20 +22,36 @@ library(gridExtra)
 set.seed(42)
 
 # --- Pfade konfigurieren ---
-# Skript kann von R/ oder vom Projektroot aus gestartet werden
-if (file.exists("input-ml/points.csv")) {
+# Skript kann vom Projektroot aus gestartet werden
+if (file.exists("input/Daten/points.csv")) {
   base_dir <- "."
-} else if (file.exists("../input-ml/points.csv")) {
+} else if (file.exists("../input/Daten/points.csv")) {
   base_dir <- ".."
 } else {
-  stop("Kann die Eingabedatei 'input-ml/points.csv' nicht finden. ",
-       "Bitte starte das Skript aus dem Projektverzeichnis oder R/.")
+  stop("Kann die Eingabedatei 'input/Daten/points.csv' nicht finden. ",
+       "Bitte starte das Skript aus dem Projektverzeichnis.")
 }
 
-input_csv   <- file.path(base_dir, "input-ml", "points.csv")
-legend_path <- file.path(base_dir, "input-ml", "legend.txt")
-output_dir  <- file.path(base_dir, "R", "output")
+input_csv   <- file.path(base_dir, "input", "Daten", "points.csv")
+legend_path <- file.path(base_dir, "input", "Daten", "legend.txt")
+output_dir  <- file.path(base_dir, "output")
+output_png_dir <- file.path(output_dir, "Grafiken_png")
+output_png_labeled_dir <- file.path(output_png_dir, "Grafik_mit_Beschriftung")
+output_mod_dir <- file.path(output_dir, "Modell_Zusammenfassung")
 dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(output_png_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(output_png_labeled_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(output_mod_dir, showWarnings = FALSE, recursive = TRUE)
+
+var_translations <- c(
+  "height_m" = "Höhe (m)",
+  "temp_c_mean_1995_2024" = "Temperatur (°C)",
+  "rain_mmsqm_mean_1995_2024" = "Niederschlag (mm)",
+  "SHI" = "Bodengesundheit (SHI)",
+  "land_use" = "Landnutzung",
+  "land_cover" = "Landbedeckung",
+  "climate_name" = "Klimazone"
+)
 
 # ggplot2-Theme für publikationsreife Plots
 theme_pub <- theme_minimal(base_size = 14) +
@@ -175,8 +191,25 @@ p_corr <- ggplot(corr_melt, aes(Var1, Var2, fill = value)) +
   labs(title = "Korrelationsmatrix der numerischen Einflussfaktoren",
        x = "", y = "") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-ggsave(file.path(output_dir, "correlation_matrix.png"), p_corr,
+ggsave(file.path(output_png_dir, "correlation_matrix.png"), p_corr,
        width = 8, height = 6, dpi = 150)
+
+corr_melt_trans <- corr_melt
+corr_melt_trans$Var1 <- as.factor(var_translations[as.character(corr_melt_trans$Var1)])
+corr_melt_trans$Var2 <- as.factor(var_translations[as.character(corr_melt_trans$Var2)])
+corr_melt_trans$Var1 <- factor(corr_melt_trans$Var1, levels = var_translations[numerical_cols])
+corr_melt_trans$Var2 <- factor(corr_melt_trans$Var2, levels = var_translations[numerical_cols])
+
+p_corr_trans <- ggplot(corr_melt_trans, aes(Var1, Var2, fill = value)) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  geom_text(aes(label = sprintf("%.2f", value)), size = 5) +
+  scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B",
+                       midpoint = 0, limits = c(-1, 1),
+                       name = "Korrelation") +
+  labs(title = "Korrelationsmatrix der numerischen Einflussfaktoren",
+       x = "", y = "") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggsave(file.path(output_png_labeled_dir, "correlation_matrix.png"), p_corr_trans, width = 8, height = 6, dpi = 150)
 
 # SHI nach Klimaklasse (Boxplot)
 climate_order <- names(sort(tapply(df_clean$SHI, df_clean$climate_name, median)))
@@ -188,8 +221,12 @@ p_climate <- ggplot(df_clean, aes(x = SHI, y = climate_name_ordered)) +
   scale_fill_viridis_d(option = "viridis") +
   labs(title = "Bodengesundheit (SHI) nach Köppen-Geiger-Klimaklasse",
        x = "Soil Health Index (SHI)", y = "Klimaklasse")
-ggsave(file.path(output_dir, "shi_by_climate.png"), p_climate,
+ggsave(file.path(output_png_dir, "shi_by_climate.png"), p_climate,
        width = 12, height = 6, dpi = 150)
+
+p_climate_trans <- p_climate + labs(title = "Bodengesundheit (SHI) nach Klimazone",
+                                    x = "Bodengesundheit (SHI)", y = "Klimazone")
+ggsave(file.path(output_png_labeled_dir, "shi_by_climate.png"), p_climate_trans, width=12, height=6, dpi=150)
 
 # SHI nach Landnutzung und Landbedeckung
 lu_order <- names(sort(tapply(df_clean$SHI, df_clean$land_use, median)))
@@ -210,8 +247,13 @@ p_lc <- ggplot(df_clean, aes(x = SHI, y = factor(land_cover, levels = lc_order))
        x = "Soil Health Index (SHI)", y = "")
 
 p_combined <- arrangeGrob(p_lu, p_lc, ncol = 2)
-ggsave(file.path(output_dir, "shi_by_land_use_and_cover.png"), p_combined,
+ggsave(file.path(output_png_dir, "shi_by_land_use_and_cover.png"), p_combined,
        width = 18, height = 8, dpi = 150)
+
+p_lu_trans <- p_lu + labs(title = "SHI nach Landnutzung", x = "Bodengesundheit (SHI)")
+p_lc_trans <- p_lc + labs(title = "SHI nach Landbedeckung", x = "Bodengesundheit (SHI)")
+p_combined_trans <- arrangeGrob(p_lu_trans, p_lc_trans, ncol = 2)
+ggsave(file.path(output_png_labeled_dir, "shi_by_land_use_and_cover.png"), p_combined_trans, width = 18, height = 8, dpi = 150)
 
 # Histogramm SHI
 p_hist <- ggplot(df_clean, aes(x = SHI)) +
@@ -220,8 +262,11 @@ p_hist <- ggplot(df_clean, aes(x = SHI)) +
   geom_density(color = "darkred", linewidth = 1) +
   labs(title = "Verteilung des Soil Health Index (SHI)",
        x = "SHI", y = "Dichte")
-ggsave(file.path(output_dir, "shi_distribution.png"), p_hist,
+ggsave(file.path(output_png_dir, "shi_distribution.png"), p_hist,
        width = 8, height = 5, dpi = 150)
+
+p_hist_trans <- p_hist + labs(x = "Bodengesundheit (SHI)")
+ggsave(file.path(output_png_labeled_dir, "shi_distribution.png"), p_hist_trans, width = 8, height = 5, dpi = 150)
 
 
 ################################################################################
@@ -325,8 +370,11 @@ p_opt <- ggplot(results_list, aes(x = factor(mtry), y = oob_r2,
   labs(title = "Modellgüte (OOB R²) nach Hyperparametern",
        x = "mtry (Features pro Split)",
        y = "OOB R²")
-ggsave(file.path(output_dir, "parameter_optimization.png"), p_opt,
+ggsave(file.path(output_png_dir, "parameter_optimization.png"), p_opt,
        width = 10, height = 6, dpi = 150)
+
+p_opt_trans <- p_opt + labs(x = "mtry (Anzahl Features pro Split)", color = "Signifikanz (mincriterion)")
+ggsave(file.path(output_png_labeled_dir, "parameter_optimization.png"), p_opt_trans, width = 10, height = 6, dpi = 150)
 
 
 ################################################################################
@@ -366,8 +414,11 @@ p_scatter <- ggplot(pred_df, aes(x = observed, y = predicted)) +
   labs(title = "OOB-Vorhersagen vs. beobachteter SHI",
        x = "Beobachteter SHI",
        y = "Vorhergesagter SHI (OOB)")
-ggsave(file.path(output_dir, "observed_vs_predicted.png"), p_scatter,
+ggsave(file.path(output_png_dir, "observed_vs_predicted.png"), p_scatter,
        width = 8, height = 8, dpi = 150)
+
+p_scatter_trans <- p_scatter + labs(x = "Beobachtete Bodengesundheit", y = "Vorhergesagte Bodengesundheit (OOB)")
+ggsave(file.path(output_png_labeled_dir, "observed_vs_predicted.png"), p_scatter_trans, width = 8, height = 8, dpi = 150)
 
 # Residuenplot
 resid_df <- data.frame(predicted = best_oob_preds,
@@ -378,8 +429,11 @@ p_resid <- ggplot(resid_df, aes(x = predicted, y = residuals)) +
   labs(title = "Residuenanalyse des Conditional Inference Forest",
        x = "Vorhergesagter SHI (OOB)",
        y = "Residuen (Beobachtet - Vorhergesagt)")
-ggsave(file.path(output_dir, "residuals_plot.png"), p_resid,
+ggsave(file.path(output_png_dir, "residuals_plot.png"), p_resid,
        width = 10, height = 5, dpi = 150)
+
+p_resid_trans <- p_resid + labs(x = "Vorhergesagte Bodengesundheit (OOB)")
+ggsave(file.path(output_png_labeled_dir, "residuals_plot.png"), p_resid_trans, width = 10, height = 5, dpi = 150)
 
 
 ################################################################################
@@ -417,8 +471,30 @@ p_imp <- ggplot(df_imp, aes(x = Importance_Pct,
        subtitle = "Conditional Inference Forest — native kategorische Verarbeitung",
        x = "Einflussanteil (%)",
        y = "Einflussfaktor")
-ggsave(file.path(output_dir, "feature_importance.png"), p_imp,
+ggsave(file.path(output_png_dir, "feature_importance.png"), p_imp,
        width = 10, height = 6, dpi = 150)
+
+df_imp_trans <- df_imp
+df_imp_trans$Variable <- as.character(df_imp_trans$Variable)
+for (i in 1:nrow(df_imp_trans)) {
+  if (df_imp_trans$Variable[i] %in% names(var_translations)) {
+    df_imp_trans$Variable[i] <- var_translations[df_imp_trans$Variable[i]]
+  }
+}
+p_imp_trans <- ggplot(df_imp_trans, aes(x = Importance_Pct,
+                             y = reorder(Variable, Importance_Pct))) +
+  geom_col(aes(fill = Importance_Pct), show.legend = FALSE) +
+  scale_fill_gradient(low = "#3B0F70", high = "#FE9F6D") +
+  geom_vline(xintercept = threshold, color = "red",
+             linetype = "dashed", linewidth = 1) +
+  annotate("text", x = threshold + 0.5, y = 1,
+           label = sprintf("Zufallsschwelle (%.1f%%)", threshold),
+           color = "red", hjust = 0, size = 4) +
+  labs(title = "Relative Wichtigkeit der Einflussfaktoren auf die Bodengesundheit",
+       subtitle = "Conditional Inference Forest",
+       x = "Einflussanteil (%)",
+       y = "Einflussfaktor")
+ggsave(file.path(output_png_labeled_dir, "feature_importance.png"), p_imp_trans, width = 10, height = 6, dpi = 150)
 
 
 ################################################################################
@@ -458,12 +534,26 @@ ct_kit <- partykit::ctree(fml_tree, data = df_tree,
                           control = partykit::ctree_control(maxdepth = 4, alpha = 0.05))
 
 # Speichere als PNG mit hoher Auflösung
-png(file.path(output_dir, "decision_tree.png"), width = 2800, height = 1400, res = 180)
+png(file.path(output_png_dir, "decision_tree.png"), width = 2800, height = 1400, res = 180)
 plot(ct_kit, main = "Conditional Inference Tree für SHI (maxdepth=4)",
      ip_args = list(pval = TRUE),
      ep_args = list(justmin = 15))
 dev.off()
 cat("Entscheidungsbaum (mit gekürzten Labels und n in Knoten) als 'decision_tree.png' gespeichert.\n")
+
+df_tree_trans <- df_tree
+names(df_tree_trans)[names(df_tree_trans) %in% names(var_translations)] <- var_translations[names(df_tree_trans)[names(df_tree_trans) %in% names(var_translations)]]
+
+fml_tree_trans <- as.formula(paste("`Bodengesundheit (SHI)` ~", paste(paste0("`", setdiff(names(df_tree_trans), "Bodengesundheit (SHI)"), "`"), collapse = " + ")))
+
+ct_kit_trans <- partykit::ctree(fml_tree_trans, data = df_tree_trans, 
+                          control = partykit::ctree_control(maxdepth = 4, alpha = 0.05))
+
+png(file.path(output_png_labeled_dir, "decision_tree.png"), width = 2800, height = 1400, res = 180)
+plot(ct_kit_trans, main = "Entscheidungsbaum für Bodengesundheit",
+     ip_args = list(pval = TRUE),
+     ep_args = list(justmin = 15))
+dev.off()
 
 
 ################################################################################
@@ -911,8 +1001,8 @@ summary_text <- paste0(summary_text,
 "======================================================================\n"
 )
 
-writeLines(summary_text, file.path(output_dir, "model_summary.txt"))
+writeLines(summary_text, file.path(output_mod_dir, "model_summary.txt"))
 cat(sprintf("\nModellzusammenfassung (detailliert) gespeichert unter '%s'.\n",
-            file.path(output_dir, "model_summary.txt")))
-cat("Alle Diagramme im Ordner 'R/output/' gespeichert.\n")
+            file.path(output_mod_dir, "model_summary.txt")))
+cat("Alle Diagramme im Ordner 'output/' gespeichert.\n")
 cat("--- Analyse erfolgreich abgeschlossen! ---\n")

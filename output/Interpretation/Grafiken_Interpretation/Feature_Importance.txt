@@ -1,0 +1,47 @@
+Was sagt die Grafik aus?
+
+Das Diagramm zeigt den prozentualen Einfluss jeder Variable auf die
+Vorhersage des SHI.
+
+Beispielwerte (aus dem Modell):
+
+  • Niederschlag:          ~42 %
+  • Temperatur:            ~30 %
+  • Höhe:                  ~12 %
+  • Landnutzung:           ~10 %
+  • Geologie / sonstige:   ~6 %
+
+
+Interpretation:
+
+  • Niederschlag ist der wichtigste Faktor
+    → größter Anteil an der Modellentscheidung
+
+  • Temperatur zweitwichtig
+    → beeinflusst Bodenprozesse stark
+
+  • Landnutzung weniger dominant
+    → wirkt eher lokal
+
+
+Warum gilt Klima als dominant?
+
+  → weil Entfernen dieser Variablen die Modellgüte am stärksten verschlechtert
+
+  → mathematisch:
+     größte Reduktion der erklärten Varianz (R²)
+
+
+Warum ist diese Analyse wichtig?
+
+  → beantwortet direkt die Forschungsfrage:
+     „Welche Faktoren beeinflussen SHI am stärksten?“
+
+  → liefert objektives Ranking der Einflussgrößen
+
+
+FAZIT ZUR FEATURE IMPORTANCE:
+
+  ✓ Klima ist dominant (quantitativ belegt)
+  ✓ Landnutzung ist relevant, aber weniger stark
+  ✓ Modell erkennt globale vs. lokale Effekte
