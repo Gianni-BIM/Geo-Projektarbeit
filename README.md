@@ -2,9 +2,14 @@
 
 Diese Webanwendung dient der interaktiven Analyse und Visualisierung von Bodengesundheitsdaten (SHI) in Europa. Sie ermöglicht es, den Einfluss von Landnutzung, Klima, Topographie und Ausgangsmaterial auf die Bodengesundheit mithilfe von Entscheidungsbäumen und geografischen Karten zu explorieren.
 
+<p>
+  <img src="src/images/screenshot1-2.png" width="520" />
+  <img src="src/images/screenshot2-2.png" width="520" />
+</p>
+
 ## Schnellstart-Anleitung
 
-Folge diesen Schritten, um die Anwendung lokal auf deinem Computer auszuführen. Es ist **kein** externer API-Key oder Account erforderlich.
+Folge diesen Schritten, um die Anwendung lokal auf deinem Computer auszuführen. 
 
 ### 1. Voraussetzungen
 Stelle sicher, dass du **Node.js** (Version 18 oder höher empfohlen) auf deinem Rechner installiert hast. Du kannst dies prüfen, indem du `node -v` in dein Terminal eingibst.
@@ -33,7 +38,7 @@ Nach dem Start erscheint im Terminal eine Meldung wie:
 
 Halte die **Strg-Taste** (oder Cmd auf Mac) gedrückt und klicke auf den Link, oder kopiere die Adresse manuell in deinen Browser (z. B. Firefox, Chrome oder Safari).
 
----
+
 
 ## Funktionen der Anwendung
 
