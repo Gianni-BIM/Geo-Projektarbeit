@@ -1,0 +1,6 @@
+{
+  "name": "Soil Health Random Forest Explorer",
+  "description": "Interactive Web Map and Decision Tree interface for exploring Soil Health Index (SHI) OOB random forest models.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
