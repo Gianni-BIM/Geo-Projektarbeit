@@ -20,21 +20,20 @@ Zur Untersuchung der Zusammenhänge wird ein **Conditional Inference Forest (cFo
 * Bewertung der Vorhersageleistung von Machine-Learning-Modellen
 * Interpretation der Ergebnisse im Kontext räumlicher Umweltprozesse
 
----
+
 
 ## Projektstruktur
 
 ```text
 Geo-Projektarbeit/
 │
-├── data-prep/        # Datenaufbereitung und Bereinigung
-├── input-ml/         # Aufbereitete Datensätze für das Modell
-├── src/              # Skripte für Modellierung und Auswertung
-├── output/           # Ergebnisse, Abbildungen und Modelloutputs
+├── finalize_data_prep/      # Datenaufbereitung
+├── ML-rf-Ioannis/           # Skripte für Modellierung und Auswertung
+├── WebAnwendung/            # Ergebnisse, Abbildungen und Karte
 └── README.md
 ```
 
----
+
 
 ## Datengrundlage
 
@@ -57,7 +56,7 @@ Für die Analyse wurden verschiedene Umwelt- und Geodatenquellen zusammengeführ
 | land_cover                | Landbedeckung               |
 | climate_name              | Klimazone                   |
 
----
+
 
 ## Datenaufbereitung
 
@@ -75,7 +74,7 @@ Die Datenaufbereitung bildet die Grundlage der Analyse und umfasst folgende Arbe
 
 Ein bereinigter und modellfähiger Datensatz für die weitere Analyse.
 
----
+
 
 ## Machine-Learning-Ansatz
 
@@ -89,7 +88,7 @@ Im Vergleich zu klassischen Random-Forest-Modellen bietet dieser Ansatz mehrere 
 * Berücksichtigung von Interaktionen zwischen Variablen
 * Interpretation der Bedeutung einzelner Einflussgrößen
 
----
+
 
 ## Modellierung
 
@@ -119,7 +118,7 @@ Die Ergebnisse werden gespeichert unter:
 output/parameter_grid_results.csv
 ```
 
----
+
 
 ## Modellbewertung
 
@@ -137,7 +136,7 @@ Maß für den durchschnittlichen Vorhersagefehler.
 
 Vergleich zwischen beobachteten und vorhergesagten SHI-Werten zur Beurteilung der Modellgüte.
 
----
+
 
 ## Ergebnisse
 
@@ -155,7 +154,7 @@ Das Modell liefert Informationen zu:
 * Klimatische Bedingungen erklären einen großen Teil der SHI-Variation.
 * Die Wechselwirkungen mehrerer Umweltfaktoren sind entscheidend für die Ausprägung der Bodengesundheit.
 
----
+
 
 ## Ergebnisse und Abbildungen
 
@@ -171,7 +170,7 @@ model_summary.txt
 parameter_grid_results.csv
 ```
 
----
+
 
 ## Workflow
 
@@ -182,7 +181,7 @@ parameter_grid_results.csv
 5. Modellbewertung
 6. Interpretation der Ergebnisse
 
----
+
 
 ## Einschränkungen
 
@@ -191,7 +190,7 @@ parameter_grid_results.csv
 * Räumliche Autokorrelation wird nicht explizit berücksichtigt.
 * Die Aussagekraft hängt von Qualität und Vollständigkeit der Eingangsdaten ab.
 
----
+
 
 ## Verwendete Technologien
 
@@ -202,7 +201,7 @@ parameter_grid_results.csv
 * cForest
 * GIS-basierte Umwelt- und Geodaten
 
----
+
 
 ## Autorinnen und Autoren
 
