@@ -1,2 +1,0 @@
-*.py text eol=lf
-*.ipynb text eol=lf filter=nbstripout
