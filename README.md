@@ -2,7 +2,7 @@
 
 Diese Webanwendung dient der interaktiven Analyse und Visualisierung von Bodengesundheitsdaten (SHI) in Europa. Sie ermöglicht es, den Einfluss von Landnutzung, Klima, Topographie und Ausgangsmaterial auf die Bodengesundheit mithilfe von Entscheidungsbäumen und geografischen Karten zu explorieren.
 
-## 🚀 Schnellstart-Anleitung
+## Schnellstart-Anleitung
 
 Folge diesen Schritten, um die Anwendung lokal auf deinem Computer auszuführen. Es ist **kein** externer API-Key oder Account erforderlich.
 
@@ -18,8 +18,7 @@ npm install
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. Run the app:
    `npm run dev`
 ### 3. Anwendung starten
 Starte den lokalen Entwicklungsserver:
@@ -49,5 +48,3 @@ Halte die **Strg-Taste** (oder Cmd auf Mac) gedrückt und klicke auf den Link, o
 - **Karten:** Leaflet.js
 - **Icons:** Lucide React
 - **Build-Tool:** Vite
-
-Viel Erfolg bei der Analyse!
