@@ -13,11 +13,20 @@ Diese Anleitung erklärt Schritt für Schritt, wie das R-Skript zur Auswertung d
 
 ### Projekt vorbereiten
 1. Öffne ein Terminal (oder die integrierte Konsole in deinem Editor).
-2. Klone das Repository (falls noch nicht geschehen) oder aktualisiere es auf den neuesten Stand:
+2. Klone das Repository mit dem korrekten GitHub-Link auf deinen Computer:
    ```bash
-   git pull
+   git clone https://github.com/Gianni-BIM/Geo-Projektarbeit.git
    ```
-3. Öffne den Projektordner `RandomForest_R` in deinem Editor.
+3. Wechsle in den Projektordner und aktiviere den Entwicklungs-Branch `ML-rf-Ioannis`:
+   ```bash
+   cd Geo-Projektarbeit
+   git checkout ML-rf-Ioannis
+   ```
+4. Wechsle nun in das spezifische Unterverzeichnis für dieses R-Modell:
+   ```bash
+   cd RandomForest_R
+   ```
+5. Öffne dieses Verzeichnis in deinem Editor (z. B. VS Code).
 
 ### R-Pakete installieren
 Das Skript benötigt einige externe R-Pakete. Öffne R (oder die R-Konsole in deinem Editor) und führe folgenden Befehl aus, falls die Pakete noch nicht installiert sind:
