@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { SoilPoint } from '../types';
-import { AreaChart, AlertCircle, BarChart3, ScatterChart as ScatterIcon, Activity, Settings2, BarChart2 } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 interface ScientificChartsProps {
   filteredPoints: SoilPoint[];
@@ -17,7 +17,7 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
     const sumY = y.reduce((a, b) => a + b, 0);
     const sumXY = x.reduce((s, val, i) => s + val * y[i], 0);
     const sumX2 = x.reduce((s, val) => s + val * val, 0);
-    const sumY2 = x.reduce((s, val) => s + val * val, 0);
+    const sumY2 = y.reduce((s, val) => s + val * val, 0);
 
     const num = n * sumXY - sumX * sumY;
     const den = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
@@ -25,14 +25,13 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
     return num / den;
   }
 
-  // Feature Importance Data based on model OOB feature weights
   const featureImportances = [
-    { name: 'Niederschlag (Rain)', value: 30.8, color: 'bg-emerald-600', code: 'rain_mmsqm_mean_1995_2024' },
-    { name: 'Landbedeckung (Land Cover)', value: 19.5, color: 'bg-teal-600', code: 'land_cover' },
-    { name: 'Temperatur (Temp)', value: 19.2, color: 'bg-cyan-600', code: 'temp_c_mean_1995_2024' },
-    { name: 'Geländehöhe (Elevation)', value: 15.9, color: 'bg-indigo-600', code: 'height_m' },
-    { name: 'Klimazone (KG Climate)', value: 9.7, color: 'bg-violet-600', code: 'kg_climate_class' },
-    { name: 'Landnutzung (Land Use)', value: 4.8, color: 'bg-purple-600', code: 'land_use' }
+    { name: 'Niederschlag (Rain)', value: 34.0, color: 'bg-emerald-600', code: 'rain_mmsqm_mean_1995_2024' },
+    { name: 'Landbedeckung (Land Cover)', value: 30.9, color: 'bg-teal-600', code: 'land_cover' },
+    { name: 'Temperatur (Temp)', value: 12.6, color: 'bg-cyan-600', code: 'temp_c_mean_1995_2024' },
+    { name: 'Klimazone (Climate Name)', value: 8.1, color: 'bg-violet-600', code: 'climate_name' },
+    { name: 'Geländehöhe (Elevation)', value: 8.0, color: 'bg-indigo-600', code: 'height_m' },
+    { name: 'Landnutzung (Land Use)', value: 6.4, color: 'bg-purple-600', code: 'land_use' }
   ];
 
   // Correlation Matrix Variables
@@ -52,13 +51,12 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
     });
   });
 
-  // Hyperparameter Optimization Logs - scientifically verified configurations
   const paramLogs = [
-    { run: 1, n_estimators: 100, max_depth: 3, min_samples_split: 5, bootstrap: 'True', r2: 0.285, rmse: 0.381, status: 'Standard' },
-    { run: 2, n_estimators: 250, max_depth: 6, min_samples_split: 4, bootstrap: 'True', r2: 0.362, rmse: 0.358, status: 'Optimiert' },
-    { run: 3, n_estimators: 500, max_depth: 10, min_samples_split: 2, bootstrap: 'True', r2: 0.401, rmse: 0.347, status: 'Selektiertes Optimum' },
-    { run: 4, n_estimators: 500, max_depth: 15, min_samples_split: 2, bootstrap: 'False', r2: 0.382, rmse: 0.352, status: 'Overfitting' },
-    { run: 5, n_estimators: 750, max_depth: 10, min_samples_split: 3, bootstrap: 'True', r2: 0.398, rmse: 0.348, status: 'Sättigung' },
+    { run: 1, mtry: 2, mincriterion: 0.9, n_estimators: 500, r2: 0.367, rmse: 0.356, status: 'Standard' },
+    { run: 2, mtry: 3, mincriterion: 0.95, n_estimators: 500, r2: 0.367, rmse: 0.356, status: 'Robust' },
+    { run: 3, mtry: 3, mincriterion: 0.9, n_estimators: 500, r2: 0.373, rmse: 0.355, status: 'Selektiertes Optimum' },
+    { run: 4, mtry: 4, mincriterion: 0.9, n_estimators: 500, r2: 0.372, rmse: 0.355, status: 'Gleichwertig' },
+    { run: 5, mtry: 2, mincriterion: 0.99, n_estimators: 500, r2: 0.352, rmse: 0.360, status: 'Streng (High Signif)' },
   ];
 
   // Prepare variables for charts
@@ -73,16 +71,6 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
     <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm h-full flex flex-col">
       {/* Sci Tabs Header */}
       <div className="flex justify-between items-center border-b border-slate-100 pb-2.5 flex-wrap gap-2 select-none">
-        <div>
-          <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 leading-none">
-            <Activity className="w-4 h-4 text-emerald-600" />
-            Wissenschaftliche RF-Modellbewertung (Validation)
-          </h3>
-          <p className="text-[10px] m-0 text-slate-400 mt-1">
-            Relevante Gütekriterien für eine fundierte statistische Bodengüte-Evaluation.
-          </p>
-        </div>
-
         {/* Dynamic Scientific tabs switcher */}
         <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200/50 flex-wrap gap-1">
           <button
@@ -91,7 +79,7 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
               activeTab === 'importance' ? 'bg-white hover:bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-850'
             }`}
           >
-            📊 Heuristik (Gini)
+           Permutations-Importance
           </button>
           <button
             id="tab-obs-vs-pred"
@@ -100,7 +88,7 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
               activeTab === 'obs_vs_pred' ? 'bg-white hover:bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-850'
             }`}
           >
-            📉 Obs. vs Pred.
+           Obs. vs Pred.
           </button>
           <button
             onClick={() => setActiveTab('residuals')}
@@ -108,7 +96,7 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
               activeTab === 'residuals' ? 'bg-white hover:bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-850'
             }`}
           >
-            📍 Residuen
+           Residuen
           </button>
           <button
             id="tab-correlation"
@@ -117,7 +105,7 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
               activeTab === 'correlation' ? 'bg-white hover:bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-850'
             }`}
           >
-            🌡️ Korrelation
+           Korrelation
           </button>
           <button
             onClick={() => setActiveTab('parameters')}
@@ -125,7 +113,7 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
               activeTab === 'parameters' ? 'bg-white hover:bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-850'
             }`}
           >
-            ⚙️ Tuning
+           Tuning
           </button>
         </div>
       </div>
@@ -137,14 +125,14 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
         {activeTab === 'importance' && (
           <div className="space-y-4 animate-fade-in">
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px] text-slate-650 leading-relaxed font-sans mb-1">
-              <strong className="text-slate-850 font-semibold block mb-0.5">ℹ️ Gini Variable Importance:</strong>
-              Die Wichtigkeit gibt an, wie oft und wie stark ein Kriterium zur Homogenisierung der Unterzweige beigetragen hat.
-              <strong className="text-emerald-700"> Niederschlag</strong> bildet unangefochten das wichtigste fundamentale Kriterium.
+              <strong className="text-slate-850 font-semibold block mb-0.5"> Permutations-Importance (Conditional Inference):</strong>
+              Die Wichtigkeit basiert auf der Veränderung der Modellgüte bei zufälliger Permutation eines Merkmals und spiegelt damit die echte Bedeutung im Random-Forest-Setup wider.
+              <strong className="text-emerald-700"> Niederschlag</strong> bleibt der stärkste Einflussfaktor im R-Skript-Workflow.
             </div>
 
             <div className="space-y-3.5 pr-1">
               {featureImportances.map((f) => (
-                <div key={f.name} className="flex flex-col space-y-1">
+                <div key={f.name} className="flex flex-col space-y-1" title={`${f.name}: ${f.value.toFixed(1)}% Permutations-Importance`}>
                   <div className="flex justify-between items-center text-[10.5px]">
                     <span className="font-semibold text-slate-700 font-sans">{f.name}</span>
                     <span className="font-mono text-emerald-700 font-bold">{f.value.toFixed(1)}%</span>
@@ -165,9 +153,9 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
         {activeTab === 'obs_vs_pred' && (
           <div className="space-y-4 animate-fade-in flex flex-col">
             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[10.5px] text-slate-650 leading-relaxed font-sans">
-              <strong className="text-slate-850 font-semibold block mb-0.5">📉 Observed vs. Predicted (Beobachtet vs. Berechnet):</strong>
+              <strong className="text-slate-850 font-semibold block mb-0.5"> Observed vs. Predicted (Beobachtet vs. Berechnet):</strong>
               Zeigt die Anpassungsgüte des Modells. Perfekt vorhergesagte Punkte lägen exakt auf der gestrichelten 1:1 Identity-Linie.
-              Unsere OOB-Güte liegt stabil bei <strong className="text-indigo-700">R² = 0.401</strong>.
+              Unsere OOB-Güte liegt stabil bei <strong className="text-indigo-700">R² = 0.373</strong>.
             </div>
 
             {pointsWithPreds.length > 0 ? (
@@ -230,7 +218,7 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
         {activeTab === 'residuals' && (
           <div className="space-y-4 animate-fade-in flex flex-col">
             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[10.5px] text-slate-650 leading-relaxed font-sans">
-              <strong className="text-slate-850 font-semibold block mb-0.5">📍 Residualanalyse (Residuen vs. Vorhersage):</strong>
+              <strong className="text-slate-850 font-semibold block mb-0.5"> Residualanalyse (Residuen vs. Vorhersage):</strong>
               Das Diagramm trägt den Vorhersagewert (x) gegen den Fehler/Residuum `(Beobachtet - Vorhergesagt)` auf. 
               Eine ausgeglichene, gleichmäßige Streuung um die rote Nulllinie herum signalisiert Homoskedastizität (gesicherte Fehlerverteilung).
             </div>
@@ -291,7 +279,7 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
         {activeTab === 'correlation' && (
           <div className="space-y-4 animate-fade-in">
             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[10.5px] text-slate-650 leading-relaxed font-sans">
-              <strong className="text-slate-850 font-semibold block mb-0.5">🌡️ Pearson Korrelationsmatrix (Dynamische Berechnung):</strong>
+              <strong className="text-slate-850 font-semibold block mb-0.5"> Pearson Korrelationsmatrix (Dynamische Berechnung):</strong>
               Berechnet in Echtzeit den linearen Zusammenhang zwischen den Einflussfaktoren im aktuellen Filterset. 
               Mögliche Ausprägungen reichen von <span className="text-red-700 font-bold">-1.0 (anti-proportional)</span> über <span className="text-slate-500 font-bold">0.0 (unabhängig)</span> bis <span className="text-teal-700 font-bold">+1.0 (völlig proportional)</span>.
             </div>
@@ -322,7 +310,11 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
                         else if (score < -0.1) heatBg = 'bg-rose-50/80 text-rose-800 border border-rose-100/30';
 
                         return (
-                          <td key={v2.label} className={`p-2 font-mono ${heatBg}`}>
+                          <td
+                            key={v2.label}
+                            className={`p-2 font-mono ${heatBg}`}
+                            title={`Pearson-Korrelation zwischen ${v1.label} und ${v2.label}: ${score.toFixed(2)}`}
+                          >
                             {score.toFixed(2)}
                           </td>
                         );
@@ -344,8 +336,8 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
         {activeTab === 'parameters' && (
           <div className="space-y-4 animate-fade-in font-sans">
             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[10.5px] text-slate-650 leading-relaxed">
-              <strong className="text-slate-850 font-semibold block mb-0.5">⚙️ Hyperparameter-Optimierungs-Historie:</strong>
-              Zeigt den modellbezogenen Trainingsverlauf an. Der finale Forest mit 500 Bäumen und einer Reißtiefe von 10 erreicht mit abweichenden Bootstrap-Konfigurationen das R²-Optimum von <strong className="text-emerald-700">0.401</strong>.
+              <strong className="text-slate-850 font-semibold block mb-0.5"> Hyperparameter-Optimierungs-Historie:</strong>
+              Zeigt den modellbezogenen Trainingsverlauf an. Der finale Forest mit 500 Bäumen und einem mincriterion von 0.9 erreicht das R²-Optimum von <strong className="text-emerald-700">0.373</strong>.
             </div>
 
             <div className="overflow-x-auto rounded-xl border border-slate-150">
@@ -354,8 +346,8 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
                   <tr>
                     <th className="p-2 py-2.5 text-left text-slate-500 font-bold uppercase tracking-wider">Run</th>
                     <th className="p-2 py-2.5 text-slate-500 font-bold uppercase tracking-wider">Bäume (Est.)</th>
-                    <th className="p-2 py-2.5 text-slate-500 font-bold uppercase tracking-wider">Breite (Depth)</th>
-                    <th className="p-2 py-2.5 text-slate-500 font-bold uppercase tracking-wider">Bootstrap</th>
+                    <th className="p-2 py-2.5 text-slate-500 font-bold uppercase tracking-wider">mtry</th>
+                    <th className="p-2 py-2.5 text-slate-500 font-bold uppercase tracking-wider">mincriterion</th>
                     <th className="p-2 py-2.5 text-slate-500 font-bold uppercase tracking-wider text-emerald-800">R² Score</th>
                     <th className="p-2 py-2.5 text-slate-500 font-bold uppercase tracking-wider text-rose-800">RMSE</th>
                     <th className="p-2 py-2.5 text-left text-slate-500 font-bold uppercase tracking-wider">Status</th>
@@ -368,8 +360,8 @@ export default function ScientificCharts({ filteredPoints }: ScientificChartsPro
                       <tr key={p.run} className={`hover:bg-slate-50/50 ${isBest ? 'bg-indigo-50/40 font-bold text-indigo-950' : 'text-slate-600'}`}>
                         <td className="p-2 text-left font-bold">{p.run}</td>
                         <td className="p-2">{p.n_estimators}</td>
-                        <td className="p-2">{p.max_depth === 15 ? 'None' : p.max_depth}</td>
-                        <td className="p-2">{p.bootstrap}</td>
+                        <td className="p-2">{p.mtry}</td>
+                        <td className="p-2">{p.mincriterion}</td>
                         <td className="p-2 text-emerald-700 font-bold">{p.r2.toFixed(3)}</td>
                         <td className="p-2 text-rose-700">{p.rmse.toFixed(3)}</td>
                         <td className="p-2 text-left text-[9px] font-sans">

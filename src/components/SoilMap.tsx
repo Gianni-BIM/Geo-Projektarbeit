@@ -8,6 +8,7 @@ interface SoilMapProps {
   colorBy: 'SHI' | 'land_use' | 'land_cover' | 'climate_name';
   selectedPointId: number | null;
   onSelectPoint: (pointId: number | null) => void;
+  onColorByChange: (mode: 'SHI' | 'land_use' | 'land_cover' | 'climate_name') => void;
 }
 
 // Fixed color set for categories to maintain aesthetic styling consistency
@@ -69,6 +70,7 @@ export default function SoilMap({
   colorBy,
   selectedPointId,
   onSelectPoint,
+  onColorByChange,
 }: SoilMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -180,9 +182,9 @@ export default function SoilMap({
             <div><strong class="text-slate-800">Nutzung:</strong> <span style="color: ${useColor}; font-weight: bold;">${point.land_use}</span></div>
             <div><strong class="text-slate-800">Klima:</strong> <span style="color: ${climateColor}; font-weight: bold;">${point.climate_name}</span></div>
             <div class="flex justify-between mt-1 text-[10px] font-mono border-t border-slate-100 pt-1">
-              <span style="color: #059669; font-weight: bold;">🌧️ ${point.rain_mmsqm_mean_1995_2024.toFixed(0)} mm</span>
-              <span style="color: #0284c7; font-weight: bold;">🌡️ ${point.temp_c_mean_1995_2024.toFixed(1)} °C</span>
-              <span style="color: #6366f1; font-weight: bold;">⛰️ ${point.height_m.toFixed(0)} m</span>
+              <span style="color: #059669; font-weight: bold;"> ${point.rain_mmsqm_mean_1995_2024.toFixed(0)} mm</span>
+              <span style="color: #0284c7; font-weight: bold;"> ${point.temp_c_mean_1995_2024.toFixed(1)} °C</span>
+              <span style="color: #6366f1; font-weight: bold;"> ${point.height_m.toFixed(0)} m</span>
             </div>
           </div>
         </div>
@@ -216,6 +218,27 @@ export default function SoilMap({
     <div className="relative w-full h-full rounded-2xl overflow-hidden border border-slate-200 shadow-inner bg-slate-50">
       <div ref={mapContainerRef} className="absolute inset-0 z-0 h-full w-full" />
       
+      <div className="absolute top-3 left-3 z-[400] rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-md backdrop-blur-md">
+        <div className="text-[8px] font-extrabold uppercase tracking-[0.25em] text-slate-400">Ziel - und Einflussvariablen</div>
+        <div className="mt-1 flex flex-wrap gap-1.5">
+          {([
+            ['SHI', 'SHI'],
+            ['land_cover', 'Bedeckung'],
+            ['land_use', 'Nutzung'],
+            ['climate_name', 'Klima'],
+          ] as const).map(([mode, label]) => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => onColorByChange(mode)}
+              className={`rounded-full border px-2.5 py-1 text-[9px] font-semibold transition ${colorBy === mode ? 'border-indigo-300 bg-indigo-50 text-indigo-800' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Dynamic floating Map Legend Card Overlay */}
       <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-md p-2.5 rounded-2xl z-[400] max-w-[200px] select-none text-[9.5px]">
         <div className="font-extrabold text-slate-800 text-[8.5px] uppercase border-b border-slate-100 pb-1 mb-1.5 leading-none">

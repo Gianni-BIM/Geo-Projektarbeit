@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { SoilPoint } from '../types';
-import { Search, Loader2, ArrowUpDown, ChevronLeft, ChevronRight, Download, FilterX } from 'lucide-react';
+import { Search, ArrowUpDown, ChevronLeft, ChevronRight, Download, FilterX } from 'lucide-react';
 
 const CATEGORY_COLORS: Record<string, string> = {
   // Land Cover
@@ -156,15 +156,6 @@ export default function SoilDataTable({
       
       {/* Table controls top banner */}
       <div className="flex justify-between items-center flex-wrap gap-4 border-b border-slate-100 pb-3 select-none">
-        <div>
-          <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 leading-none">
-            <Search className="w-4 h-4 text-slate-400" />
-            Attributtabelle / Rohdaten aus dem Filter ({totalRows.toLocaleString()})
-          </h3>
-          <p className="text-[10px] text-slate-400 mt-1">
-            Nutze die Spaltentitel zum Sortieren oder exportiere das Dataset als wissenschaftliche Roh-CSV.
-          </p>
-        </div>
 
         {/* Action Panel */}
         <div className="flex items-center gap-3">
@@ -191,8 +182,7 @@ export default function SoilDataTable({
           {/* Export CSV dataset trigger */}
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 text-indigo-700 px-3 py-2 rounded-xl text-[11px] font-bold cursor-pointer transition-colors shadow-sm"
-          >
+className="flex items-center gap-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-3 py-2 rounded-md text-xs font-medium cursor-pointer transition-colors"          >
             <Download className="w-3.5 h-3.5" />
             CSV Exportieren
           </button>
@@ -291,13 +281,13 @@ export default function SoilDataTable({
                       {p.pred_shi?.toFixed(2) || 'N/A'}
                     </td>
                     <td className="p-2.5 text-right font-mono text-indigo-600 font-bold bg-indigo-50/5">
-                      ⛰️ {p.height_m.toFixed(1)} m
+                       {p.height_m.toFixed(1)} m
                     </td>
                     <td className="p-2.5 text-right font-mono text-cyan-700 font-bold bg-cyan-50/5">
-                      🌡️ {p.temp_c_mean_1995_2024.toFixed(1)} °C
+                       {p.temp_c_mean_1995_2024.toFixed(1)} °C
                     </td>
                     <td className="p-2.5 text-right font-mono text-emerald-700 font-bold bg-emerald-50/5">
-                      🌧️ {p.rain_mmsqm_mean_1995_2024.toFixed(0)} mm
+                       {p.rain_mmsqm_mean_1995_2024.toFixed(0)} mm
                     </td>
                     <td className="p-2.5 text-left leading-none">
                       <span 

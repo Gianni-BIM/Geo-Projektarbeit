@@ -6,9 +6,7 @@ import DecisionTree from './components/DecisionTree';
 import ScientificCharts from './components/ScientificCharts';
 import SoilDataTable from './components/SoilDataTable';
 import SHIHistogram from './components/SHIHistogram';
-import ModelReport from './components/ModelReport';
 import { TreeNode } from './types';
-import { Shield, Database, Sprout, BarChart2 } from 'lucide-react';
 
 const findNodeById = (node: TreeNode, id: string): TreeNode | null => {
   if (node.id === id) return node;
@@ -69,33 +67,10 @@ export default function App() {
       
       {/* 1. Header Navigation brand bar */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 select-none shadow-xs">
-        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-indigo-100">
-              <Shield className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-base font-extrabold text-slate-900 tracking-tight leading-none flex items-center gap-1.5">
-                Soil Health Random Forest Explorer
-                <span className="text-[10px] font-bold bg-indigo-50 border border-indigo-100/60 text-indigo-700 px-2 py-0.5 rounded-full font-mono uppercase">
-                  LUCAS-EU
-                </span>
-              </h1>
-              <p className="text-[10px] text-slate-400 mt-0.5 font-medium">
-                Schnittstelle zur interaktiven Entscheidungsunterstützung & Modellgutachten
-              </p>
-            </div>
-          </div>
-
-          {/* Soil Sprout Health Badge (Soil Health themed status badge replacing old calculation indicator) */}
-          <div className="flex items-center gap-2.5 bg-emerald-50 border border-emerald-150/40 p-1.5 px-3 rounded-2xl select-none shadow-xs">
-            <div className="bg-emerald-600 p-1 rounded-lg text-white">
-              <Sprout className="w-3.5 h-3.5" />
-            </div>
-            <div className="text-left">
-              <div className="text-[8px] font-extrabold text-emerald-800 uppercase tracking-wider leading-none">Boden-Status</div>
-              <div className="text-[10px] font-black text-emerald-950 leading-none mt-0.5">Aktiv Geladen</div>
-            </div>
+        <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+          <div>
+            <h1 className="text-sm font-extrabold text-slate-900 tracking-tight leading-snug max-w-4xl">
+          Einfluss von Landnutzung, Klima, Topographie und Ausgangsmaterial auf die Bodengesundheit in Europa </h1>
           </div>
         </div>
       </header>
@@ -103,35 +78,8 @@ export default function App() {
       {/* Main Grid-driven Content block */}
       <main className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-6">
         
-        {/* UPPER CONTROLS & DYNAMIC BENCHMARKS CARDS */}
+        {/* UPPER BENCHMARKS CARDS */}
         <section className="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm space-y-4">
-          
-          {/* Controls Bar */}
-          <div className="flex items-center justify-between pb-1 flex-wrap gap-3 select-none border-b border-slate-100 pb-3">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="text-[9.5px] text-slate-400 font-extrabold uppercase tracking-wider font-sans">
-                Karten-Einfärbung steuern:
-              </span>
-              <div className="flex bg-slate-100/80 p-0.5 rounded-xl border border-slate-200/50">
-                {(['SHI', 'land_cover', 'land_use', 'climate_name'] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    onClick={() => setColorByMode(mode)}
-                    className={`cursor-pointer px-3 py-1 rounded-lg text-[10px] font-extrabold transition-all ${
-                      colorByMode === mode ? 'bg-white text-slate-900 shadow-xs border border-slate-200/30 font-semibold' : 'text-slate-500 hover:text-slate-700'
-                    }`}
-                  >
-                    {mode === 'SHI' ? '🌈 SHI Index' : (mode === 'land_cover' ? '🌱 Bedeckung' : (mode === 'land_use' ? '🚜 Nutzung' : '🌍 Klimatyp'))}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div className="text-[10px] text-slate-400 italic">
-              Klicke auf beliebige Ast-Knoten, um Karte, Histogramm & Tabelle simultan zu filtern.
-            </div>
-          </div>
-
           {/* DYNAMIC METRIC BENCHMARK CARDS */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             
@@ -146,8 +94,8 @@ export default function App() {
 
             {/* 2. Mean SHI */}
             <div className="bg-slate-50 hover:bg-slate-100/50 border border-slate-150 rounded-2xl p-3 px-3.5 transition-colors">
-              <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block text-teal-850">Ø Bodengüte (SHI)</span>
-              <div className="text-xl font-black text-teal-700 font-mono tracking-tight leading-none mt-1">
+              <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block">Ø Bodengüte (SHI)</span>
+              <div className="text-xl font-black text-slate-800 font-mono tracking-tight leading-none mt-1">
                 {filteredStats.mean > 0 ? filteredStats.mean.toFixed(2) : '0.00'}
               </div>
               <span className="text-[9px] text-slate-450 block mt-1 leading-tight">Aktueller Mittelwert</span>
@@ -172,19 +120,19 @@ export default function App() {
             </div>
 
             {/* 5. Out Of Bag R2 Score */}
-            <div className="bg-slate-50 hover:bg-indigo-50/20 border border-indigo-100 rounded-2xl p-3 px-3.5 transition-colors">
-              <span className="text-[10px] text-indigo-500 font-extrabold uppercase tracking-wider block">OOB R² Bestimmtheit</span>
-              <div className="text-xl font-black text-indigo-700 font-mono tracking-tight leading-none mt-1">
-                0.401
+            <div className="bg-slate-50 hover:bg-slate-100/50 border border-slate-150 rounded-2xl p-3 px-3.5 transition-colors">
+              <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block">OOB R² Bestimmtheit</span>
+              <div className="text-xl font-black text-slate-800 font-mono tracking-tight leading-none mt-1">
+                0.373
               </div>
-              <span className="text-[9px] text-indigo-400 block mt-1 leading-tight">Gesamtmodell Güteklasse</span>
+              <span className="text-[9px] text-slate-450 block mt-1 leading-tight">Gesamtmodell Güteklasse</span>
             </div>
 
             {/* 6. Out Of Bag RMSE Score */}
             <div className="bg-slate-50 hover:bg-slate-100/50 border border-slate-150 rounded-2xl p-3 px-3.5 transition-colors">
-              <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block text-rose-800">OOB RMSE Fehler</span>
-              <div className="text-xl font-black text-rose-700 font-mono tracking-tight leading-none mt-1">
-                0.347
+              <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block">OOB RMSE Fehler</span>
+              <div className="text-xl font-black text-slate-800 font-mono tracking-tight leading-none mt-1">
+                0.355
               </div>
               <span className="text-[9px] text-slate-450 block mt-1 leading-tight">Mittlerer Abweichungsfehler</span>
             </div>
@@ -211,6 +159,7 @@ export default function App() {
               colorBy={colorByMode}
               selectedPointId={selectedPointId}
               onSelectPoint={handleSelectPoint}
+              onColorByChange={setColorByMode}
             />
           </section>
 
@@ -222,13 +171,9 @@ export default function App() {
           {/* Left Panel: Spaced thin SHI Histogram (4/12 Grid) */}
           <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-4 shadow-sm flex flex-col h-full justify-between">
             <div>
-              <h4 className="text-[11.5px] font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-1.5 leading-none">
-                <BarChart2 className="w-4 h-4 text-cyan-600 animate-pulse" />
-                SHI-Verteilung (Dichte-Histogramm)
+              <h4 className="text-[11.5px] font-extrabold text-slate-800 uppercase tracking-wider leading-none">
+                SHI Häufigkeitsverteilung
               </h4>
-              <p className="text-[10px] text-slate-400 mt-1 select-none leading-relaxed">
-                Zeigt die Häufigkeitsverteilung des Bodengesundheits-Index (SHI) im aktuell gefilterten Raum mit fein aufgelösten Säulen.
-              </p>
             </div>
             
             <div className="flex-1 my-3 flex flex-col justify-center">
@@ -247,17 +192,6 @@ export default function App() {
 
         </section>
 
-        {/* SCIENTIFIC MODEL REPORT & INTERACTIVE TWIN EXPLAINED */}
-        <section className="mt-6">
-          <ModelReport
-            selectedNodeId={selectedNodeId}
-            onSelectNode={setSelectedNodeId}
-            nodeSamples={activeNodeDetails.sampleCount}
-            nodeMeanShi={activeNodeDetails.meanShi}
-            nodeRule={activeNodeDetails.rule || ''}
-          />
-        </section>
-
         {/* BOTTOM ATTRIBUTE TABLE SECTION */}
         <section id="section-table">
           <SoilDataTable
@@ -271,9 +205,8 @@ export default function App() {
 
       {/* Footer credits bar */}
       <footer className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-6 border-t border-slate-200 text-center select-none">
-        <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider flex items-center justify-center gap-1.5 leading-none">
-          <Database className="w-3.5 h-3.5" />
-          EU-LUCAS Soil Dataset Explorer & Model Assessor • Bereitgestellt für wissenschaftliche Entscheidungsunterstützung
+        <p className="text-[10px] text-slate-300 font-medium uppercase tracking-widest">
+          Wissenschaftliches Geoprojekt • Bodengesundheits-Analyse Europa
         </p>
       </footer>
 
