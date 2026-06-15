@@ -1,6 +1,6 @@
 # Machine-Learning-Ansatz (Gradient Boosting)
 
-Für die Modellierung wurde ein Gradient Boosting Machine (GBM) verwendet. Im Gegensatz zu Random Forest oder Conditional Inference Forest basiert GBM auf einem sequenziellen Lernansatz, bei dem viele schwache Entscheidungsbäume schrittweise zu einem starken Modell kombiniert werden. Jeder neue Baum wird dabei so trainiert, dass er die Fehler der vorherigen Bäume reduziert. [web:5][web:8]
+Für die Modellierung wurde ein Gradient Boosting Machine (GBM) verwendet. Im Gegensatz zu Random Forest oder Conditional Inference Forest basiert GBM auf einem sequenziellen Lernansatz, bei dem viele schwache Entscheidungsbäume schrittweise zu einem starken Modell kombiniert werden. Jeder neue Baum wird dabei so trainiert, dass er die Fehler der vorherigen Bäume reduziert.
 
 ## Methodische Idee
 
@@ -30,11 +30,11 @@ Die Modellleistung hängt stark von folgenden Parametern ab:
 | `shrinkage` | Lernrate; kleinere Werte führen zu stabilerem Lernen |
 | `n.minobsinnode` | Minimale Beobachtungen pro Terminalknoten |
 
-Zur Optimierung wurde eine Grid Search mittels `caret` durchgeführt. Die wichtigsten GBM-Hyperparameter sind genau diese Größen, und `shrinkage` sowie `interaction.depth` werden typischerweise gemeinsam mit `n.trees` getunt. [web:2][web:5][web:8]
+Zur Optimierung wurde eine Grid Search mittels `caret` durchgeführt. Die wichtigsten GBM-Hyperparameter sind genau diese Größen, und `shrinkage` sowie `interaction.depth` werden typischerweise gemeinsam mit `n.trees` getunt. 
 
 ## Modellierung
 
-Das GBM-Modell wurde mit der `caret::train()`-Funktion trainiert und mittels 5-facher Cross-Validation validiert. `caret` unterstützt dafür standardisierte Resampling- und Performance-Metriken wie RMSE. [web:4][web:7]
+Das GBM-Modell wurde mit der `caret::train()`-Funktion trainiert und mittels 5-facher Cross-Validation validiert. `caret` unterstützt dafür standardisierte Resampling- und Performance-Metriken wie RMSE. 
 
 Der Datensatz wurde zuvor:
 
@@ -62,7 +62,7 @@ Der Vergleich zeigt:
 
 ## Variable Importance
 
-Die Variable-Importance-Analyse zeigt, welche Prädiktoren vom GBM-Modell am stärksten genutzt werden, um Vorhersagen zu verbessern. Wichtig ist dabei: Importance beschreibt keine Kausalität, sondern nur die Bedeutung für die Vorhersageleistung des Modells. [web:3][web:6][web:9]
+Die Variable-Importance-Analyse zeigt, welche Prädiktoren vom GBM-Modell am stärksten genutzt werden, um Vorhersagen zu verbessern. Wichtig ist dabei: Importance beschreibt keine Kausalität, sondern nur die Bedeutung für die Vorhersageleistung des Modells.
 
 ## Sensitivitätsanalyse (Leave-One-Variable-Out)
 
