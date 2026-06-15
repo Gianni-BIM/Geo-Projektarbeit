@@ -1,256 +1,114 @@
-# Analyse der Einflussfaktoren auf den Soil Health Index mittels Conditional Inference Forest
+# Machine-Learning-Ansatz (Gradient Boosting)
 
----
+Für die Modellierung wurde ein Gradient Boosting Machine (GBM) verwendet. Im Gegensatz zu Random Forest oder Conditional Inference Forest basiert GBM auf einem sequenziellen Lernansatz, bei dem viele schwache Entscheidungsbäume schrittweise zu einem starken Modell kombiniert werden. Jeder neue Baum wird dabei so trainiert, dass er die Fehler der vorherigen Bäume reduziert. [web:5][web:8]
 
-## Inhaltsverzeichnis
+## Methodische Idee
 
-* [Projektübersicht](#projektübersicht)
-* [Projektziele](#projektziele)
-* [Projektstruktur](#projektstruktur)
-* [Datengrundlage](#datengrundlage)
-* [Datenaufbereitung](#datenaufbereitung)
-* [Machine-Learning-Ansatz](#machine-learning-ansatz)
-* [Modellierung](#modellierung)
-* [Modellbewertung](#modellbewertung)
-* [Ergebnisse](#ergebnisse)
-* [Ergebnisse und Abbildungen](#ergebnisse-und-abbildungen)
-* [Workflow](#workflow)
-* [Einschränkungen](#einschränkungen)
-* [Verwendete Technologien](#verwendete-technologien)
-* [Autorinnen und Autoren](#autorinnen-und-autoren)
+Das Modell approximiert den Zusammenhang:
 
----
+SHI = f(Klima, Landnutzung, Landbedeckung, Topographie, ...)
 
-# Projektübersicht
+durch eine additive Funktion vieler kleiner Entscheidungsbäume:
 
-Die Bodengesundheit ist ein zentraler Indikator für die Funktionsfähigkeit von Ökosystemen, die landwirtschaftliche Produktivität und die nachhaltige Nutzung natürlicher Ressourcen. Ziel dieses Projekts ist die Analyse von Umweltfaktoren, die den **Soil Health Index (SHI)** beeinflussen.
+f(x) = Σ (learning rate × Baum_i(x))
 
-Zur Untersuchung der Zusammenhänge wird ein **Conditional Inference Forest (cForest)** eingesetzt, eine erweiterte Form des Random-Forest-Algorithmus. Das Modell ermöglicht die Identifikation wichtiger Einflussgrößen sowie die Analyse komplexer, nichtlinearer Beziehungen zwischen Umweltvariablen und Bodengesundheit.
+## Vorteile des GBM-Ansatzes
 
-### Forschungsfrage
-
-> Welche Umweltfaktoren beeinflussen den Soil Health Index (SHI), wie stark wirken sie und welche Wechselwirkungen bestehen zwischen ihnen?
-
----
-
-# Projektziele
-
-* Identifikation der wichtigsten Einflussfaktoren auf die Bodengesundheit
-* Quantifizierung des Einflusses von Klima-, Landnutzungs- und Topographievariablen
-* Untersuchung nichtlinearer Zusammenhänge und Interaktionen
-* Bewertung der Vorhersageleistung von Machine-Learning-Modellen
-* Interpretation der Ergebnisse im Kontext räumlicher Umweltprozesse
-
----
-
-# Projektstruktur
-
-```text
-Geo-Projektarbeit/
-│
-├── finalize_data_prep/      # Datenaufbereitung
-├── ML-rf-Ioannis/           # Skripte für Modellierung und Auswertung
-├── WebAnwendung/            # Ergebnisse, Abbildungen und Karte
-└── README.md
-```
-
----
-
-# Datengrundlage
-
-Für die Analyse wurden verschiedene Umwelt- und Geodatenquellen zusammengeführt.
-
-## Zielvariable
-
-| Variable | Beschreibung      |
-| -------- | ----------------- |
-| SHI      | Soil Health Index |
-
-## Einflussvariablen
-
-| Variable                  | Beschreibung                |
-| ------------------------- | --------------------------- |
-| rain_mmsqm_mean_1995_2024 | Mittlerer Niederschlag      |
-| temp_c_mean               | Mittlere Temperatur         |
-| height_m                  | Höhe über dem Meeresspiegel |
-| land_use                  | Landnutzung                 |
-| land_cover                | Landbedeckung               |
-| climate_name              | Klimazone                   |
-
----
-
-# Datenaufbereitung
-
-Die Datenaufbereitung bildet die Grundlage der Analyse und umfasst folgende Arbeitsschritte:
-
-* Zusammenführung verschiedener Datensätze
-* Entfernung von Identifikations- und Koordinatenfeldern
-* Behandlung fehlender Werte
-* Erkennung und Bereinigung von Ausreißern
-* Filterung seltener Kategorien (weniger als 30 Beobachtungen)
-* Umwandlung kategorialer Variablen in Faktoren
-* Erstellung eines konsistenten Datensatzes für das Machine Learning
-
-### Ergebnis
-
-> Ein bereinigter und modellfähiger Datensatz für die weitere Analyse.
-
----
-
-# Machine-Learning-Ansatz
-
-Für die Modellierung wird ein **Conditional Inference Forest (cForest)** verwendet.
-
-Im Vergleich zu klassischen Random-Forest-Modellen bietet dieser Ansatz mehrere Vorteile:
-
-* Reduzierung von Verzerrungen bei der Variablenauswahl
-* Nutzung statistisch signifikanter Splits
-* Erkennung komplexer und nichtlinearer Zusammenhänge
-* Berücksichtigung von Interaktionen zwischen Variablen
-* Interpretation der Bedeutung einzelner Einflussgrößen
-
----
-
-# Modellierung
-
-## Ziel des Modells
-
-Das Modell beschreibt den Zusammenhang zwischen Bodengesundheit und Umweltbedingungen:
-
-```text
-SHI = f(Klima, Landnutzung, Landbedeckung, Höhe, ...)
-```
-
-> Das Ziel des Modells ist nicht die Identifikation der „besten Böden“, sondern die Erklärung von Unterschieden im Soil Health Index.
+- Sehr gute Vorhersageleistung bei nichtlinearen Daten.
+- Flexible Modellierung komplexer Zusammenhänge.
+- Automatische Berücksichtigung von Interaktionen.
+- Gute Performance auch bei gemischten Datentypen.
 
 ## Hyperparameter
 
-| Parameter    | Beschreibung                       |
-| ------------ | ---------------------------------- |
-| ntree        | Anzahl der Bäume                   |
-| mtry         | Anzahl der Variablen pro Split     |
-| mincriterion | Signifikanzniveau für Aufteilungen |
+Die Modellleistung hängt stark von folgenden Parametern ab:
 
-## Optimierung
+| Parameter | Bedeutung |
+|---|---|
+| `n.trees` | Anzahl der Boosting-Iterationen |
+| `interaction.depth` | Maximale Tiefe der einzelnen Bäume |
+| `shrinkage` | Lernrate; kleinere Werte führen zu stabilerem Lernen |
+| `n.minobsinnode` | Minimale Beobachtungen pro Terminalknoten |
 
-Zur Verbesserung der Modellleistung wurde eine Grid Search über verschiedene Parameterkombinationen durchgeführt.
+Zur Optimierung wurde eine Grid Search mittels `caret` durchgeführt. Die wichtigsten GBM-Hyperparameter sind genau diese Größen, und `shrinkage` sowie `interaction.depth` werden typischerweise gemeinsam mit `n.trees` getunt. [web:2][web:5][web:8]
 
-Die Ergebnisse werden gespeichert unter:
+## Modellierung
 
-```text
-output/parameter_grid_results.csv
-```
+Das GBM-Modell wurde mit der `caret::train()`-Funktion trainiert und mittels 5-facher Cross-Validation validiert. `caret` unterstützt dafür standardisierte Resampling- und Performance-Metriken wie RMSE. [web:4][web:7]
 
----
+Der Datensatz wurde zuvor:
 
-# Modellbewertung
+- bereinigt (Missing Values, Ausreißer).
+- kategoriale Variablen als Faktoren kodiert.
+- in Trainings- (80%) und Testdaten (20%) aufgeteilt.
 
-Die Bewertung erfolgt mithilfe folgender Kennzahlen:
+## Ziel
 
-## Out-of-Bag R² (OOB-R²)
+Das Ziel ist die möglichst präzise Vorhersage des Soil Health Index (SHI) auf Basis von Umweltvariablen.
 
-Maß für die erklärte Varianz des Modells.
+## Modellbewertung
 
-## Root Mean Squared Error (RMSE)
+Die Modellgüte wurde anhand folgender Kennzahlen bewertet:
 
-Maß für den durchschnittlichen Vorhersagefehler.
+- RMSE (Root Mean Squared Error): Misst die durchschnittliche Abweichung zwischen beobachteten und vorhergesagten SHI-Werten.
+- R² / `postResample()`: Bewertet die erklärte Varianz im Testdatensatz.
 
-## Observed vs. Predicted
+### Observed-vs-Predicted-Plot
 
-Vergleich zwischen beobachteten und vorhergesagten SHI-Werten zur Beurteilung der Modellgüte.
+Der Vergleich zeigt:
 
----
+- Nähe zur 1:1-Linie: gute Vorhersagequalität.
+- Systematische Abweichungen: Bias im Modell.
 
-# Ergebnisse
+## Variable Importance
 
-Das Modell liefert Informationen zu:
+Die Variable-Importance-Analyse zeigt, welche Prädiktoren vom GBM-Modell am stärksten genutzt werden, um Vorhersagen zu verbessern. Wichtig ist dabei: Importance beschreibt keine Kausalität, sondern nur die Bedeutung für die Vorhersageleistung des Modells. [web:3][web:6][web:9]
 
-* der Bedeutung einzelner Einflussfaktoren
-* Zusammenhängen zwischen Umweltvariablen
-* Interaktionen zwischen Klima und Landnutzung
-* Verteilungsmustern des Soil Health Index
+## Sensitivitätsanalyse (Leave-One-Variable-Out)
 
-## Zentrale Erkenntnisse
+Zur robusteren Interpretation wurde eine Analyse durchgeführt, bei der jeweils eine Variable entfernt wurde.
 
-* Der Niederschlag stellt den stärksten Einflussfaktor auf den SHI dar.
-* Landnutzungsformen beeinflussen die Bodengesundheit auf lokaler Ebene.
-* Klimatische Bedingungen erklären einen großen Teil der SHI-Variation.
-* Die Wechselwirkungen mehrerer Umweltfaktoren sind entscheidend für die Ausprägung der Bodengesundheit.
+### Ziel
 
----
+- Einfluss einzelner Variablen auf den RMSE messen.
+- Stabilität des Modells prüfen.
 
-# Ergebnisse und Abbildungen
+### Ergebnis
 
-Im Verzeichnis `output/` werden die wichtigsten Resultate gespeichert:
+- Variablen mit starkem Einfluss führen zu deutlicher Verschlechterung des RMSE.
+- Redundante Variablen zeigen kaum Effekt.
 
-```text
-feature_importance.png
-correlation_matrix.png
-shi_by_climate.png
-observed_vs_predicted.png
-decision_tree.png
-model_summary.txt
-parameter_grid_results.csv
-```
+## Ergebnisse
 
----
+Das GBM-Modell zeigt:
 
-# Workflow
+- Hohe Vorhersagegüte für den Soil Health Index.
+- Starke Bedeutung von Klima- und Landnutzungsvariablen.
+- Nichtlineare Zusammenhänge zwischen Umweltfaktoren und SHI.
+- Robuste Modellleistung bei Cross-Validation.
 
-```text
-Rohdaten
-    │
-    ▼
-Datenaufbereitung
-    │
-    ▼
-Explorative Analyse (EDA)
-    │
-    ▼
-Training des cForest-Modells
-    │
-    ▼
-Hyperparameter-Optimierung
-    │
-    ▼
-Modellbewertung
-    │
-    ▼
-Interpretation der Ergebnisse
-```
+## Vergleich zum Random Forest / cForest-Ansatz
 
----
+Im Vergleich zum vorherigen cForest-Modell zeigt GBM:
 
-# Einschränkungen
+- oft bessere Vorhersageleistung (niedriger RMSE),
+- stärkere Sensitivität gegenüber Hyperparametern,
+- weniger „statistische Strenge“, dafür höhere Flexibilität,
+- stärkere Tendenz zur Optimierung auf Vorhersagefehler.
 
-* Das Modell beschreibt statistische Zusammenhänge, keine Kausalitäten.
-* Relevante Bodenparameter wie Bodenchemie oder Bodenstruktur sind nicht enthalten.
-* Räumliche Autokorrelation wird nicht explizit berücksichtigt.
-* Die Aussagekraft hängt von Qualität und Vollständigkeit der Eingangsdaten ab.
+## Einschränkungen
 
----
+- GBM ist empfindlich gegenüber der Hyperparameterwahl.
+- Höhere Gefahr von Overfitting ohne Tuning.
+- Interpretierbarkeit geringer als bei cForest.
+- Keine kausalen Aussagen möglich.
+- Räumliche Autokorrelation wird weiterhin nicht explizit modelliert.
 
-# Verwendete Technologien
+## Verwendete Technologien
 
-* R
-* tidyverse
-* ggplot2
-* partykit
-* cForest
-* GIS-basierte Umwelt- und Geodaten
-
----
-
-# Autorinnen und Autoren
-
-* Ivonne Giske
-* Nora König
-* Sina Philipowski
-* Yannick Trog
-* Ioannis Svolos
-
----
-
-**Berliner Hochschule für Technik (BHT)**
-
-Geo-Projektarbeit
+- R
+- `caret`
+- `gbm`
+- `ggplot2`
+- `sf`
+- `tidyverse`
