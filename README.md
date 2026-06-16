@@ -1,3 +1,9 @@
+# Ausführung des R Codes
+- R Code in R Studio öffnen
+- Pfad zu den points anpassen (oder getwd()) anpassen
+- dann sollte code laufen
+- ggf. noch benötigte R Biblioteken laden
+
 # Machine-Learning-Ansatz (Gradient Boosting)
 
 Für die Modellierung wurde ein Gradient Boosting Machine (GBM) verwendet. Im Gegensatz zu Random Forest oder Conditional Inference Forest basiert GBM auf einem sequenziellen Lernansatz, bei dem viele schwache Entscheidungsbäume schrittweise zu einem starken Modell kombiniert werden. Jeder neue Baum wird dabei so trainiert, dass er die Fehler der vorherigen Bäume reduziert.
