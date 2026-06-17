@@ -4,9 +4,9 @@ Analyse des Soil Health Index (SHI) in Europa mithilfe eines Conditional Inferen
 
 ---
 
-## Setup
+## 1. Setup
 
-### 1. Repository klonen
+### 1.1 Repository klonen
 
 ```bash
 git clone https://github.com/Gianni-BIM/Geo-Projektarbeit.git
@@ -15,12 +15,12 @@ git checkout ML-rf-Ioannis
 cd RandomForest_R
 ```
 
-### 2. R installieren
+### 1.2. R installieren
 
 - [R herunterladen](https://cran.r-project.org/) (Version ≥ 4.2)
 - Optional: [RStudio](https://posit.co/downloads/) als IDE
 
-### 3. R‑Pakete installieren
+### 1.3. R‑Pakete installieren
 
 ```bash
 Rscript install_packages.R
@@ -32,7 +32,7 @@ install.packages(c("party", "mgcv", "ggplot2", "reshape2",
                    "gridExtra", "GGally", "spdep", "partykit"))
 ```
 
-### 4. Skripte ausführen
+### 1.4. Skripte ausführen
 
 ```bash
 # Basismodell (ohne räumlichen Trend)
@@ -44,7 +44,7 @@ Rscript random_forest_shi_lat-long.R
 
 ---
 
-## Gegeben
+## 2. Gegeben
 
 Räumliche Stichproben (Punkte in Europa) mit folgenden Umweltparametern:
 
@@ -59,7 +59,7 @@ Räumliche Stichproben (Punkte in Europa) mit folgenden Umweltparametern:
 
 Im erweiterten Skript (`lat-long`) kommt zusätzlich `spatial_trend` hinzu — ein per GAM erzeugtes Feature, das den räumlichen Hintergrundtrend codiert.
 
-## Gesucht
+## 3. Gesucht
 
 - **Vorhersage** des Soil Health Index (SHI)
 - **Einflussfaktoren** — welche Umweltparameter bestimmen die Bodengesundheit am stärksten?
@@ -67,7 +67,7 @@ Im erweiterten Skript (`lat-long`) kommt zusätzlich `spatial_trend` hinzu — e
 
 ---
 
-## Methodik
+## 4. Methodik
 
 1. **Datenaufbereitung** — Entfernen von IDs/Koordinaten, Hobley‑Filterung (Kategorien < 30 Beobachtungen), Faktorisierung.
 2. **Feature Engineering** (nur lat‑long) — GAM‑Thin‑Plate‑Spline über Koordinaten → `spatial_trend`.
@@ -78,7 +78,7 @@ Im erweiterten Skript (`lat-long`) kommt zusätzlich `spatial_trend` hinzu — e
 
 ---
 
-## Ergebnisse
+## 5. Ergebnisse
 
 ### Vergleich: Basismodell vs. erweitertes Modell (lat‑long)
 
@@ -110,8 +110,16 @@ Im erweiterten Skript (`lat-long`) kommt zusätzlich `spatial_trend` hinzu — e
 - Der **räumliche Trend** codiert großräumige West‑Ost‑ und Nord‑Süd‑Gradienten, die über reine Klima‑ und Landnutzungsdaten hinausgehen.
 
 ---
+## 6. Visuelle Erklärung des Skriptes `random_forest_shi_lat-long.R`
 
-## Projektstruktur
+https://codesplain.ai/share/3e44c29bb29f99337efd5cdf1465804d
+
+![alt text](temp/image4.png)
+![alt text](temp/image-1.png)
+![alt text](temp/image-2.png)
+
+
+## 7. Projektstruktur
 
 ```
 RandomForest_R
@@ -119,6 +127,7 @@ RandomForest_R
 ├── random_forest_shi.R                  # Basismodell
 ├── random_forest_shi_lat-long.R         # Erweitertes Modell mit Lat/Long
 ├── random_forest_shi_lat-long.Rmd       # Interaktiver Report (RMarkdown)
+├── tps_fitting_plot.R                   # Thin-Plate-Spline-Fitting (GAM) & 2D/3D-Visualisierung
 ├── install_packages.R                   # Paketinstallation
 │
 ├── input/
@@ -132,7 +141,8 @@ RandomForest_R
 │
 ├── output_lat-long/                     # Ergebnisse erweitertes Modell
 │   ├── Grafiken_png/
-│   └── Modell_Zusammenfassung/
+│   ├── Modell_Zusammenfassung/
+│   └── tps_fitting_plot-Modell/         # Ergebnisse des Thin-Plate-Spline Fitts (2D/3D-Plots & Walkthrough)
 │
 ├── Dokumentation/
 │   ├── DATEN_DOKUMENTATION.md
