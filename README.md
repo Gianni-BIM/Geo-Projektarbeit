@@ -13,7 +13,6 @@
 * [Modellierung](#modellierung)
 * [Modellbewertung](#modellbewertung)
 * [Ergebnisse](#ergebnisse)
-* [Ergebnisse und Abbildungen](#ergebnisse-und-abbildungen)
 * [Workflow](#workflow)
 * [Einschränkungen](#einschränkungen)
 * [Verwendete Technologien](#verwendete-technologien)
@@ -49,7 +48,8 @@ Zur Untersuchung der Zusammenhänge wird ein **Conditional Inference Forest (cFo
 Geo-Projektarbeit/
 │
 ├── finalize_data_prep/      # Datenaufbereitung
-├── ML-rf-Ioannis/           # Skripte für Modellierung und Auswertung
+├── ML-rf-Ioannis/           # Skripte für Modellierung und Auswertung mit Random Forest
+├── ML-gdb-Sina/             # Skripte für Modellierung und Auswertung mit Gradient Boosting
 ├── WebAnwendung/            # Ergebnisse, Abbildungen und Karte
 └── README.md
 ```
@@ -58,7 +58,7 @@ Geo-Projektarbeit/
 
 # Datengrundlage
 
-Für die Analyse wurden verschiedene Umwelt- und Geodatenquellen zusammengeführt.
+Für die Analyse wurden verschiedene Umwelt- und Geodatenquellen in ganz Europa zusammengeführt.
 
 ## Zielvariable
 
@@ -68,14 +68,15 @@ Für die Analyse wurden verschiedene Umwelt- und Geodatenquellen zusammengeführ
 
 ## Einflussvariablen
 
-| Variable                  | Beschreibung                |
-| ------------------------- | --------------------------- |
-| rain_mmsqm_mean_1995_2024 | Mittlerer Niederschlag      |
-| temp_c_mean               | Mittlere Temperatur         |
-| height_m                  | Höhe über dem Meeresspiegel |
-| land_use                  | Landnutzung                 |
-| land_cover                | Landbedeckung               |
-| climate_name              | Klimazone                   |
+| Variable                  | Beschreibung                                              |
+| ------------------------- | --------------------------------------------------------- |
+| rain_mmsqm_mean_1995_2024 | Mittlerer Niederschlag (mm)                               |
+| temp_c_mean_1995_2024     | Mittlere Temperatur (°C)                                  |
+| height_m                  | Topografische Höhe über dem Meeresspiegel (m)             |
+| land_use                  | Landnutzung (kategorisch)                                 |
+| land_cover                | Landbedeckung (kategorisch)                               |
+| climate_name              | Köppen-Geiger Klimazone (kategorisch)                     |
+| spatial_trend             | Räumlicher Hintergrundtrend (per GAM aus Koordinaten)     |
 
 ---
 
@@ -84,30 +85,29 @@ Für die Analyse wurden verschiedene Umwelt- und Geodatenquellen zusammengeführ
 Die Datenaufbereitung bildet die Grundlage der Analyse und umfasst folgende Arbeitsschritte:
 
 * Zusammenführung verschiedener Datensätze
-* Entfernung von Identifikations- und Koordinatenfeldern
-* Behandlung fehlender Werte
-* Erkennung und Bereinigung von Ausreißern
-* Filterung seltener Kategorien (weniger als 30 Beobachtungen)
-* Umwandlung kategorialer Variablen in Faktoren
-* Erstellung eines konsistenten Datensatzes für das Machine Learning
+* Entfernung von reinen Identifikationsfeldern
+* Umwandlung der numerischen Klima-Klassen-IDs in lesbare Textbeschreibungen (`climate_name`)
+* **Feature Engineering:** Berechnung des neuen Features `spatial_trend` aus den Geokoordinaten (Längen- und Breitengrad) mittels eines verallgemeinerten additiven Modells (GAM Thin-Plate-Spline)
+* Filterung seltener Kategorien nach der Hobley-Regel (weniger als 30 Beobachtungen werden ausgeschlossen)
+* Umwandlung kategorialer Variablen in R-Faktoren (native Verarbeitung ohne One-Hot-Encoding!)
 
 ### Ergebnis
 
-> Ein bereinigter und modellfähiger Datensatz für die weitere Analyse.
+> Ein bereinigter, um räumliche Trends angereicherter und modellfähiger Datensatz für die weitere Analyse.
 
 ---
 
 # Machine-Learning-Ansatz
 
-Für die Modellierung wird ein **Conditional Inference Forest (cForest)** verwendet.
+Für die Modellierung wird ein **Conditional Inference Forest (cForest)** aus dem R-Paket `party` verwendet.
 
-Im Vergleich zu klassischen Random-Forest-Modellen bietet dieser Ansatz mehrere Vorteile:
+Im Vergleich zu klassischen Random-Forest-Modellen bietet dieser Ansatz entscheidende Vorteile:
 
-* Reduzierung von Verzerrungen bei der Variablenauswahl
-* Nutzung statistisch signifikanter Splits
-* Erkennung komplexer und nichtlinearer Zusammenhänge
-* Berücksichtigung von Interaktionen zwischen Variablen
-* Interpretation der Bedeutung einzelner Einflussgrößen
+* Unvoreingenommene Auswahl von Split-Variablen (keine Bevorzugung von Faktoren mit vielen Stufen)
+* Nutzung statistisch signifikanter Hypothesentests (p-Werte) für das Splitting
+* **Native Verarbeitung kategorialer Daten:** Der Algorithmus kann Gruppen direkt spalten (z.B. `{Wald, Grasland}` vs. `{Ackerbau, Urban}`), ohne dass Kategorien aufwendig in binäre Dummy-Variablen übersetzt werden müssen
+* Erkennung komplexer, nichtlinearer Zusammenhänge und Interaktionen
+* Zuverlässige, permutationsbasierte Interpretation der Variable Importance
 
 ---
 
@@ -115,31 +115,13 @@ Im Vergleich zu klassischen Random-Forest-Modellen bietet dieser Ansatz mehrere 
 
 ## Ziel des Modells
 
-Das Modell beschreibt den Zusammenhang zwischen Bodengesundheit und Umweltbedingungen:
+Das Modell beschreibt den komplexen Zusammenhang zwischen Bodengesundheit und Umweltbedingungen:
 
 ```text
-SHI = f(Klima, Landnutzung, Landbedeckung, Höhe, ...)
+SHI = f(Klima, Landnutzung, Landbedeckung, Topografie, Räumlicher Trend)
 ```
 
 > Das Ziel des Modells ist nicht die Identifikation der „besten Böden“, sondern die Erklärung von Unterschieden im Soil Health Index.
-
-## Hyperparameter
-
-| Parameter    | Beschreibung                       |
-| ------------ | ---------------------------------- |
-| ntree        | Anzahl der Bäume                   |
-| mtry         | Anzahl der Variablen pro Split     |
-| mincriterion | Signifikanzniveau für Aufteilungen |
-
-## Optimierung
-
-Zur Verbesserung der Modellleistung wurde eine Grid Search über verschiedene Parameterkombinationen durchgeführt.
-
-Die Ergebnisse werden gespeichert unter:
-
-```text
-output/parameter_grid_results.csv
-```
 
 ---
 
@@ -163,60 +145,50 @@ Vergleich zwischen beobachteten und vorhergesagten SHI-Werten zur Beurteilung de
 
 # Ergebnisse
 
-Das Modell liefert Informationen zu:
+Das Modell liefert konkrete, datengetriebene Informationen zu:
 
-* der Bedeutung einzelner Einflussfaktoren
-* Zusammenhängen zwischen Umweltvariablen
-* Interaktionen zwischen Klima und Landnutzung
-* Verteilungsmustern des Soil Health Index
+* der prozentualen Wichtigkeit einzelner Einflussfaktoren auf die Bodengesundheit (Variable Importance)
+* komplexen Interaktionen zwischen geografischer Lage, Klima und Landnutzung
+* den spezifischen Mustern, unter denen der Soil Health Index (SHI) steigt oder fällt
+* dem Einfluss großräumiger Hintergrundtrends, isoliert von lokalen Gegebenheiten
 
-## Zentrale Erkenntnisse
+## Zentrale Erkenntnisse 
 
-* Der Niederschlag stellt den stärksten Einflussfaktor auf den SHI dar.
-* Landnutzungsformen beeinflussen die Bodengesundheit auf lokaler Ebene.
-* Klimatische Bedingungen erklären einen großen Teil der SHI-Variation.
-* Die Wechselwirkungen mehrerer Umweltfaktoren sind entscheidend für die Ausprägung der Bodengesundheit.
+* **Der räumliche Makrotrend und die Landbedeckung sind die stärksten Treiber:** Im erweiterten Modell erklären die geografische Lage (`spatial_trend`, ~27%) und die direkte Form der Landbedeckung (~32%) die meiste Variation im SHI, noch vor dem reinen Niederschlag.
+* **Positive Effekte durch Feuchtigkeit und Naturbelassenheit:** Dauerhaft waldbedeckte Flächen (Forstwirtschaft) und naturnahes Grasland in gemäßigten, feuchten Klimazonen (z.B. Atlantikküste) maximieren die Bodengesundheit.
+* **Negative Effekte durch Intensivnutzung und Trockenheit:** Intensive Ackerbaunutzung sowie trockene, heiße Bedingungen senken den SHI nachweislich. Der SHI verringert sich drastisch in mediterranen und kontinental trockenen Gebieten.
+* **Starke Wechselwirkungen (Interaktionen):** Die Entscheidungsbäume beweisen, dass die Faktoren nicht isoliert wirken. So mildert beispielsweise eine allgemein günstige (feuchte) geografische Lage die negativen Effekte intensiver Landwirtschaft zum Teil spürbar ab, während Ackerbau in Trockengebieten extrem bodenschädigend wirkt.
+* **Gute Modellgüte:** Das Modell erklärt ca. 40 % der realen Varianz des SHI. Für komplexe ökologische Daten (bei denen Aspekte wie Bodenbiologie oder Geologie im Datensatz fehlen) ist dies ein ausgezeichneter und hochsignifikanter Wert.
 
----
-
-# Ergebnisse und Abbildungen
-
-Im Verzeichnis `output/` werden die wichtigsten Resultate gespeichert:
-
-```text
-feature_importance.png
-correlation_matrix.png
-shi_by_climate.png
-observed_vs_predicted.png
-decision_tree.png
-model_summary.txt
-parameter_grid_results.csv
-```
 
 ---
 
 # Workflow
 
 ```text
-Rohdaten
+Rohdaten (inkl. Koordinaten Lat/Long)
     │
     ▼
-Datenaufbereitung
+Datenaufbereitung (Filtern, Faktoren bilden)
     │
     ▼
-Explorative Analyse (EDA)
+Feature Engineering (GAM-Modell berechnet räumlichen Trend "spatial_trend")
     │
     ▼
-Training des cForest-Modells
+Explorative Analyse (EDA) (Prüfung von Korrelationen inkl. spatial_trend)
     │
     ▼
-Hyperparameter-Optimierung
+Hyperparameter-Optimierung (Grid Search für mtry & mincriterion)
     │
     ▼
-Modellbewertung
+Training des cForest-Modells (Umweltfaktoren + spatial_trend)
     │
     ▼
-Interpretation der Ergebnisse
+Modellbewertung (OOB R², RMSE, Vorhersagegüte & Residuen)
+    │
+    ▼
+Interpretation der Ergebnisse (Variable Importance, Entscheidungsbaum)
+
 ```
 
 ---
