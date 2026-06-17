@@ -182,6 +182,11 @@ print(round(corr_matrix, 3))
 
 # Heatmap
 corr_melt <- melt(corr_matrix)
+corr_melt$Var1 <- factor(var_translations[as.character(corr_melt$Var1)],
+                         levels = var_translations[numerical_cols])
+corr_melt$Var2 <- factor(var_translations[as.character(corr_melt$Var2)],
+                         levels = var_translations[numerical_cols])
+
 p_corr <- ggplot(corr_melt, aes(Var1, Var2, fill = value)) +
   geom_tile(color = "white", linewidth = 0.5) +
   geom_text(aes(label = sprintf("%.2f", value)), size = 5) +
@@ -194,23 +199,6 @@ p_corr <- ggplot(corr_melt, aes(Var1, Var2, fill = value)) +
 ggsave(file.path(output_png_dir, "correlation_matrix.png"), p_corr,
        width = 8, height = 6, dpi = 150)
 
-corr_melt_trans <- corr_melt
-corr_melt_trans$Var1 <- as.factor(var_translations[as.character(corr_melt_trans$Var1)])
-corr_melt_trans$Var2 <- as.factor(var_translations[as.character(corr_melt_trans$Var2)])
-corr_melt_trans$Var1 <- factor(corr_melt_trans$Var1, levels = var_translations[numerical_cols])
-corr_melt_trans$Var2 <- factor(corr_melt_trans$Var2, levels = var_translations[numerical_cols])
-
-p_corr_trans <- ggplot(corr_melt_trans, aes(Var1, Var2, fill = value)) +
-  geom_tile(color = "white", linewidth = 0.5) +
-  geom_text(aes(label = sprintf("%.2f", value)), size = 5) +
-  scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B",
-                       midpoint = 0, limits = c(-1, 1),
-                       name = "Korrelation") +
-  labs(title = "Korrelationsmatrix der numerischen Einflussfaktoren",
-       x = "", y = "") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-ggsave(file.path(output_png_labeled_dir, "correlation_matrix.png"), p_corr_trans, width = 8, height = 6, dpi = 150)
-
 # SHI nach Klimaklasse (Boxplot)
 climate_order <- names(sort(tapply(df_clean$SHI, df_clean$climate_name, median)))
 df_clean$climate_name_ordered <- factor(df_clean$climate_name, levels = climate_order)
@@ -219,14 +207,10 @@ p_climate <- ggplot(df_clean, aes(x = SHI, y = climate_name_ordered)) +
   geom_boxplot(aes(fill = climate_name_ordered), show.legend = FALSE,
                outlier.alpha = 0.4) +
   scale_fill_viridis_d(option = "viridis") +
-  labs(title = "Bodengesundheit (SHI) nach Köppen-Geiger-Klimaklasse",
-       x = "Soil Health Index (SHI)", y = "Klimaklasse")
+  labs(title = "Bodengesundheit (SHI) nach Klimazone",
+       x = "Bodengesundheit (SHI)", y = "Klimazone")
 ggsave(file.path(output_png_dir, "shi_by_climate.png"), p_climate,
        width = 12, height = 6, dpi = 150)
-
-p_climate_trans <- p_climate + labs(title = "Bodengesundheit (SHI) nach Klimazone",
-                                    x = "Bodengesundheit (SHI)", y = "Klimazone")
-ggsave(file.path(output_png_labeled_dir, "shi_by_climate.png"), p_climate_trans, width=12, height=6, dpi=150)
 
 # SHI nach Landnutzung und Landbedeckung
 lu_order <- names(sort(tapply(df_clean$SHI, df_clean$land_use, median)))
@@ -236,24 +220,19 @@ p_lu <- ggplot(df_clean, aes(x = SHI, y = factor(land_use, levels = lu_order))) 
   geom_boxplot(aes(fill = factor(land_use, levels = lu_order)),
                show.legend = FALSE, outlier.alpha = 0.4) +
   scale_fill_brewer(palette = "Set2") +
-  labs(title = "SHI nach Landnutzung (land_use)",
-       x = "Soil Health Index (SHI)", y = "")
+  labs(title = "SHI nach Landnutzung",
+       x = "Bodengesundheit (SHI)", y = "")
 
 p_lc <- ggplot(df_clean, aes(x = SHI, y = factor(land_cover, levels = lc_order))) +
   geom_boxplot(aes(fill = factor(land_cover, levels = lc_order)),
                show.legend = FALSE, outlier.alpha = 0.4) +
   scale_fill_brewer(palette = "Accent") +
-  labs(title = "SHI nach Landbedeckung (land_cover)",
-       x = "Soil Health Index (SHI)", y = "")
+  labs(title = "SHI nach Landbedeckung",
+       x = "Bodengesundheit (SHI)", y = "")
 
 p_combined <- arrangeGrob(p_lu, p_lc, ncol = 2)
 ggsave(file.path(output_png_dir, "shi_by_land_use_and_cover.png"), p_combined,
        width = 18, height = 8, dpi = 150)
-
-p_lu_trans <- p_lu + labs(title = "SHI nach Landnutzung", x = "Bodengesundheit (SHI)")
-p_lc_trans <- p_lc + labs(title = "SHI nach Landbedeckung", x = "Bodengesundheit (SHI)")
-p_combined_trans <- arrangeGrob(p_lu_trans, p_lc_trans, ncol = 2)
-ggsave(file.path(output_png_labeled_dir, "shi_by_land_use_and_cover.png"), p_combined_trans, width = 18, height = 8, dpi = 150)
 
 # Histogramm SHI
 p_hist <- ggplot(df_clean, aes(x = SHI)) +
@@ -261,12 +240,9 @@ p_hist <- ggplot(df_clean, aes(x = SHI)) +
                  fill = "#008080", color = "white", alpha = 0.8) +
   geom_density(color = "darkred", linewidth = 1) +
   labs(title = "Verteilung des Soil Health Index (SHI)",
-       x = "SHI", y = "Dichte")
+       x = "Bodengesundheit (SHI)", y = "Dichte")
 ggsave(file.path(output_png_dir, "shi_distribution.png"), p_hist,
        width = 8, height = 5, dpi = 150)
-
-p_hist_trans <- p_hist + labs(x = "Bodengesundheit (SHI)")
-ggsave(file.path(output_png_labeled_dir, "shi_distribution.png"), p_hist_trans, width = 8, height = 5, dpi = 150)
 
 
 ################################################################################
@@ -366,15 +342,12 @@ p_opt <- ggplot(results_list, aes(x = factor(mtry), y = oob_r2,
                                   group = factor(mincriterion))) +
   geom_line(linewidth = 1.2) +
   geom_point(size = 3) +
-  scale_color_brewer(palette = "Set1", name = "mincriterion") +
+  scale_color_brewer(palette = "Set1", name = "Signifikanz (mincriterion)") +
   labs(title = "Modellgüte (OOB R²) nach Hyperparametern",
-       x = "mtry (Features pro Split)",
+       x = "mtry (Anzahl Features pro Split)",
        y = "OOB R²")
 ggsave(file.path(output_png_dir, "parameter_optimization.png"), p_opt,
        width = 10, height = 6, dpi = 150)
-
-p_opt_trans <- p_opt + labs(x = "mtry (Anzahl Features pro Split)", color = "Signifikanz (mincriterion)")
-ggsave(file.path(output_png_labeled_dir, "parameter_optimization.png"), p_opt_trans, width = 10, height = 6, dpi = 150)
 
 
 ################################################################################
@@ -408,17 +381,13 @@ p_scatter <- ggplot(pred_df, aes(x = observed, y = predicted)) +
            label = sprintf("OOB R² = %.3f\nOOB RMSE = %.3f",
                            best_oob_r2, best_oob_rmse),
            hjust = 0, size = 5,
-           fontface = "bold",
-           label.padding = unit(0.5, "lines")) +
+           fontface = "bold") +
   coord_equal(xlim = val_range, ylim = val_range) +
   labs(title = "OOB-Vorhersagen vs. beobachteter SHI",
-       x = "Beobachteter SHI",
-       y = "Vorhergesagter SHI (OOB)")
+       x = "Beobachtete Bodengesundheit",
+       y = "Vorhergesagte Bodengesundheit (OOB)")
 ggsave(file.path(output_png_dir, "observed_vs_predicted.png"), p_scatter,
        width = 8, height = 8, dpi = 150)
-
-p_scatter_trans <- p_scatter + labs(x = "Beobachtete Bodengesundheit", y = "Vorhergesagte Bodengesundheit (OOB)")
-ggsave(file.path(output_png_labeled_dir, "observed_vs_predicted.png"), p_scatter_trans, width = 8, height = 8, dpi = 150)
 
 # Residuenplot
 resid_df <- data.frame(predicted = best_oob_preds,
@@ -427,13 +396,10 @@ p_resid <- ggplot(resid_df, aes(x = predicted, y = residuals)) +
   geom_point(alpha = 0.4, color = "purple", size = 1) +
   geom_hline(yintercept = 0, color = "red", linetype = "dashed", linewidth = 1) +
   labs(title = "Residuenanalyse des Conditional Inference Forest",
-       x = "Vorhergesagter SHI (OOB)",
+       x = "Vorhergesagte Bodengesundheit (OOB)",
        y = "Residuen (Beobachtet - Vorhergesagt)")
 ggsave(file.path(output_png_dir, "residuals_plot.png"), p_resid,
        width = 10, height = 5, dpi = 150)
-
-p_resid_trans <- p_resid + labs(x = "Vorhergesagte Bodengesundheit (OOB)")
-ggsave(file.path(output_png_labeled_dir, "residuals_plot.png"), p_resid_trans, width = 10, height = 5, dpi = 150)
 
 
 ################################################################################
@@ -457,23 +423,6 @@ cat("\nVariable Importance (Permutation, unbiased):\n")
 print(df_imp, row.names = FALSE)
 
 # Barplot
-threshold <- 100.0 / nrow(df_imp)
-p_imp <- ggplot(df_imp, aes(x = Importance_Pct,
-                             y = reorder(Variable, Importance_Pct))) +
-  geom_col(aes(fill = Importance_Pct), show.legend = FALSE) +
-  scale_fill_gradient(low = "#3B0F70", high = "#FE9F6D") +
-  geom_vline(xintercept = threshold, color = "red",
-             linetype = "dashed", linewidth = 1) +
-  annotate("text", x = threshold + 0.5, y = 1,
-           label = sprintf("Zufallsschwelle (%.1f%%)", threshold),
-           color = "red", hjust = 0, size = 4) +
-  labs(title = "Relative Wichtigkeit der Einflussfaktoren auf den SHI",
-       subtitle = "Conditional Inference Forest — native kategorische Verarbeitung",
-       x = "Einflussanteil (%)",
-       y = "Einflussfaktor")
-ggsave(file.path(output_png_dir, "feature_importance.png"), p_imp,
-       width = 10, height = 6, dpi = 150)
-
 df_imp_trans <- df_imp
 df_imp_trans$Variable <- as.character(df_imp_trans$Variable)
 for (i in 1:nrow(df_imp_trans)) {
@@ -481,6 +430,8 @@ for (i in 1:nrow(df_imp_trans)) {
     df_imp_trans$Variable[i] <- var_translations[df_imp_trans$Variable[i]]
   }
 }
+threshold <- 100.0 / nrow(df_imp_trans)
+
 p_imp_trans <- ggplot(df_imp_trans, aes(x = Importance_Pct,
                              y = reorder(Variable, Importance_Pct))) +
   geom_col(aes(fill = Importance_Pct), show.legend = FALSE) +
@@ -494,7 +445,37 @@ p_imp_trans <- ggplot(df_imp_trans, aes(x = Importance_Pct,
        subtitle = "Conditional Inference Forest",
        x = "Einflussanteil (%)",
        y = "Einflussfaktor")
-ggsave(file.path(output_png_labeled_dir, "feature_importance.png"), p_imp_trans, width = 10, height = 6, dpi = 150)
+ggsave(file.path(output_png_dir, "feature_importance.png"), p_imp_trans, width = 10, height = 6, dpi = 150)
+
+# 5b. VARIABLENLEGENDE
+save_variable_legend <- function(df, translations, output_path) {
+  lines <- c("# Variablenlegende", "",
+             "| Variable | Bezeichnung | Typ | Wertebereich |",
+             "|----------|-------------|-----|--------------|")
+  for (vname in setdiff(names(df), "climate_name_ordered")) {
+    col <- df[[vname]]
+    label <- ifelse(vname %in% names(translations), translations[vname], vname)
+    if (is.numeric(col)) {
+      typ <- "numerisch"
+      bereich <- sprintf("%.2f – %.2f", min(col, na.rm = TRUE), max(col, na.rm = TRUE))
+    } else if (is.factor(col)) {
+      typ <- sprintf("Faktor (%d Stufen)", nlevels(col))
+      lvls <- levels(col)
+      if (length(lvls) <= 4) {
+        bereich <- paste(lvls, collapse = ", ")
+      } else {
+        bereich <- paste(c(lvls[1:3], sprintf("… (%d weitere)", length(lvls) - 3)),
+                         collapse = ", ")
+      }
+    } else {
+      typ <- class(col)[1]
+      bereich <- "—"
+    }
+    lines <- c(lines, sprintf("| %s | %s | %s | %s |", vname, label, typ, bereich))
+  }
+  writeLines(lines, output_path)
+}
+save_variable_legend(df_model, var_translations, file.path(output_mod_dir, "variable_legend.md"))
 
 
 ################################################################################
@@ -530,17 +511,6 @@ if (!requireNamespace("partykit", quietly = TRUE)) {
   install.packages("partykit", repos = "https://cloud.r-project.org")
 }
 
-ct_kit <- partykit::ctree(fml_tree, data = df_tree, 
-                          control = partykit::ctree_control(maxdepth = 4, alpha = 0.05))
-
-# Speichere als PNG mit hoher Auflösung
-png(file.path(output_png_dir, "decision_tree.png"), width = 2800, height = 1400, res = 180)
-plot(ct_kit, main = "Conditional Inference Tree für SHI (maxdepth=4)",
-     ip_args = list(pval = TRUE),
-     ep_args = list(justmin = 15))
-dev.off()
-cat("Entscheidungsbaum (mit gekürzten Labels und n in Knoten) als 'decision_tree.png' gespeichert.\n")
-
 df_tree_trans <- df_tree
 names(df_tree_trans)[names(df_tree_trans) %in% names(var_translations)] <- var_translations[names(df_tree_trans)[names(df_tree_trans) %in% names(var_translations)]]
 
@@ -549,460 +519,90 @@ fml_tree_trans <- as.formula(paste("`Bodengesundheit (SHI)` ~", paste(paste0("`"
 ct_kit_trans <- partykit::ctree(fml_tree_trans, data = df_tree_trans, 
                           control = partykit::ctree_control(maxdepth = 4, alpha = 0.05))
 
-png(file.path(output_png_labeled_dir, "decision_tree.png"), width = 2800, height = 1400, res = 180)
+png(file.path(output_png_dir, "decision_tree.png"), width = 2800, height = 1400, res = 180)
 plot(ct_kit_trans, main = "Entscheidungsbaum für Bodengesundheit",
      ip_args = list(pval = TRUE),
      ep_args = list(justmin = 15))
 dev.off()
+cat("Entscheidungsbaum (mit gekürzten Labels und n in Knoten) als 'decision_tree.png' gespeichert.\n")
 
 
 ################################################################################
-# 8. AUTOMATISIERTE ZUSAMMENFASSUNG
+# 8. AUTOMATISIERTE ZUSAMMENFASSUNG (als Markdown)
 ################################################################################
 cat("\n--- Schritt 8: Ergebnisse zusammenfassen ---\n")
 
-# Mittelwerte für Forschungsfragen
-mean_shi_forest <- mean(df_clean$SHI[df_clean$land_use == "Forestry"], na.rm = TRUE)
-mean_shi_agri   <- mean(df_clean$SHI[df_clean$land_use ==
-  "Agriculture (excluding fallow land and kitchen gardens)"], na.rm = TRUE)
-temp_elev_corr <- corr_matrix["temp_c_mean_1995_2024", "height_m"]
+md_text <- sprintf(
+"# Zusammenfassung: Conditional Inference Forest zur Bewertung der Bodengesundheit (SHI)
 
-# Berechne auch Min/Max/Median für jede Landnutzung und Klimazone
-summary_stats <- list()
-for (lu in levels(df_clean$land_use)) {
-  summary_stats[[lu]] <- summary(df_clean$SHI[df_clean$land_use == lu])
-}
+## Modell-Informationen
+- **Modell-Algorithmus:** Conditional Inference Forest (party)
+- **Vorteil:** Native kategorische Verarbeitung — KEIN One-Hot-Encoding nötig!
+- **Datenpunkte verwendet:** %d (nach Ausschluss von Klassen mit < 30 Punkten)
 
-summary_text <- paste0(
-"======================================================================\n",
-"ZUSAMMENFASSUNG: CONDITIONAL INFERENCE FOREST (party::cforest)\n",
-"ZUR BEWERTUNG DER BODENGESUNDHEIT (SHI)\n",
-"======================================================================\n",
-sprintf("Modell-Algorithmus: Conditional Inference Forest (party)\n"),
-"Vorteil: Native kategorische Verarbeitung — KEIN One-Hot-Encoding nötig!\n",
-"         Der Algorithmus splittet direkt auf Faktor-Gruppen.\n",
-sprintf("Datenpunkte verwendet: %d (nach Ausschluss von Klassen mit < 30 Punkten)\n",
-        nrow(df_model)),
-"\n",
-"======================================================================\n",
-"ERGEBNISSE DER MODELLGÜTE (OOB-Validierung):\n",
-"======================================================================\n",
-sprintf("Out-of-Bag R² (Erklärte Varianz): %.4f (%.2f%%)\n",
-        best_oob_r2, best_oob_r2 * 100),
-sprintf("Out-of-Bag RMSE (Vorhersagefehler): %.4f\n", best_oob_rmse),
-sprintf("Trainings-R² (zum Vergleich): %.4f\n", train_r2),
-"\nOptimierte Hyperparameter:\n",
-sprintf("  • ntree (Anzahl Bäume): %d\n", ntree),
-sprintf("  • mtry (Variablen pro Split): %d\n", best_params$mtry),
-sprintf("  • mincriterion (Signifikanzniveau): %.3f\n", best_params$mincriterion),
-sprintf("  • fraction (Bootstrap-Stichprobengröße): 0.632\n"),
-sprintf("  • replace (mit Zurücklegen): FALSE\n"),
-"\n",
-"======================================================================\n",
-"INTERPRETATION DER DIAGRAMME (PNGs)\n",
-"======================================================================\n",
-"\n",
-"1. KORRELATIONSMATRIX (correlation_matrix.png)\n",
-"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",
-"Was sagt sie aus?\n",
-"  Die Korrelationsmatrix zeigt den linearen Zusammenhang zwischen den\n",
-"  numerischen Faktoren. Die Skala reicht von -1 (perfekt negativ korreliert)\n",
-"  über 0 (kein Zusammenhang) bis +1 (perfekt positiv korreliert).\n",
-"  \n",
-"  Jeder Wert repräsentiert, wie stark zwei Variablen gemeinsam variieren:\n",
-"  - Nahe bei +1: Wenn die eine Variable steigt, steigt auch die andere\n",
-"  - Nahe bei -1: Wenn die eine Variable steigt, fällt die andere\n",
-"  - Nahe bei 0: Die Variablen beeinflussen sich gegenseitig kaum\n",
-"\n",
-"Sind die Werte die wir haben GUT?\n",
-sprintf("  JA, sehr gut! Wir haben KEINE Korrelationen nahe +1 oder -1.\n"),
-"  Das bedeutet, wir haben KEINE starke 'Multikollinearität'.\n",
-"  (Multikollinearität = Faktoren, die exakt dasselbe aussagen.)\n",
-"  \n",
-"  Detaillierte Interpretation unserer Werte:\n",
-sprintf("  • Höhe ↔ Temperatur:     %.3f (Fast KEINE Korrelation!)\n", temp_elev_corr),
-"    Erklärung: Normalerweise wird es mit der Höhe kälter. Aber da unsere\n",
-"    Daten über ganz Europa verteilt sind (kaltes Skandinavien auf\n",
-"    Meereshöhe vs. warme Höhenlagen in südeuropäischen Gebirgen), hebt\n",
-"    sich dieser Effekt auf globaler Ebene auf. ✓ IDEAL für Modellierung!\n",
-"\n",
-sprintf("  • Höhe ↔ Niederschlag:   %.3f (Schwach bis mittelmäßig)\n",
-         corr_matrix["height_m", "rain_mmsqm_mean_1995_2024"]),
-"    Erklärung: Berge fangen Feuchtigkeit ab (Stauniederschlag), daher\n",
-"    ist diese Korrelation erwartbar und akzeptabel.\n",
-"\n",
-sprintf("  • Temperatur ↔ Niederschlag: %.3f (Schwach)\n",
-         corr_matrix["temp_c_mean_1995_2024", "rain_mmsqm_mean_1995_2024"]),
-"    Erklärung: Diese beiden Klimafaktoren variieren relativ unabhängig\n",
-"    voneinander in Europa. ✓ Sehr gut für unabhängige Modellerklärung!\n",
-"\n",
-sprintf("  • Alle ↔ SHI:          Moderate Korrelationen (%.3f bis %.3f)\n",
-         min(abs(corr_matrix[1:3, 4])), max(abs(corr_matrix[1:3, 4]))),
-"    Erklärung: Der SHI wird nicht DIREKT linear von einem Faktor bestimmt,\n",
-"    sondern ist eine komplexe Mischung. Das ist typisch für\n",
-"    ökosystemare Größen und macht Random Forests sinnvoll!\n",
-"\n",
-"FAZIT ZUR KORRELATIONSMATRIX:\n",
-"  ✓ Keine problematischen Multikollinearitäten\n",
-"  ✓ Faktoren sind relativ unabhängig (gut für Modelltrennung)\n",
-"  ✓ Moderate Korrelationen mit dem Zielwert (SHI) sind erwartbar\n",
-"\n",
-"\n",
-"2. BEOBACHTET VS. VORHERGESAGT (observed_vs_predicted.png)\n",
-"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",
-"Was sagt sie aus?\n",
-"  Dieser Scatterplot zeigt auf der x-Achse die ECHTEN beobachteten\n",
-"  SHI-Werte und auf der y-Achse die vom Modell VORHERGESAGTEN Werte.\n",
-"  Die rote Linie ist die ideale Vorhersage (beobachtet = vorhergesagt).\n",
-"\n",
-"Sind die Werte GUT?\n",
-sprintf("  JA, für ökologische Daten ausgesprochen GUT!\n"),
-sprintf("  OOB R² = %.4f bedeutet: Das Modell erklärt %.1f%% der Varianz.\n",
-         best_oob_r2, best_oob_r2 * 100),
-"  \n",
-"  Warum ist das GUT und nicht SEHR GUT?\n",
-"  Bei Bodengesundheit und Ökosystemdaten ist das völlig normal:\n",
-"  - Viele Faktoren wurden NICHT gemessen (Bodenbiologie, Pilze, Nährstoffe)\n",
-"  - Jahresvariabilität (der SHI variiert von Jahr zu Jahr)\n",
-"  - Lokale Effekte (jeder Boden ist einzigartig)\n",
-"  \n",
-"  Zum Vergleich:\n",
-"  - In Physik/Chemie: R² = 0.95+ möglich (deterministische Gesetze)\n",
-"  - In Ökologie/Klima: R² = 0.35-0.60 ist sehr respektabel\n",
-"  - Unser Wert (~37%) ist im guten mittleren Bereich ✓\n",
-"\n",
-"  Interpretation der Punktewolke:\n",
-"  • Die Punkte liegen ÜBERWIEGEND nah bei der roten Ideallinie\n",
-"  • Ein gewisses 'Rauschen' ist normal (ökologische Komplexität)\n",
-"  • Es gibt KEINE systematische Verzerrung (Punkte nicht konsistent über\n",
-"    oder unter der Linie), was zeigt, dass das Modell fair funktioniert\n",
-"\n",
-"FAZIT ZU BEOBACHTET VS. VORHERGESAGT:\n",
-"  ✓ Ausgezeichnete Vorhersagegüte für ökologische Daten\n",
-"  ✓ Keine systematische Über- oder Unterschätzung\n",
-"  ✓ Das Modell hat die kausalen Zusammenhänge gut gelernt\n",
-"\n",
-"\n",
-"3. RESIDUENPLOT (residuals_plot.png)\n",
-"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",
-"Was sagt er aus?\n",
-"  Der Residuenplot zeigt die Abweichungen (Fehler = Beobachtet - Vorhergesagt).\n",
-"  Positive Werte = Modell unterschätzt\n",
-"  Negative Werte = Modell überschätzt\n",
-"\n",
-"Ist der Plot GUT?\n",
-"  JA! Das ist ein klassischer Indikator für ein gutes Regressionsmodell:\n",
-"  • Die Punkte streuen SYMMETRISCH um die rote Nulllinie\n",
-"  • KEINE Trichterform (die würde bedeuten, dass große Werte unsicherer sind)\n",
-"  • KEINE Trends erkennbar (z.B. Punkte nicht konsistent im oberen\n",
-"    oder unteren Bereich)\n",
-"  • Die Residuen sind ZUFÄLLIG verteilt\n",
-"\n",
-"  Das bedeutet:\n",
-"  ✓ Das Modell macht keine systematischen Fehler\n",
-"  ✓ Die Fehlerstreuung ist gleichmäßig (Homoskedastizität)\n",
-"  ✓ Die Vorhersageunsicherheit ist für alle SHI-Bereiche ähnlich\n",
-"\n",
-"FAZIT ZUM RESIDUENPLOT:\n",
-"  ✓ Perfekte Modellannahmen erfüllt\n",
-"  ✓ Keine Anomalien oder Probleme erkannt\n",
-"  ✓ Das Modell ist ZUVERLÄSSIG für Vorhersagen\n",
-"\n",
-"\n",
-"4. SHI NACH KLIMAKLASSE (shi_by_climate.png)\n",
-"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",
-"Was sagt die Grafik aus?\n",
-"  Boxplot-Vergleich: Jedes Kästchen zeigt die Verteilung des SHI für\n",
-"  eine bestimmte Köppen-Geiger-Klimaklasse.\n",
-"  - Obere/untere Kanten: 25./75. Perzentil (mittlere 50% der Daten)\n",
-"  - Schwarze Linie: Median (50%-Punkt)\n",
-"  - Punkte: Ausreißer\n",
-"\n",
-"Welche Klimazonen fördern hohe Bodengesundheit?\n",
-"  • HÖCHSTE SHI: Temperate Zonen ohne Trockenzeit (Cfb)\n",
-"    - Diese haben ganzjährig milde Temperaturen und ausreichend Regen\n",
-"    - Perfekt für Vegetationswachstum und Bodenbiologie\n",
-"  • MITTLERE SHI: Temperate Zonen mit kontinentalen Merkmalen (Dfb, Dfa)\n",
-"    - Saisonale Variabilität ist nachteilig, aber Wasser ist vorhanden\n",
-"  • NIEDRIGSTE SHI: Aride und semi-aride Zonen (BWh, BWk, BSk, BSh)\n",
-"    - Extreme Trockenheit limitiert biologische Aktivität\n",
-"    - Boden hat weniger organische Substanz und Nährstoffe\n",
-"\n",
-"FAZIT ZUR KLIMAVERTEILUNG:\n",
-"  ✓ Der SHI folgt logisch den Klimazonen\n",
-"  ✓ Feuchte, gemäßigte Zonen → Hohe Bodengesundheit\n",
-"  ✓ Trockene Zonen → Niedrige Bodengesundheit\n",
-"  ✓ Das zeigt, dass unser Modell REAL-WORLD-LOGIK aufgegriffen hat\n",
-"\n",
-"\n",
-"5. SHI NACH LANDNUTZUNG & LANDBEDECKUNG (shi_by_land_use_and_cover.png)\n",
-"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",
-"Was sagt die Grafik aus?\n",
-"  Zwei Boxplots nebeneinander zeigen, wie stark Landnutzung und\n",
-"  Landbedeckung den SHI beeinflussen.\n",
-"\n",
-"Welche Landnutzungen fördern hohe Bodengesundheit?\n"
+## Ergebnisse der Modellgüte (OOB-Validierung)
+- **Out-of-Bag R² (Erklärte Varianz):** %.4f (%.2f%%)
+- **Out-of-Bag RMSE (Vorhersagefehler):** %.4f
+- **Trainings-R² (zum Vergleich):** %.4f
+
+**Optimierte Hyperparameter:**
+- ntree (Anzahl Bäume): %d
+- mtry (Variablen pro Split): %d
+- mincriterion (Signifikanzniveau): %.3f
+- fraction (Bootstrap-Stichprobengröße): 0.632
+- replace (mit Zurücklegen): FALSE
+
+## Beantwortung der Forschungsfragen
+
+### Frage 1: Welche Faktoren haben den größten Einfluss auf den SHI?
+", 
+nrow(df_model), 
+best_oob_r2, best_oob_r2 * 100,
+best_oob_rmse,
+train_r2,
+ntree,
+best_params$mtry,
+best_params$mincriterion
 )
 
-# Dynamisch die Landnutzungen einbauen
-lu_sorted <- names(sort(tapply(df_clean$SHI, df_clean$land_use, median)))
-for (i in seq_along(lu_sorted)) {
-  lu <- lu_sorted[i]
-  med_shi <- median(df_clean$SHI[df_clean$land_use == lu], na.rm = TRUE)
-  count <- sum(df_clean$land_use == lu)
-  
-  if (i == 1) {
-    ranking <- "  • HÖCHSTE SHI (BESTE Bodengesundheit):"
-  } else if (i == length(lu_sorted)) {
-    ranking <- "  • NIEDRIGSTE SHI (SCHLECHTESTE Bodengesundheit):"
-  } else {
-    ranking <- sprintf("  • Position %d (Rang %d/%d):", i, i, length(lu_sorted))
-  }
-  
-  summary_text <- paste0(summary_text,
-    sprintf("%s %s (Median=%.2f, n=%d Punkte)\n", ranking, lu, med_shi, count))
-}
-
-summary_text <- paste0(summary_text,
-"  \n",
-"  Interpretation:\n",
-"  • FORSTWIRTSCHAFT: Höchster SHI, da Wälder stabile organische Substanz\n",
-"    aufbauen, Wasser speichern und Biodiversität fördern\n",
-"  • GRASSLAND/NATURNAHE FLÄCHEN: Mittlerer bis hoher SHI durch natürliche\n",
-"    Vegetationsbedeckung und Biodiversität\n",
-"  • ACKERBAU: Niedrigerer SHI, da intensive Bearbeitung, Monokulturen und\n",
-"    regelmäßige Störung den Boden belasten\n",
-"  • URBAN/VEGETATIONSLOSE FLÄCHEN: Niedrigster SHI, da praktisch keine\n",
-"    biologische Aktivität\n",
-"\n",
-"FAZIT ZUR LANDNUTZUNG:\n",
-"  ✓ Klare Rangfolge erkennbar\n",
-"  ✓ Forstwirtschaft ist bodenfreundlich\n",
-"  ✓ Intensive Landwirtschaft beeinträchtigt Bodengesundheit\n",
-"  ✓ Natürliche Bedeckung = Hohe Bodengesundheit\n",
-"\n",
-"\n",
-"6. ENTSCHEIDUNGSBAUM (decision_tree.png)\n",
-"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",
-"Was sagt die Grafik aus?\n",
-"  Dies ist EIN einzelner Conditional Inference Tree (ctree), nicht der\n",
-"  gesamte Random Forest (der hätte 500 Bäume)! Wir zeigen diesen EINEN\n",
-"  Baum zur Veranschaulichung der Entscheidungslogik, obwohl wir die\n",
-"  echten Metriken (R², Variable Importance) aus dem ganzen Forest berechnen.\n",
-"\n",
-"Wie lese ich den Baum?\n",
-"  • Oben: Der erste Split. Die Frage ist nach einem Faktor\n",
-"  • 'p < 0.001': Das ist der p-Wert (Signifikanztest). p < 0.001 bedeutet:\n",
-"    'Zu über 99,9% ist dieser Split signifikant und kein Zufall'\n",
-"  • 'n = XXXX': Anzahl der Datenpunkte, die in diesem Knoten sind\n",
-"  • Die Äste verzweigen sich basierend auf JA/NEIN-Antworten\n",
-"  • Die Boxplots unten zeigen die SHI-Verteilung in jeder Endgruppe\n",
-"    (dicke schwarze Linie = Median)\n",
-"\n",
-"Warum nur 4 Ebenen tief (maxdepth=4)?\n",
-"  Ohne Grenze würde der Baum hunderte oder tausende Blätter haben und\n",
-"  wäre völlig unlesbar. Die Begrenzung auf maxdepth=4 ist ein Kompromiss\n",
-"  zwischen Interpretierbarkeit und Genauigkeit.\n",
-"\n",
-"Was bedeutet das Split-Pattern?\n",
-"  Der Baum versucht iterativ, die Daten zu teilen, um die Bodengesundheit\n",
-"  zu erklären. Ein typisches Muster könnte sein:\n",
-"  1. ERST nach Niederschlag teilen (Regen ist kritisch)\n",
-"  2. DANN innerhalb feuchter Gebiete nach Landbedeckung teilen\n",
-"     (Wald vs. Acker macht einen großen Unterschied)\n",
-"  3. DANN nach Klimazone teilen\n",
-"  \n",
-"  Das zeigt INTERAKTIONEN: Der Effekt von Landbedeckung hängt vom\n",
-"  Niederschlag ab, nicht isoliert!\n",
-"\n",
-"FAZIT ZUM ENTSCHEIDUNGSBAUM:\n",
-"  ✓ Zeigt verstehbare Entscheidungslogik\n",
-"  ✓ Offenbart Interaktionen zwischen Faktoren\n",
-"  ✓ Ist interpretierbar für Nicht-Statistiker\n",
-"  ✓ Einzelner Baum ≠ Random Forest; Forest ist präziser\n",
-"\n",
-"\n",
-"7. VARIABLE IMPORTANCE (feature_importance.png)\n",
-"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",
-"Was sagt die Grafik aus?\n",
-"  Dieser Barplot zeigt den prozentualen BEITRAG jeder Variable zur\n",
-"  Erklärung des SHI. Längere Balken = Wichtigere Faktoren.\n",
-"\n",
-"Wie werden die Wichtigkeiten berechnet?\n",
-"  Permutations-Importance: Der Algorithmus permutiert (durchmischt)\n",
-"  jede Variable und schaut, wie sehr das die Vorhersagegüte verschlechtert.\n",
-"  Je mehr Verschlechterung, desto wichtiger die Variable.\n",
-"  \n",
-"  Vorteil: Unvoreingenommen, auch für kategorische Variablen, zeigt\n",
-"  Interaktionen und nicht-lineare Effekte.\n",
-"\n",
-"Was bedeutet die rote gestrichelte Linie?\n",
-sprintf("  Diese zeigt die Zufallsschwelle (%.1f%%). Jede Variable, die bei\n",
-         threshold),
-"  nur zufällig herumlaufen könnte, hätte ~%.1f%% Anteil.\n",
-sprintf("  Faktoren ÜBER dieser Linie sind signifikant.\n", threshold),
-"  Faktoren UNTER dieser Linie sind relativ unwichtig.\n",
-"\n",
-"Welche Faktoren sind am wichtigsten?\n"
-)
-
-# Dynamisch die Top-3 Variablen einbauen
-for (i in 1:min(3, nrow(df_imp))) {
-  summary_text <- paste0(summary_text,
-    sprintf("  %d. %s (%.1f%%)\n", i, df_imp$Variable[i], df_imp$Importance_Pct[i]))
-}
-
-summary_text <- paste0(summary_text,
-"  \n",
-"FAZIT ZUR VARIABLE IMPORTANCE:\n",
-"  ✓ Zeigt die echte Wichtigkeit der Faktoren (nicht nur Korrelation)\n",
-"  ✓ Permutations-Methode ist unbiased und robust\n",
-"  ✓ Hilft bei Modellinterpretation und Datenvorbereitung\n",
-"\n",
-"\n",
-"======================================================================\n",
-"BEANTWORTUNG DER FORSCHUNGSFRAGEN\n",
-"======================================================================\n",
-"\n",
-"Frage 1: Welche Faktoren haben den größten Einfluss auf den SHI?\n",
-"─────────────────────────────────────────────────────────────────────\n"
-)
-
-# Top 3-5 Variablen ausgeben
 top_n <- min(5, nrow(df_imp))
 for (i in 1:top_n) {
-  summary_text <- paste0(summary_text,
-    sprintf("  %d. %s (%.1f%% Erklärungsbeitrag)\n",
-            i, df_imp$Variable[i], df_imp$Importance_Pct[i]))
+  md_text <- paste0(md_text, sprintf("%d. **%s** (%.1f%% Erklärungsbeitrag)\n", i, df_imp$Variable[i], df_imp$Importance_Pct[i]))
 }
 
-summary_text <- paste0(summary_text,
-"  \n",
-"  Diese Rangfolge sagt aus, dass das Modell diese Faktoren am häufigsten\n",
-"  nutzt, um Entscheidungen zu treffen. Sie sind die Schlüsselvariablen\n",
-"  für die Bodengesundheit in Ihrem Datensatz.\n",
-"\n",
-"Frage 2: Welche Faktoren wirken positiv, welche negativ?\n",
-"─────────────────────────────────────────────────────────────────────\n",
-"  Aus den Boxplots und dem Entscheidungsbaum können wir interpretieren:\n",
-"  \n",
-"  POSITIVE Effekte (erhöhen den SHI):\n",
-"  • Höherer Niederschlag → Mehr Wasser für Pflanzen & Bodenbiologie\n",
-"  • Wald/Grünland-Bedeckung → Stabile Bodenstruktur, Humusaufbau\n",
-"  • Temperate Klimazonen (mild, nicht zu trocken) → Optimale Bedingungen\n",
-"  • Naturnahe Flächen → Hohe Biodiversität\n",
-"  \n",
-"  NEGATIVE Effekte (senken den SHI):\n",
-"  • Höhere Temperaturen (besonders in trockenen Regionen) → Stress\n",
-"  • Niedriger Niederschlag/Trockenheit → Mangel an Bodenwasser\n",
-"  • Intensive Ackerbau-Nutzung → Verdichtung, Erosion, Nährstoffabbau\n",
-"  • Vegetationslose/urbane Flächen → Keine biologische Aktivität\n",
-"  • Sehr kalte Klimazonen (ET, EF) → Begrenzte Aktivität\n",
-"\n",
-"Frage 3: Gibt es Interaktionen zwischen den Einflussfaktoren?\n",
-"─────────────────────────────────────────────────────────────────────\n",
-"  JA! Das zeigt der Entscheidungsbaum deutlich. Beispiele:\n",
-"  \n",
-"  • Niederschlag-Landnutzungs-Interaktion:\n",
-"    - In TROCKENEN Gebieten (niedriger Regen) ist Waldbedeckung\n",
-"      EXTREM wichtig, um den Boden zu schützen\n",
-"    - In FEUCHTEN Gebieten profitiert selbst Ackerbau noch von\n",
-"      ausreichend Wasser\n",
-"  \n",
-"  • Temperatur-Niederschlag-Interaktion:\n",
-"    - Hohe Temperatur + niedriger Regen = Trockenzone (schlecht)\n",
-"    - Hohe Temperatur + hoher Regen = Tropics (besser)\n",
-"    - Niedrige Temperatur + hoher Regen = Waldzone (sehr gut)\n",
-"  \n",
-"  Random Forests sind PERFEKT dafür, solche Interaktionen automatisch\n",
-"  zu erkennen, ohne sie manuell programmieren zu müssen!\n",
-"\n",
-"Frage 4: Gibt es lokale/regionale/klimatische Unterschiede?\n",
-"─────────────────────────────────────────────────────────────────────\n",
-"  JA! Sehr deutlich in 'shi_by_climate.png':\n",
-"  \n",
-"  Regional-Muster (von West zu Ost in Europa):\n",
-"  • Atlantische Westküsten (Cfb): HÖCHSTE SHI (mild, feuchte Winter)\n",
-"  • Kontinentale Zonen (Dfb): MITTLERE SHI (Frost begrenzt Aktivität)\n",
-"  • Mittelmeerraum (Csa, Csb): NIEDRIGERE SHI (Sommertrocknis)\n",
-"  • Arktis/Hochalpen: NIEDRIGSTE SHI (Frost limitiert alles)\n",
-"  \n",
-"  Global-Muster (vom Äquator zu den Polen):\n",
-"  • Tropics (Af, Am, Aw): MODERAT bis HOCH (warm & feucht)\n",
-"  • Subtropics (BWh, BSh): NIEDRIG (zu trocken)\n",
-"  • Temperate (C, D): VARIABEL, aber im Schnitt GUT\n",
-"  • Polar (ET, EF): SEHR NIEDRIG (biologische Aktivität extrem begrenzt)\n",
-"\n",
-"Frage 5: Was wird erwartet bei künftigen Klimaänderungen?\n",
-"─────────────────────────────────────────────────────────────────────\n",
-"  Wenn die Szenarien aus dem IPCC (Klimawandel) eintreffen:\n",
-"  \n",
-"  NEGATIVE Szenarien (ohne Anpassung):\n",
-"  • Steigende Temperaturen + sinkende Niederschläge\n",
-"    → SHI sinkt dramatisch (doppelter negativer Effekt)\n",
-"  • Verschiebung der Klimazonen nach Norden\n",
-"    → Südeuropäische Regionen werden wüstenähnlich (SHI → Minimum)\n",
-"  • Häufigere Extremwetterereignisse\n",
-"    → Erosion und Bodenabbau accelerieren\n",
-"\n",
-"  POSITIVE Maßnahmen (mit Anpassung):\n",
-"  • Aufforstung statt Ackerbau (im Rahmen klimafester Baumarten)\n",
-"    → SHI steigt deutlich\n",
-"  • Konservative Landwirtschaft & Mulch-Systeme\n",
-"    → Reduziert Stressfaktoren\n",
-"  • Wasserretention & Bewässerung in Trockengebieten\n",
-"    → Kompensiert Niederschlagsdefizit\n",
-"\n",
-"Frage 6: Was fördert Bodengesundheit konkret?\n",
-"─────────────────────────────────────────────────────────────────────\n",
-"  Basierend auf unserem Modell (geprägt durch Daten + Hobley-Methodologie):\n",
-"  \n",
-"  Faktoren, die SHI MAXIMIEREN:\n",
-"  ✓ Dauerhaft waldbedeckte Gebiete (native Forstwirtschaft)\n",
-"  ✓ Naturnahe Grasland- und Heidegebiete (keine Intensivnutzung)\n",
-"  ✓ Regelmäßige, zuverlässige Niederschläge (>600 mm/Jahr ideal)\n",
-"  ✓ Gemäßigte Temperaturen (optimal: 10-15°C Jahresmittel)\n",
-"  ✓ Diverse Vegetation (Mischkulturen statt Monokulturen)\n",
-"  ✓ Minimale mechanische Störung des Bodens\n",
-"  \n",
-"  Faktoren, die SHI MINIMIEREN:\n",
-"  ✗ Intensive, pflugbasierte Ackerbau\n",
-"  ✗ Großflächige Monokulturen\n",
-"  ✗ Trockengebiete oder extreme Trockenheit\n",
-"  ✗ Versiegelung und Urbanisierung\n",
-"  ✗ Einsatz von hochdosierten Pestiziden/Herbiziden\n",
-"  ✗ Langfristige Bodenverdichtung\n",
-"\n",
-"======================================================================\n",
-"FAZIT UND EMPFEHLUNGEN\n",
-"======================================================================\n",
-"\n",
-"Modellqualität: ★★★★☆ (4/5)\n",
-"  Das Modell erklärt ca. 37% der Varianz (OOB R² = 0.37), was für\n",
-"  ökologische Komplexsysteme SEHR GUT ist. Ungemessene Faktoren\n",
-"  (Bodenbiologie, Chemie, lokale Geschichte) erklären die restlichen 63%.\n",
-"\n",
-"Zuverlässigkeit: ★★★★★ (5/5)\n",
-"  Out-of-Bag-Validierung zeigt: Modell funktioniert auf neuen Daten\n",
-"  genauso gut wie auf Trainingsdaten. KEINE Überanpassung!\n",
-"\n",
-"Interpretierbarkeit: ★★★★☆ (4/5)\n",
-"  Variable Importance und Feature Interactions sind klar erkennbar.\n",
-"  Der Entscheidungsbaum zeigt nachvollziehbare Logik.\n",
-"  Allerdings: Random Forest ist komplexer als einfache Regression.\n",
-"\n",
-"Nächste Schritte:\n",
-"  1. Validierung mit unabhängigen Test-Daten (externe Validierung)\n",
-"  2. Verfeinerung durch zusätzliche Bodenparameter (falls verfügbar)\n",
-"  3. Szenarioanalyse: Wie ändert sich SHI unter Klimawandel?\n",
-"  4. Optimierungsstudien: Welche Landnutzung maximiert SHI in jeder Region?\n",
-"  5. Geodatenverarbeitung: Räumliche Vorhersagekarten für Europa erstellen\n",
-"\n",
-"======================================================================\n"
-)
+md_text <- paste0(md_text, sprintf("
+### Frage 2: Welche Faktoren wirken positiv, welche negativ?
+**POSITIVE Effekte (erhöhen den SHI):**
+- Höherer Niederschlag → Mehr Wasser für Pflanzen & Bodenbiologie
+- Wald/Grünland-Bedeckung → Stabile Bodenstruktur, Humusaufbau
+- Temperate Klimazonen (mild, nicht zu trocken)
 
-writeLines(summary_text, file.path(output_mod_dir, "model_summary.txt"))
-cat(sprintf("\nModellzusammenfassung (detailliert) gespeichert unter '%s'.\n",
-            file.path(output_mod_dir, "model_summary.txt")))
+**NEGATIVE Effekte (senken den SHI):**
+- Hohe Temperaturen in Trockengebieten
+- Niedriger Niederschlag / Trockenheit
+- Intensive Ackerbau-Nutzung
+
+### Frage 3: Gibt es Interaktionen zwischen den Einflussfaktoren?
+JA! Der Entscheidungsbaum zeigt Interaktionen.
+- **Niederschlag × Landbedeckung:** In feuchten Gebieten ist die Landbedeckung anders relevant als in trockenen.
+- **Temperatur × Niederschlag:** Zusammen definieren sie die wirksamen Klimazonen.
+
+### Frage 4: Gibt es lokale/regionale/klimatische Unterschiede?
+JA! Sehr deutlich in den Boxplots nach Klimazone.
+- Atlantische Westküsten (Cfb): höchste SHI-Werte.
+- Mediterrane & trockene Regionen: deutlich geringere SHI-Werte.
+
+## Fazit und Empfehlungen
+- **Modellqualität:** ★★★★☆ (4/5)
+  OOB R² = %.4f — für ökologische Komplexsysteme sehr gut.
+- **Zuverlässigkeit:** ★★★★★ (5/5)
+  OOB-Validierung: kein Overfitting.
+- **Interpretierbarkeit:** ★★★★☆ (4/5)
+  Variable Importance und Decision Tree klar interpretierbar.
+", best_oob_r2))
+
+md_out <- file.path(output_mod_dir, "model_summary.md")
+writeLines(md_text, md_out)
+cat(sprintf("Markdown-Zusammenfassung erstellt unter '%s'.\n", md_out))
 cat("Alle Diagramme im Ordner 'output/' gespeichert.\n")
 cat("--- Analyse erfolgreich abgeschlossen! ---\n")

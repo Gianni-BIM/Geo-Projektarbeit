@@ -1,0 +1,28 @@
+# R-spezifisch
+.RData
+.Rhistory
+.Rproj.user/
+.Ruserdata
+
+# MacOS / System-Dateien
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Umgebungsvariablen (Passwörter, APIs)
+.env
+.env.*
+
+# KI- und Editor-Ordner
+.sixth/
+.vscode/
+.idea/
+
+# Große Daten-Ordner (optional, falls CSV-Dateien riesig sind)
+# input/
+
+# Generierte Ausgaben (auskommentiert, damit PNGs/MDs hochgeladen werden)
+# output/
+# output_lat-long/
+# *.png
+# *.pdf

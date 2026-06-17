@@ -1,82 +1,142 @@
-# Random Forest zur Bodengesundheit (SHI)
+# Random Forest zur Bewertung der Bodengesundheit (SHI)
 
-Dieses Repository enthält ein R-Skript zur Modellierung und Analyse des Soil Health Index (SHI) mithilfe eines Random-Forest-Modells (Conditional Inference Forest). Das Projekt analysiert den Einfluss verschiedener Umweltfaktoren (wie Niederschlag, Temperatur und Landnutzung) auf die Bodengesundheit in Europa.
+Analyse des Soil Health Index (SHI) in Europa mithilfe eines Conditional Inference Forest (R‑Paket `party`). Das Modell untersucht den Einfluss von Klima, Topografie, Landnutzung und Landbedeckung auf die Bodengesundheit. Zusätzlich wird in einer erweiterten Variante der räumliche Hintergrundtrend per GAM‑Spline einbezogen.
 
-## 1. Setup & Ausführung
+---
 
-Diese Anleitung erklärt Schritt für Schritt, wie das R-Skript zur Auswertung der Bodengesundheitsdaten ausgeführt wird.
+## Setup
 
-### Voraussetzungen
-- Ein Code-Editor (z. B. **VS Code**, **Antigravity** oder RStudio) ist installiert.
-- **R** ist auf dem System installiert.
-- (Optional, aber empfohlen) **Git** ist installiert.
+### 1. Repository klonen
 
-### Projekt vorbereiten
-1. Öffne ein Terminal (oder die integrierte Konsole in deinem Editor).
-2. Klone das Repository mit dem korrekten GitHub-Link auf deinen Computer:
-   ```bash
-   git clone https://github.com/Gianni-BIM/Geo-Projektarbeit.git
-   ```
-3. Wechsle in den Projektordner und aktiviere den Entwicklungs-Branch `ML-rf-Ioannis`:
-   ```bash
-   cd Geo-Projektarbeit
-   git checkout ML-rf-Ioannis
-   ```
-4. Wechsle nun in das spezifische Unterverzeichnis für dieses R-Modell:
-   ```bash
-   cd RandomForest_R
-   ```
-5. Öffne dieses Verzeichnis in deinem Editor (z. B. VS Code).
-
-### R-Pakete installieren
-Das Skript benötigt einige externe R-Pakete. Öffne R (oder die R-Konsole in deinem Editor) und führe folgenden Befehl aus, falls die Pakete noch nicht installiert sind:
-```R
-install.packages(c("party", "ggplot2", "reshape2", "gridExtra", "partykit"))
-```
-
-### Skript ausführen
-Führe das Hauptskript `random_forest_shi.R` aus. Das geht entweder direkt im Terminal:
 ```bash
-Rscript random_forest_shi.R
+git clone https://github.com/Gianni-BIM/Geo-Projektarbeit.git
+cd Geo-Projektarbeit
+git checkout ML-rf-Ioannis
+cd RandomForest_R
 ```
-Oder indem du das Skript in RStudio/VS Code öffnest und ausführen lässt (via "Run" oder "Source").
 
-### Ergebnisse ansehen
-Sobald das Skript durchgelaufen ist, findest du alle generierten Auswertungen im Ordner `output`:
-- **`output/Grafiken_png/`**: Originalgrafiken mit englischen Datenbank-Bezeichnern.
-- **`output/Grafiken_png/Grafik_mit_Beschriftung/`**: Grafiken mit verständlicheren, deutschen Achsenbeschriftungen.
-- **`output/Modell_Zusammenfassung/`**: Text- und CSV-Dateien (z. B. detaillierte `model_summary.txt` und `parameter_grid_results.csv`).
+### 2. R installieren
+
+- [R herunterladen](https://cran.r-project.org/) (Version ≥ 4.2)
+- Optional: [RStudio](https://posit.co/downloads/) als IDE
+
+### 3. R‑Pakete installieren
+
+```bash
+Rscript install_packages.R
+```
+
+Oder manuell in R:
+```R
+install.packages(c("party", "mgcv", "ggplot2", "reshape2",
+                   "gridExtra", "GGally", "spdep", "partykit"))
+```
+
+### 4. Skripte ausführen
+
+```bash
+# Basismodell (ohne räumlichen Trend)
+Rscript random_forest_shi.R
+
+# Erweitertes Modell (mit GAM lat/lon → spatial_trend)
+Rscript random_forest_shi_lat-long.R
+```
 
 ---
 
-## 2. Projektzusammenfassung
+## Gegeben
 
-Das Projekt nutzt einen **Conditional Inference Forest (cforest)**, um die Bodengesundheit (SHI) anhand von sechs Hauptfaktoren vorherzusagen: Niederschlag, Temperatur, topografische Höhe, Landnutzung, Landbedeckung und Klimazone. Das Modell erklärt im Schnitt rund 37-40 % der Varianz im SHI, was für stark verrauschte ökologische Daten ein sehr guter und robuster Wert ist (geprüft über Out-of-Bag Validierung).
+Räumliche Stichproben (Punkte in Europa) mit folgenden Umweltparametern:
 
-**Wichtigste Erkenntnisse (Feature Importance):**
-1. **Niederschlag (~34 %)** und **Landbedeckung (~31 %)** sind die absolut dominierenden Einflussfaktoren für den Soil Health Index.
-2. **Temperatur (~13 %)** spielt ebenfalls eine signifikante Rolle.
-3. Klimazone und Höhe haben zwar einen messbaren, aber deutlich geringeren isolierten Einfluss.
+| Variable | Bezeichnung | Typ |
+|----------|-------------|-----|
+| `height_m` | Topografische Höhe (m) | numerisch |
+| `temp_c_mean_1995_2024` | Mittlere Temperatur (°C) | numerisch |
+| `rain_mmsqm_mean_1995_2024` | Mittlerer Niederschlag (mm) | numerisch |
+| `land_use` | Landnutzung | kategorial |
+| `land_cover` | Landbedeckung | kategorial |
+| `climate_name` | Köppen‑Geiger‑Klimazone | kategorial |
 
-Das Modell zeigt auf Datenbasis klar, dass feuchte Klimate in Kombination mit naturnaher Wald- oder Grünlandbedeckung die höchsten SHI-Werte fördern, während intensive landwirtschaftliche Nutzung oder extreme Trockenheit die Bodengesundheit reduzieren. Topografie allein spielt nur eine untergeordnete Rolle, weil klimabedingte Interaktionen überwiegen.
+Im erweiterten Skript (`lat-long`) kommt zusätzlich `spatial_trend` hinzu — ein per GAM erzeugtes Feature, das den räumlichen Hintergrundtrend codiert.
 
-Weitere Details finden sich in der `output/Modell_Zusammenfassung/model_summary.txt` und in der `Dokumentation/DATEN_DOKUMENTATION.md`.
+## Gesucht
+
+- **Vorhersage** des Soil Health Index (SHI)
+- **Einflussfaktoren** — welche Umweltparameter bestimmen die Bodengesundheit am stärksten?
+- **Interaktionen** — wie wirken Klima, Landnutzung und Geografie zusammen?
 
 ---
 
-## 3. Workflow des Modells
+## Methodik
 
-Das Random-Forest-Modell zielt darauf ab, die Einflussfaktoren auf den SHI zu identifizieren und deren komplexe Interaktionen zu verstehen (Data Mining). Es geht nicht nur darum, Vorhersagen zu treffen, sondern die kausalen Zusammenhänge zu erklären. Der Workflow umfasst folgende Schritte:
+1. **Datenaufbereitung** — Entfernen von IDs/Koordinaten, Hobley‑Filterung (Kategorien < 30 Beobachtungen), Faktorisierung.
+2. **Feature Engineering** (nur lat‑long) — GAM‑Thin‑Plate‑Spline über Koordinaten → `spatial_trend`.
+3. **Hyperparameter‑Optimierung** — Grid Search über `mtry` und `mincriterion` mit OOB‑R² als Metrik.
+4. **Modelltraining** — Conditional Inference Forest (`party::cforest`, 500 Bäume).
+5. **Evaluation** — Out‑of‑Bag‑Validierung (R², RMSE), Residualanalyse.
+6. **Interpretation** — Permutationsbasierte Variable Importance, Entscheidungsbaum‑Visualisierung.
 
-1. **Datenvorbereitung (Cleaning):**
-   Ausschluss von reinen Koordinaten/IDs sowie Filterung seltener Kategorien (Hobley-Regel: Gruppen mit < 30 Beobachtungen werden komplett entfernt).
-2. **Explorative Datenanalyse (EDA):**
-   Sichtprüfung der Datenverteilung mittels Korrelationsmatrizen, Boxplots und Histogrammen.
-3. **Random Forest Training (Conditional Inference):**
-   Einsatz von rekursiver Partitionierung und Bootstrapping. Ein großer Vorteil dieses Modells: Kategorische Variablen (Text) werden nativ (ohne One-Hot-Encoding) verarbeitet, wodurch Verzerrungen (Bias) vermieden werden.
-4. **Hyperparameter-Optimierung:**
-   Mittels Grid Search (für `ntree`, `mtry`, `mincriterion`) wird das verlässlichste Modell anhand des Out-of-Bag (OOB) R² ermittelt.
-5. **Modellevaluation:**
-   Validierung der Ergebnisse über OOB-Vorhersagefehler (RMSE) und Residuenanalysen zur Sicherstellung, dass das Modell keine systematischen Fehler macht.
-6. **Interpretation & Data Mining:**
-   Abschließende Ableitung der wichtigsten Faktoren durch Permutations-Wichtigkeit (Feature Importance) und Analyse ökologischer Interaktionen (z. B. wie sich Niederschlag in Abhängigkeit von Landnutzung verhält).
+---
+
+## Ergebnisse
+
+### Vergleich: Basismodell vs. erweitertes Modell (lat‑long)
+
+| Metrik | Basismodell | Lat‑Long (+ GAM) |
+|--------|------------|-------------------|
+| **OOB R²** | ~0.37 (37 %) | ~0.40 (40 %) |
+| **OOB RMSE** | ~0.355 | ~0.347 |
+| **Prädiktoren** | 6 | 7 (+ spatial_trend) |
+
+### Wichtigste Einflussfaktoren (Variable Importance)
+
+**Basismodell:**
+1. Niederschlag (~34 %)
+2. Landbedeckung (~31 %)
+3. Temperatur (~13 %)
+
+**Erweitertes Modell (lat‑long):**
+1. Landbedeckung (~32 %)
+2. Räumlicher Trend / spatial_trend (~27 %)
+3. Niederschlag (~18 %)
+
+> Der räumliche Trend (GAM) verbessert das Modell um ca. 3 Prozentpunkte R² und zeigt, dass geografische Lage (z. B. atlantisch vs. kontinental) einen eigenständigen Einfluss auf die Bodengesundheit hat.
+
+### Kernaussagen
+
+- **Feuchte, gemäßigte Klimazonen** (Cfb) zeigen die höchsten SHI‑Werte.
+- **Waldbedeckung und naturnahe Flächen** fördern die Bodengesundheit.
+- **Intensive Landwirtschaft** senkt den SHI messbar.
+- Der **räumliche Trend** codiert großräumige West‑Ost‑ und Nord‑Süd‑Gradienten, die über reine Klima‑ und Landnutzungsdaten hinausgehen.
+
+---
+
+## Projektstruktur
+
+```
+RandomForest_R
+
+├── random_forest_shi.R                  # Basismodell
+├── random_forest_shi_lat-long.R         # Erweitertes Modell mit Lat/Long
+├── random_forest_shi_lat-long.Rmd       # Interaktiver Report (RMarkdown)
+├── install_packages.R                   # Paketinstallation
+│
+├── input/
+│   └── Daten/
+│       ├── points.csv                   # Eingabedaten
+│       └── legend.txt                   # Köppen-Geiger-Legende
+│
+├── output/                              # Ergebnisse Basismodell
+│   ├── Grafiken_png/
+│   └── Modell_Zusammenfassung/
+│
+├── output_lat-long/                     # Ergebnisse erweitertes Modell
+│   ├── Grafiken_png/
+│   └── Modell_Zusammenfassung/
+│
+├── Dokumentation/
+│   ├── DATEN_DOKUMENTATION.md
+│   └── DATEN_DOKUMENTATION_LAT-LONG.md
+│
+└── .gitignore
+```
