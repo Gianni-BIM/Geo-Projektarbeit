@@ -1,187 +1,110 @@
 # Zusammenfassung: Conditional Inference Forest zur Bewertung der Bodengesundheit (SHI)
 
+## Angewandte Fixes und Methodenverbesserungen
+
+- **FIX 1 — replace konsistent:** Grid Search und finales Modell verwenden
+  jetzt beide `replace=FALSE, fraction=0.632` (Subsampling ohne Zurücklegen,
+  Strobl et al. 2007).
+- **FIX 2 — GAM k=60:** Thin-Plate-Spline mit k=60 statt k=30, absorbiert
+  atlantisch-kontinentale und nordsüdliche Klimagradienten sowie
+  biogeographische Muster (Bodentypen, Geologie) als räumliche Kontrollvariable.
+  Moran's I nach k=60: I=-0.0066, p=0.9905 → keine signifikante räumliche
+  Autokorrelation mehr in den GAM-Residuen.
+- **FIX 3 — PDPs aktiviert (gecacht):** Partial Dependence Plots für Top-3-Variablen
+  berechnet und als CSV gecacht für reproduzierbare Nachnutzung.
+- **NEU — Spatial Cross-Validation:** 10-fache Leave-One-Block-Out CV mit
+  k-means-Blöcken auf geographischen Koordinaten. Mindestabstand zwischen
+  Blöcken: ~462 km (aus Moran's I-Testdistanz d=2.0° abgeleitet).
+
 ## Modell-Informationen
-- **Modell-Algorithmus:** Conditional Inference Forest (party)
-- **Räumliche Erweiterung:** GAM Thin-Plate-Spline `s(lon_x, lat_y, k=30)`
-- **Vorteil:** Native kategorische Verarbeitung — KEIN One-Hot-Encoding nötig! Räumlicher Trend als kompaktes numerisches Feature eingebunden.
-- **Datenpunkte verwendet:** 4426 (nach Ausschluss von Klassen mit < 30 Punkten)
 
-## NEU: GAM RÄUMLICHER TREND (Schritt 1b)
+- Algorithmus: Conditional Inference Forest (party::cforest, Hothorn et al. 2006)
+- Räumliche Erweiterung: GAM Thin-Plate-Spline s(lon_x, lat_y, bs='tp', k=60)
+- Datenpunkte gesamt: 4467 | Nach Hobley-Filterung: 4426
 
-**Was hier passiert:** Koordinaten (Längen‑ und Breitengrad) können nicht direkt
-in den Random Forest, weil der Algorithmus nur achsenparallele Splits kennt —
-er würde den geschwungenen Nord‑Süd‑ und West‑Ost‑Gradienten des SHI über Europa
-nur grob und eckig abbilden können. Stattdessen wird ein GAM vorgeschaltet:
+## Räumlicher Trend (GAM, k=60)
 
-**Methode:** `mgcv::gam(SHI ~ s(lon_x, lat_y, bs='tp', k=30), method='REML')`
+- EDF (effective degrees of freedom): 78.82
+- GAM adj. R²: 0.258 (Deviance explained: 25.8%)
+- Moran's I Residuen: I=-0.0066, p=0.9905 — OK — räumliche Autokorrelation vollständig absorbiert
+- Interpretation: spatial_trend absorbiert großräumige Gradienten (atlantisch-
+  kontinental, nordsüdlich) sowie ungemessene biogeographische Kovariaten
+  (Bodentypen, geologischer Untergrund). Dient als Kontrollvariable, ist
+  keine direkte Antwort auf die Forschungsfrage.
 
-Ein 2D‑Thin‑Plate‑Spline berechnet für jeden Messpunkt eine einzige glatte Zahl —
-den **`spatial_trend`** — die sagt: *„In dieser geografischen Region Europas ist
-der SHI‑Wert grundsätzlich eher hoch oder niedrig, unabhängig vom lokalen Wetter
-oder der Landnutzung.“* Diese Zahl wird dann als normales Feature in den Random
-Forest übergeben (Strategie B).
+## Modellgüte — Vergleich der Validierungsstrategien
 
-- **Moran's I (GAM‑Residuen):** I=0.0232, p=0.000 → Die GAM‑Residuen zeigen noch
-  signifikante räumliche Autokorrelation. Der Spline fängt den Trend also nicht
-  vollständig ein; ein höheres `k` könnte helfen, ist aber ein Kompromiss mit
-  Overfitting‑Risiko.
-- **Variable Importance von `spatial_trend`:** Rang 2 von 7 (26.7 %) — das Feature
-  ist das zweitwichtigste im gesamten Modell, direkt hinter dem Niederschlag.
-- **Interpretation:** SIGNIFIKANT — der geografische Hintergrundtrend (z. B.
-  atlantische Westküste vs. mediterrane/kontinentale Lage) erklärt einen
-  substanziellen Teil der SHI‑Variation, der durch Wetter und Landnutzung
-  allein nicht erfasst wird.
+| Metrik | Wert | Interpretation |
+|--------|------|----------------|
+| Train R² | 0.4696 | Auf Trainingsdaten (Overfitting-Check) |
+| OOB R² | 0.4161 (41.6%) | Zufällige Splits — leicht optimistisch |
+| OOB RMSE | 0.3421 SHI-Einh. | Mittlerer Vorhersagefehler (OOB) |
+| **Spatial CV R²** | **0.3650 (36.5%)** | **Räumlich getrennte Blöcke — belastbarste Schätzung** |
+| Spatial CV RMSE | 0.3568 SHI-Einh. | Mittlerer Vorhersagefehler (Spatial CV) |
+| Optimismus-Bias | 0.0511 | OOB minus Spatial CV — Einfluss räumlicher Korrelation |
 
-![alt text](thin-plate-spline2.png)
-![alt text](thin-plate-spline1.png)
-stackoverflow.com
+> **Optimismus-Bias > 0.05:** Spatial CV R² ist die empfohlene Kennzahl für Publikationen.
 
-## Erste Frage: Bedeutet das, wenn zwei nahe beieinanderliegende Regionen unterschiedliche Umweltfaktoren haben, dann spielt spatial_trend weniger eine Rolle?
+## Optimierte Hyperparameter
 
-Im Prinzip: Ja.
+| Parameter | Wert | Bedeutung |
+|-----------|------|-----------|
+| ntree | 500 | Anzahl Bäume im Forest |
+| mtry | 4 | Features pro Split (getestet: 2/3/4 von 7) |
+| mincriterion | 0.900 | p-Wert-Schwelle für Splits (getestet: 0.90/0.95/0.99) |
+| replace | FALSE | Subsampling ohne Zurücklegen (Strobl et al. 2007) |
+| fraction | 0.632 | Anteil der Daten pro Baum |
 
-Nehmen wir zwei benachbarte Punkte:
+## Beantwortung der Forschungsfrage
 
-| Punkt | Regen | Temperatur | Land Cover | SHI |
-| ----- | ----- | ---------- | ---------- | --- |
-| A     | 1200  | 8 °C       | Wald       | 4.0 |
-| B     | 500   | 14 °C      | Acker      | 2.5 |
+### Frage 1: Welche Umweltfaktoren beeinflussen den SHI?
 
-Dann können die gemessenen Variablen den Unterschied schon sehr gut erklären.
-Das Modell braucht den räumlichen Trend kaum.
+Nach Kontrolle des räumlichen Hintergrundtrends (spatial_trend als
+Kontrollvariable):
 
-| Punkt | Regen | Temperatur | Land Cover | SHI |
-| ----- | ----- | ---------- | ---------- | --- |
-| A     | 1200  | 8 °C       | Wald       | 4.0 |
-| B     | 1200  | 8 °C       | Wald       | 2.8 |
+1. **spatial_trend**: 44.2% unbed. / 0.0109 bed. Importance ← Kontrollvariable (räumlicher Gradient)
+2. **land_cover**: 26.9% unbed. / 0.0066 bed. Importance
+3. **rain_mmsqm_mean_1995_2024**: 11.9% unbed. / 0.0016 bed. Importance
+4. **height_m**: 7.4% unbed. / 0.0015 bed. Importance
+5. **land_use**: 4.7% unbed. / 0.0003 bed. Importance
+6. **temp_c_mean_1995_2024**: 3.3% unbed. / 0.0004 bed. Importance
+7. **climate_name**: 1.7% unbed. / 0.0001 bed. Importance
 
-Jetzt wird es schwierig. Die bekannten Variablen sind fast identisch.
-Dann sucht das Modell nach etwas anderem. Liegt einer der Punkte in einer
-anderen Region, kann `spatial_trend` helfen.
+### Frage 2: Wie stark wirken sie und in welche Richtung? (Partial Dependence)
 
-`spatial_trend` wird vor allem dann wichtig, wenn es systematische regionale
-Muster gibt:
+- **Landbedeckung (26.9%):** Stärkste kategorial differenzierte Wirkung.
+  Höchster SHI: Woodland. Niedrigster SHI: Cropland.
+- **Räumlicher Trend (44.2% unkond.):** Kontrollvariable — repräsentiert
+  ungemessene regionalen Kovariaten. Zur Forschungsfrage: zeigt, dass
+  großräumige geographische Faktoren bedeutsam sind.
+- **Niederschlag (11.9%):** Wirkungsrichtung positiv (monoton steigend) auf SHI.
+  Sättigungseffekte oder Schwellenwerte erkennbar im PDP.
+- **Höhenlage (7.4%):** Moderater positiver Effekt (r=0.080 mit SHI).
+- **Temperatur (3.3%):** Negativer Effekt in wärmeren Regionen (r=-0.350 mit SHI).
 
-- Nord‑Westeuropa generell höhere SHI
-- Osteuropa generell niedrigere SHI
+### Frage 3: Wechselwirkungen
 
-obwohl deine gemessenen Variablen das nicht vollständig erklären.
+- Decision Tree (Schritt 7) zeigt hierarchische Interaktionen (visual).
+- Formale Quantifizierung (Friedmans H-Statistik, 2D-PDPs): empfohlen
+  für künftige Arbeit.
 
-## Zweite Frage: Warum sind die Werte 1–4?
+## Limitationen und Ausblick
 
-Weil dein GAM ein kontinuierliches Modell schätzt.
+1. **Fehlende Bodeneigenschaften:** Die verbleibenden 63% unerklärter
+   Varianz (Spatial CV) sind vermutlich auf fehlende Prädiktoren
+   zurückzuführen (pH-Wert, organischer Kohlenstoff, Bodenstruktur/-textur).
+2. **Spatial CV Block-Design:** k-means-Blöcke sind ein pragmatischer
+   Ansatz; blockCV::cv_spatial() mit automatischer Variogram-basierten
+   Blockgröße wäre methodisch noch robuster.
+3. **Interaktionsanalyse:** Friedmans H-Statistik und 2D-PDPs für
+   land_cover × rain und spatial_trend × land_cover nicht berechnet.
+4. **Bootstrap-CI für Importance:** Stabilitätstest der Rangfolge zwischen
+   spatial_trend und land_cover nicht durchgeführt (Laufzeit: ~13h für 50 Bootstrap-Runs).
 
-`SHI ~ s(lon_x, lat_y)`
+## Fazit
 
-Der GAM sagt nicht „Das ist Region A.“ oder „Das ist Region B.“,
-sondern liefert für jede Position einen erwarteten SHI‑Wert (z. B. 3.2, 3.8,
-2.7). Deshalb erscheinen kontinuierliche Zahlen.
-
-## Man könnte `spatial_trend` vereinfacht so lesen:
-
-> *„Egal was wir über Wetter, Landnutzung, Höhe usw. wissen: In dieser Gegend
-> Europas sind die SHI‑Werte tendenziell höher oder niedriger.“*
-
-Aber mit einer kleinen Einschränkung: Dein GAM wurde zunächst nur mit
-`SHI ~ s(lon_x, lat_y)` gefittet. Der daraus entstandene `spatial_trend`
-beschreibt also **„Wie hoch wäre der SHI allein aufgrund der geografischen
-Lage zu erwarten?“**. Dieser Wert wird dann zusätzlich als Feature in den
-Random Forest eingespeist, der dann die Kombination aus klassischen Umwelt‑
-Variablen + `spatial_trend` nutzt, um die endgültige Vorhersage zu treffen.
-
-## Beispiel
-
-| Variable      | Punkt A | Punkt B |
-| ------------- | ------- | ------- |
-| Regen         | gleich  | gleich  |
-| Temperatur    | gleich  | gleich  |
-| Land Cover    | gleich  | gleich  |
-| Höhe          | gleich  | gleich  |
-| `spatial_trend` | 3.8   | 2.9     |
-
-> *„Obwohl alle gemessenen Umweltvariablen gleich sind, liegt Punkt A in einer
-> Region, die grundsätzlich höhere SHI‑Werte hat.“* 
-
-Genau dafür nutzt es `spatial_trend`.
-
-## Was bedeutet das ökologisch?
-
-Das heißt nicht, dass die Koordinaten selbst wichtig sind.
-
-Es heißt eher:
-
->"Es gibt regionale Unterschiede im SHI, die durch unsere gemessenen Variablen nicht vollständig erklärt werden."
-
-
-Diese Unterschiede könnten kommen von:
-
-- Bodeneigenschaften, die nicht im Modell sind
-- historischer Landnutzung
-- Artenpool/Biogeographie
-- Management
-- Messunterschieden
-- anderen fehlenden Umweltvariablen
-
-`spatial_trend` ist also gewissermaßen ein Sammelbehälter für ungeklärte regionale Muster.
-
-Deshalb würde ich deine Interpretation sogar etwas präziser formulieren:
-
->"Der `spatial_trend` beschreibt, ob eine Region Europas tendenziell höhere oder niedrigere SHI-Werte aufweist, als durch die verfügbaren Umweltvariablen allein erklärt werden können."
-
-
----
-
-
-## Ergebnisse der Modellgüte (OOB-Validierung)
-- **Out-of-Bag R² (Erklärte Varianz):** 0.3997 (39.97%)
-- **Out-of-Bag RMSE (Vorhersagefehler):** 0.3469
-- **Trainings-R² (zum Vergleich):** 0.4552
-
-**Optimierte Hyperparameter:**
-- ntree (Anzahl Bäume): 500
-- mtry (Variablen pro Split): 4
-- mincriterion (Signifikanzniveau): 0.900
-- fraction (Bootstrap-Stichprobengröße): 0.632
-- replace (mit Zurücklegen): FALSE
-
-## Beantwortung der Forschungsfragen
-
-### Frage 1: Welche Faktoren haben den größten Einfluss auf den SHI?
-1. **land_cover** (32.0% Erklärungsbeitrag)
-2. **spatial_trend** (26.7% Erklärungsbeitrag)
-3. **rain_mmsqm_mean_1995_2024** (18.4% Erklärungsbeitrag)
-4. **height_m** (8.9% Erklärungsbeitrag)
-5. **temp_c_mean_1995_2024** (5.6% Erklärungsbeitrag)
-
-### Frage 2: Welche Faktoren wirken positiv, welche negativ?
-**POSITIVE Effekte (erhöhen den SHI):**
-- Höherer Niederschlag → Mehr Wasser für Pflanzen & Bodenbiologie
-- Wald/Grünland-Bedeckung → Stabile Bodenstruktur, Humusaufbau
-- Temperate Klimazonen (mild, nicht zu trocken)
-- Hoher spatial_trend → günstige geografische Lage (z.B. Atlantikküste)
-
-**NEGATIVE Effekte (senken den SHI):**
-- Hohe Temperaturen in Trockengebieten
-- Niedriger Niederschlag / Trockenheit
-- Intensive Ackerbau-Nutzung
-- Niedriger spatial_trend → ungünstige geografische Lage (z.B. Mittelmeer)
-
-### Frage 3: Gibt es Interaktionen zwischen den Einflussfaktoren?
-JA! Der Entscheidungsbaum zeigt Interaktionen. Neu:
-- **spatial_trend × Landnutzung:** In Regionen mit hohem räumlichen Trend kann selbst intensive Landnutzung noch moderate SHI-Werte erzielen.
-- **spatial_trend × Niederschlag:** Der räumliche Trend codiert oft implizit Ozeanitäts- und Kontinentalitätsgradienten.
-
-### Frage 4: Gibt es lokale/regionale/klimatische Unterschiede?
-JA — jetzt explizit durch spatial_trend sichtbar:
-- Die Karte `spatial_trend_gam.png` zeigt den räumlichen Trend direkt.
-- Atlantische Westküsten: hoher spatial_trend (günstige Lage)
-- Kontinentale / mediterrane Regionen: niedrigerer spatial_trend
-
-## Fazit und Empfehlungen
-- **Modellqualität:** ★★★★☆ (4/5)
-  OOB R² = 0.3997 — für ökologische Komplexsysteme sehr gut. Mit 'spatial_trend' wird der räumliche Makrogradient explizit modelliert.
-- **Zuverlässigkeit:** ★★★★★ (5/5)
-  OOB-Validierung: kein Overfitting.
-- **Interpretierbarkeit:** ★★★★☆ (4/5)
-  Variable Importance und Decision Tree klar interpretierbar. spatial_trend ist zusätzlich über die GAM-Karte visualisierbar.
+Das Modell erklärt **36.5% der SHI-Varianz** auf räumlich ungesehenen
+Testblöcken (Spatial CV). Nach Kontrolle des räumlichen Hintergrundtrends
+sind **Landbedeckung, Niederschlag und Höhenlage** die stärksten messbaren
+Umweltfaktoren für den Soil Health Index in Europa.
 

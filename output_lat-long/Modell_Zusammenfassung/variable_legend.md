@@ -9,4 +9,4 @@
 | land_use | Landnutzung | Faktor (4 Stufen) | Agriculture (excluding fallow land and kitchen gardens), Fallow land, Forestry, Semi-natural and natural areas not in use |
 | land_cover | Landbedeckung | Faktor (5 Stufen) | Bareland, Cropland, Grassland, … (2 weitere) |
 | climate_name | Klimazone | Faktor (7 Stufen) | BSk  Arid, steppe, cold, Cfa  Temperate, no dry season, hot summer, Cfb  Temperate, no dry season, warm summer, … (4 weitere) |
-| spatial_trend | Räumlicher Trend (GAM) | numerisch | 2.67 – 3.88 |
+| spatial_trend | Räumlicher Trend (GAM) | numerisch | 2.65 – 3.86 |

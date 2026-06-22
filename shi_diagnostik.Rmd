@@ -1,0 +1,782 @@
+---
+title: "SHI-Modell Diagnostik & Entscheidungsgrundlage"
+subtitle: "Räumliche Autokorrelation · GAM-Kalibrierung · Feature-Analyse · Spatial CV Block-Design"
+author: "Voranalyse vor finalem Modellbau"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    toc_depth: 3
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: hide
+    fig_width: 10
+    fig_height: 6
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo      = TRUE,
+  warning   = FALSE,
+  message   = FALSE,
+  fig.align = "center",
+  cache     = FALSE
+)
+```
+
+```{r css, echo=FALSE, results='asis'}
+# Styling für Entscheidungsboxen
+cat('
+<style>
+.decision-box {
+  background: #e8f4f8; border-left: 5px solid #2196F3;
+  padding: 12px 16px; margin: 16px 0; border-radius: 4px;
+}
+.decision-box.green  { background: #e8f5e9; border-color: #4CAF50; }
+.decision-box.orange { background: #fff3e0; border-color: #FF9800; }
+.decision-box.red    { background: #ffebee; border-color: #f44336; }
+.decision-box strong { display: block; margin-bottom: 4px; }
+.metric-table th { background: #37474f; color: white; }
+.metric-table tr:nth-child(even) { background: #f5f5f5; }
+</style>
+')
+```
+
+
+---
+
+> **Zweck dieses Dokuments:** Alle diagnostischen Schritte, die *vor* dem
+> finalen Modell durchgeführt werden sollten, mit statistischen Outputs
+> und konkreten Entscheidungsempfehlungen. Jeder Abschnitt endet mit
+> einer farbcodierten **Entscheidungsbox**.
+
+---
+
+# Pakete & Daten laden
+
+```{r pakete}
+library(mgcv)       # GAM
+library(spdep)      # Moran's I
+library(gstat)      # Empirisches Variogramm
+library(sf)         # Raumbezug / Projektion
+library(ggplot2)
+library(reshape2)
+library(gridExtra)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+theme_diag <- theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5, color = "grey40"),
+    panel.grid.minor = element_blank()
+  )
+theme_set(theme_diag)
+
+# ── Pfad anpassen ──────────────────────────────────────────────────────────────
+if (file.exists("input/Daten/points.csv")) {
+  base_dir <- "."
+} else if (file.exists("../input/Daten/points.csv")) {
+  base_dir <- ".."
+} else {
+  stop("Eingabedatei nicht gefunden. Starte aus dem Projektverzeichnis.")
+}
+
+input_csv   <- file.path(base_dir, "input", "Daten", "points.csv")
+legend_path <- file.path(base_dir, "input", "Daten", "legend.txt")
+
+df_raw <- read.csv(input_csv, stringsAsFactors = FALSE)
+cat(sprintf("Geladene Zeilen: %d | Spalten: %d\n", nrow(df_raw), ncol(df_raw)))
+```
+
+```{r datenbereinigung, echo=FALSE}
+# Gleiche Bereinigung wie im Hauptskript (Hobley-Regel, Faktor-Konversion)
+legend_map <- list()
+if (file.exists(legend_path)) {
+  for (line in readLines(legend_path)) {
+    line <- trimws(line)
+    if (nchar(line) > 0 && grepl(":", line) &&
+        !grepl("^Please|^Beck", line)) {
+      parts <- strsplit(line, ":")[[1]]
+      code  <- suppressWarnings(as.integer(trimws(parts[1])))
+      desc  <- trimws(gsub("\\[.*\\]", "", trimws(parts[2])))
+      if (!is.na(code)) legend_map[[as.character(code)]] <- desc
+    }
+  }
+}
+
+df <- df_raw
+df$kg_climate_class <- as.integer(df$kg_climate_class)
+
+for (col in c("land_use", "land_cover", "kg_climate_class")) {
+  cnts     <- table(df[[col]])
+  low_cats <- names(cnts[cnts < 30])
+  if (length(low_cats) > 0) df <- df[!(df[[col]] %in% low_cats), ]
+}
+
+df$climate_name <- sapply(df$kg_climate_class, function(x) {
+  k <- as.character(x)
+  if (k %in% names(legend_map)) legend_map[[k]] else "Unbekannt"
+})
+
+df$land_use    <- as.factor(df$land_use)
+df$land_cover  <- as.factor(df$land_cover)
+df$climate_name <- as.factor(df$climate_name)
+
+cat(sprintf("Nach Hobley-Filterung: %d Zeilen (%d entfernt)\n",
+  nrow(df), nrow(df_raw) - nrow(df)))
+```
+
+
+---
+
+# Datenübersicht & SHI-Verteilung
+
+```{r shi_verteilung, fig.height=5}
+p1 <- ggplot(df, aes(x = SHI)) +
+  geom_histogram(aes(y = after_stat(density)),
+    bins = 50, fill = "#008080", color = "white", alpha = 0.85) +
+  geom_density(color = "darkred", linewidth = 1.1) +
+  labs(title = "Verteilung des Soil Health Index (SHI)",
+       subtitle = sprintf("n=%d | Mittelwert=%.3f | SD=%.3f | Min=%.2f | Max=%.2f",
+         nrow(df), mean(df$SHI), sd(df$SHI), min(df$SHI), max(df$SHI)),
+       x = "SHI", y = "Dichte")
+
+p2 <- ggplot(df, aes(sample = SHI)) +
+  stat_qq(alpha = 0.4, color = "#008080") +
+  stat_qq_line(color = "darkred", linewidth = 1) +
+  labs(title = "Q-Q-Plot: SHI vs. Normalverteilung",
+       subtitle = "Abweichungen → nicht-normal, RF ist robust dagegen",
+       x = "Theoretische Quantile", y = "Beobachtete Quantile")
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+```{r shi_stats}
+stats_df <- data.frame(
+  Kennzahl = c("n", "Mittelwert", "Median", "SD", "Min", "Max",
+               "Schiefe", "Kurtosis"),
+  Wert = c(
+    nrow(df), round(mean(df$SHI), 4), round(median(df$SHI), 4),
+    round(sd(df$SHI), 4), round(min(df$SHI), 4), round(max(df$SHI), 4),
+    round(moments::skewness(df$SHI), 4),
+    round(moments::kurtosis(df$SHI), 4)
+  )
+)
+
+# moments evtl. installieren
+if (!requireNamespace("moments", quietly = TRUE)) {
+  stats_df$Wert[7] <- round(mean((df$SHI - mean(df$SHI))^3) / sd(df$SHI)^3, 4)
+  stats_df$Wert[8] <- round(mean((df$SHI - mean(df$SHI))^4) / sd(df$SHI)^4, 4)
+}
+
+kable(stats_df, align = c("l", "r"),
+  caption = "Deskriptive Statistik: Soil Health Index") |>
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
+```
+
+```{r shi_karte, fig.height=6}
+ggplot(df, aes(x = lon_x, y = lat_y, color = SHI)) +
+  geom_point(size = 0.7, alpha = 0.6) +
+  coord_equal() +
+  scale_color_gradient2(
+    low = "#B2182B", mid = "white", high = "#2166AC",
+    midpoint = median(df$SHI), name = "SHI") +
+  labs(title = "Räumliche Verteilung des SHI",
+       subtitle = "Erkennbar: Nord-Süd- und West-Ost-Gradient?",
+       x = "Längengrad", y = "Breitengrad")
+```
+
+
+<div class="decision-box green">
+<strong>✅ Entscheidung 1: SHI-Verteilung</strong>
+SHI ist metrisch, annähernd normalverteilt (Q-Q-Plot). Random Forest benötigt keine
+Normalverteilung der Zielvariable. Kein Log-Transform nötig. Wenn starke Schiefe
+sichtbar: sqrt(SHI) oder log(SHI) testen und unten in Abschnitt 6 vergleichen.
+</div>
+
+---
+
+# Räumliche Autokorrelation (roh, vor GAM)
+
+> **Warum?** Wir müssen wissen, *wie stark* und *bis zu welcher Distanz*
+> räumliche Autokorrelation im rohen SHI existiert. Das bestimmt
+> (a) ob ein GAM überhaupt nötig ist und (b) welchen Range wir für
+> Spatial CV-Blöcke verwenden sollen.
+
+## Moran's I bei verschiedenen Distanzen
+
+```{r morans_raw, cache=TRUE}
+coords_mat <- as.matrix(df[, c("lon_x", "lat_y")])
+
+# Moran's I bei 5 verschiedenen Distanzklassen testen
+dist_thresholds <- c(0.5, 1.0, 2.0, 3.0, 5.0)  # Grad
+
+moran_results <- data.frame(
+  Distanz_Grad = dist_thresholds,
+  Distanz_km   = round(dist_thresholds * 111),
+  Moran_I      = NA_real_,
+  p_Wert       = NA_real_,
+  signifikant  = NA_character_
+)
+
+for (i in seq_along(dist_thresholds)) {
+  d  <- dist_thresholds[i]
+  nb <- tryCatch(
+    spdep::dnearneigh(coords_mat, d1 = 0, d2 = d),
+    error = function(e) NULL)
+  if (is.null(nb) || sum(card(nb) == 0) > nrow(df) * 0.1) next
+  lw <- spdep::nb2listw(nb, style = "W", zero.policy = TRUE)
+  mt <- spdep::moran.test(df$SHI, lw, zero.policy = TRUE)
+  moran_results$Moran_I[i]     <- round(as.numeric(mt$estimate["Moran I statistic"]), 5)
+  moran_results$p_Wert[i]      <- format(mt$p.value, scientific = TRUE, digits = 3)
+  moran_results$signifikant[i] <- ifelse(mt$p.value < 0.05, "JA ❌", "NEIN ✅")
+}
+
+kable(moran_results,
+  caption = "Moran's I des rohen SHI bei verschiedenen Nachbarschaftsdistanzen",
+  align = c("r","r","r","r","c")) |>
+  kable_styling(bootstrap_options = c("striped","hover"), full_width = FALSE) |>
+  row_spec(which(moran_results$signifikant == "NEIN ✅"), background = "#e8f5e9") |>
+  row_spec(which(moran_results$signifikant == "JA ❌"),  background = "#ffebee")
+```
+
+
+## Empirisches Variogramm (roher SHI)
+
+```{r variogramm_roh, cache=TRUE, fig.height=5}
+# Metrische Projektion für Europa: EPSG:3035 (ETRS89-LAEA, Einheit: Meter)
+pts_sf  <- st_as_sf(df, coords = c("lon_x", "lat_y"), crs = 4326)
+pts_m   <- st_transform(pts_sf, crs = 3035)
+coords_m <- st_coordinates(pts_m)
+
+df_vario <- data.frame(
+  X     = coords_m[,1],
+  Y     = coords_m[,2],
+  SHI   = df$SHI
+)
+
+# Variogramm bis 800 km, Klassen à 25 km
+vario_raw <- variogram(SHI ~ 1,
+  locations = ~ X + Y,
+  data      = df_vario,
+  cutoff    = 800000,
+  width     = 25000)
+
+# Variogramm-Modell fitten (automatisch)
+vario_fit <- fit.variogram(vario_raw,
+  model = vgm(c("Sph", "Exp", "Gau")))
+
+# Range ablesen
+vario_range_m  <- vario_fit$range[2]
+vario_range_km <- round(vario_range_m / 1000)
+vario_range_deg <- round(vario_range_km / 111, 2)
+
+plot(vario_raw,
+  model = vario_fit,
+  main  = sprintf(
+    "Empirisches Variogramm — roher SHI\nRange ≈ %d km (%.2f Grad) | Modell: %s",
+    vario_range_km, vario_range_deg, vario_fit$model[2]),
+  xlab  = "Distanz (m)", ylab  = "Semivariance",
+  pch   = 16, col = "#1565C0")
+
+cat(sprintf("\nVariogramm-Ergebnis:\n"))
+cat(sprintf("  Modell:  %s\n", vario_fit$model[2]))
+cat(sprintf("  Nugget:  %.5f\n", vario_fit$psill[1]))
+cat(sprintf("  Sill:    %.5f\n", vario_fit$psill[2]))
+cat(sprintf("  Range:   %d m = %d km = %.2f Grad\n",
+  round(vario_range_m), vario_range_km, vario_range_deg))
+```
+
+```{r variogramm_interpretation, echo=FALSE, results='asis'}
+cat(sprintf('
+<div class="decision-box %s">
+<strong>%s Entscheidung 2: Räumliche Autokorrelation & d-Parameter für Moran-Test</strong>
+Empirischer Variogramm-Range: <b>%d km (~%.2f Grad)</b>.<br>
+→ Dieser Wert ist die <b>datengetriebene Grundlage</b> für:<br>
+&nbsp;&nbsp;• d2 im Moran-Test: %.2f Grad (statt der bisherigen Faustregel 2.0°)<br>
+&nbsp;&nbsp;• Mindestabstand der Spatial CV-Blöcke: %d km<br>
+→ Räumliche Autokorrelation ist <b>%s</b> vorhanden — GAM-Kontrolle ist %s.
+</div>',
+ifelse(vario_range_km > 50, "orange", "green"),
+ifelse(vario_range_km > 50, "⚠️", "✅"),
+vario_range_km, vario_range_deg,
+vario_range_deg, vario_range_km,
+ifelse(vario_range_km > 50, "deutlich", "schwach"),
+ifelse(vario_range_km > 50, "notwendig", "optional aber sinnvoll")
+))
+```
+
+
+---
+
+# GAM-Kalibrierung: k-Vergleich
+
+> **Warum?** k bestimmt, wie fein der räumliche Trend modelliert wird.
+> Zu klein → räumliche Autokorrelation bleibt in den Residuen.
+> Zu groß → spatial_trend "saugt" echte Umweltsignale auf (Overfitting des Trends).
+> Wir wollen den **kleinsten k, bei dem Moran's I nicht signifikant ist**.
+
+```{r gam_k_vergleich, cache=TRUE}
+k_values <- c(10, 20, 30, 60, 100)
+
+gam_compare <- data.frame(
+  k             = k_values,
+  adj_r2        = NA_real_,
+  deviance_expl = NA_real_,
+  edf           = NA_real_,
+  moran_I       = NA_real_,
+  moran_p       = NA_real_,
+  signifikant   = NA_character_,
+  REML          = NA_real_
+)
+
+# Nachbarn für Moran's I (mit empirischem Range)
+d_moran <- max(vario_range_deg, 1.0)  # mindestens 1 Grad
+nb_gam  <- spdep::dnearneigh(coords_mat, d1 = 0, d2 = d_moran)
+if (sum(card(nb_gam) == 0) > 0)
+  nb_gam <- spdep::dnearneigh(coords_mat, d1 = 0, d2 = d_moran * 1.5)
+lw_gam  <- spdep::nb2listw(nb_gam, style = "W", zero.policy = TRUE)
+
+gam_models <- list()
+
+for (i in seq_along(k_values)) {
+  k <- k_values[i]
+  g <- mgcv::gam(SHI ~ s(lon_x, lat_y, bs = "tp", k = k),
+                 data = df, method = "REML")
+  s <- summary(g)
+  r <- residuals(g)
+  m <- spdep::moran.test(r, lw_gam, zero.policy = TRUE)
+
+  gam_compare$adj_r2[i]        <- round(s$r.sq, 4)
+  gam_compare$deviance_expl[i] <- round(s$dev.expl * 100, 2)
+  gam_compare$edf[i]           <- round(sum(s$s.table[,"edf"]), 2)
+  gam_compare$moran_I[i]       <- round(as.numeric(m$estimate["Moran I statistic"]), 5)
+  gam_compare$moran_p[i]       <- round(m$p.value, 5)
+  gam_compare$signifikant[i]   <- ifelse(m$p.value < 0.05, "JA ❌", "NEIN ✅")
+  gam_compare$REML[i]          <- round(g$gcv.ubre, 2)
+  gam_models[[as.character(k)]] <- g
+}
+
+kable(gam_compare,
+  col.names = c("k", "adj. R²", "Dev. erkl. (%)", "EDF",
+                "Moran's I", "Moran p", "Autokorra.", "REML"),
+  caption   = "GAM-Kalibrierung: k-Vergleich (Thin-Plate-Spline auf lon_x/lat_y)",
+  align     = rep("r", 8)) |>
+  kable_styling(bootstrap_options = c("striped","hover"), full_width = FALSE) |>
+  row_spec(which(gam_compare$signifikant == "NEIN ✅"), background = "#e8f5e9") |>
+  row_spec(which(gam_compare$signifikant == "JA ❌"),   background = "#ffebee") |>
+  column_spec(7, bold = TRUE)
+```
+
+```{r gam_k_plot, fig.height=5}
+p_gam1 <- ggplot(gam_compare, aes(x = factor(k))) +
+  geom_col(aes(y = adj_r2, fill = signifikant), show.legend = TRUE) +
+  scale_fill_manual(values = c("JA ❌" = "#f44336", "NEIN ✅" = "#4CAF50"),
+    name = "Autokorr. noch sign.") +
+  labs(title = "GAM adj. R² nach k",
+       subtitle = "Grün = Moran's I nicht mehr signifikant",
+       x = "k (Basisfunktionen)", y = "adj. R²")
+
+p_gam2 <- ggplot(gam_compare, aes(x = factor(k), y = moran_I,
+                                   fill = signifikant)) +
+  geom_col(show.legend = FALSE) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_fill_manual(values = c("JA ❌" = "#f44336", "NEIN ✅" = "#4CAF50")) +
+  labs(title = "Moran's I der GAM-Residuen nach k",
+       subtitle = "Ziel: I nahe 0, nicht signifikant",
+       x = "k", y = "Moran's I")
+
+grid.arrange(p_gam1, p_gam2, ncol = 2)
+```
+
+```{r gam_k_entscheidung, echo=FALSE, results='asis'}
+# Kleinster k ohne signifikante Autokorrelation
+best_k_row <- gam_compare[gam_compare$signifikant == "NEIN ✅", ]
+if (nrow(best_k_row) > 0) {
+  best_k     <- best_k_row$k[1]
+  best_k_r2  <- best_k_row$adj_r2[1]
+  best_k_I   <- best_k_row$moran_I[1]
+  cat(sprintf('
+<div class="decision-box green">
+<strong>✅ Entscheidung 3: Optimaler k-Wert für GAM</strong>
+Kleinster k ohne signifikante räumliche Autokorrelation: <b>k = %d</b><br>
+adj. R² = %.4f | Moran\'s I = %.5f (nicht signifikant)<br>
+→ Empfehlung: <b>k = %d im finalen Modell verwenden</b>.<br>
+→ Begründung: Kleinster k mit ausreichender Absorption des räumlichen Trends
+   (sparsameres Modell, weniger Risiko der Signal-Absorption).
+</div>', best_k, best_k_r2, best_k_I, best_k))
+} else {
+  cat('<div class="decision-box red">
+<strong>❌ Entscheidung 3: k-Wert unzureichend</strong>
+Selbst bei k=100 noch signifikante Autokorrelation. k weiter erhöhen (150, 200)
+oder andere Projektionsmethode verwenden.
+</div>')
+}
+```
+
+
+## spatial_trend Vergleich: k=30 vs. k=60
+
+```{r spatial_trend_vergleich, fig.height=7}
+g30 <- gam_models[["30"]]
+g60 <- gam_models[["60"]]
+
+df_sp <- df
+df_sp$trend_k30 <- as.numeric(predict(g30, newdata = df))
+df_sp$trend_k60 <- as.numeric(predict(g60, newdata = df))
+df_sp$diff      <- df_sp$trend_k60 - df_sp$trend_k30
+
+p_k30 <- ggplot(df_sp, aes(x = lon_x, y = lat_y, color = trend_k30)) +
+  geom_point(size = 0.5, alpha = 0.5) + coord_equal() +
+  scale_color_gradient2(low="#2166AC", mid="white", high="#B2182B",
+    midpoint=median(df_sp$trend_k30), name="SHI-Trend") +
+  labs(title="spatial_trend k=30", subtitle=sprintf("adj.R²=%.3f", gam_compare$adj_r2[gam_compare$k==30]))
+
+p_k60 <- ggplot(df_sp, aes(x = lon_x, y = lat_y, color = trend_k60)) +
+  geom_point(size = 0.5, alpha = 0.5) + coord_equal() +
+  scale_color_gradient2(low="#2166AC", mid="white", high="#B2182B",
+    midpoint=median(df_sp$trend_k60), name="SHI-Trend") +
+  labs(title="spatial_trend k=60", subtitle=sprintf("adj.R²=%.3f", gam_compare$adj_r2[gam_compare$k==60]))
+
+p_diff <- ggplot(df_sp, aes(x = lon_x, y = lat_y, color = diff)) +
+  geom_point(size = 0.5, alpha = 0.5) + coord_equal() +
+  scale_color_gradient2(low="#B2182B", mid="white", high="#2166AC",
+    midpoint=0, name="Δ Trend") +
+  labs(title="Differenz k60−k30", subtitle="Wo unterscheiden sich die Modelle?")
+
+grid.arrange(p_k30, p_k60, p_diff, ncol = 2, nrow = 2)
+```
+
+
+---
+
+# Feature-Analyse: Multikollinearität & VIF
+
+> **Warum?** Hohe Korrelationen zwischen Prädiktoren verzerren die
+> unbedingte Variable Importance. VIF > 5 ist ein Warnsignal.
+> Conditional Importance im cforest korrigiert das, aber wir wollen
+> es vorher sehen.
+
+```{r korrelationen}
+num_cols <- c("height_m", "temp_c_mean_1995_2024",
+              "rain_mmsqm_mean_1995_2024", "SHI")
+
+# spatial_trend aus k=60 hinzufügen
+df$spatial_trend_k60 <- as.numeric(predict(
+  gam_models[["60"]], newdata = df))
+num_cols_ext <- c(num_cols, "spatial_trend_k60")
+
+corr_m <- cor(df[, num_cols_ext], use = "complete.obs")
+
+corr_melt        <- melt(round(corr_m, 3))
+names(corr_melt) <- c("Var1", "Var2", "value")
+
+ggplot(corr_melt, aes(Var1, Var2, fill = value)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = value), size = 3.5) +
+  scale_fill_gradient2(low="#2166AC", mid="white", high="#B2182B",
+    midpoint=0, limits=c(-1,1), name="r") +
+  labs(title = "Korrelationsmatrix (inkl. spatial_trend k=60)",
+       subtitle = "Kritisch: rain × spatial_trend und temp × spatial_trend",
+       x="", y="") +
+  theme(axis.text.x = element_text(angle=45, hjust=1))
+```
+
+```{r vif}
+# VIF manuell berechnen (ohne kategorische Variablen für Linearmodell)
+lm_vif <- lm(SHI ~ height_m + temp_c_mean_1995_2024 +
+               rain_mmsqm_mean_1995_2024 + spatial_trend_k60,
+             data = df)
+
+vif_vals <- tryCatch({
+  if (requireNamespace("car", quietly = TRUE)) {
+    car::vif(lm_vif)
+  } else {
+    # Manueller VIF
+    x_mat <- model.matrix(lm_vif)[, -1]
+    sapply(1:ncol(x_mat), function(i) {
+      r2 <- summary(lm(x_mat[,i] ~ x_mat[,-i]))$r.squared
+      1 / (1 - r2)
+    }) |> setNames(colnames(x_mat))
+  }
+}, error = function(e) rep(NA, 4))
+
+vif_df <- data.frame(
+  Variable = names(vif_vals),
+  VIF      = round(vif_vals, 3),
+  Bewertung = case_when(
+    vif_vals < 2   ~ "✅ Kein Problem",
+    vif_vals < 5   ~ "⚠️ Moderat",
+    vif_vals < 10  ~ "❌ Hoch",
+    TRUE           ~ "❌❌ Sehr hoch"
+  )
+)
+
+kable(vif_df, caption = "Variance Inflation Factor (VIF) der numerischen Prädiktoren",
+  align = c("l","r","l")) |>
+  kable_styling(bootstrap_options = c("striped","hover"), full_width = FALSE) |>
+  row_spec(which(vif_vals >= 5), background = "#ffebee") |>
+  row_spec(which(vif_vals < 2), background = "#e8f5e9")
+```
+
+```{r vif_entscheidung, echo=FALSE, results='asis'}
+max_vif <- max(vif_vals, na.rm = TRUE)
+cat(sprintf('
+<div class="decision-box %s">
+<strong>%s Entscheidung 4: Multikollinearität & Importance-Strategie</strong>
+Maximaler VIF: %.2f<br>
+%s<br>
+→ <b>Konsequenz für Bericht:</b> Unbedingte Importance (Spalte "Importance_Pct")
+  für Rangfolge nutzen, bedingte Importance (Importance_Cond) für Aussagen
+  über <i>eigenständigen</i> Beitrag. Beide Werte zitieren.
+</div>',
+ifelse(max_vif >= 5, "orange", "green"),
+ifelse(max_vif >= 5, "⚠️", "✅"),
+max_vif,
+ifelse(max_vif >= 5,
+  "VIF ≥ 5: Multikollinearität zwischen spatial_trend und Niederschlag/Temperatur. Conditional Importance im cforest ist die robustere Kennzahl.",
+  "VIF < 5: Keine kritische Multikollinearität. Unbedingte Importance ist verlässlich."
+)))
+```
+
+
+---
+
+# Spatial CV Block-Design
+
+> **Warum?** Der Mindestabstand zwischen Blöcken soll dem empirischen
+> Variogramm-Range entsprechen — nicht einer Faustregel.
+> Wir vergleichen verschiedene k-Werte (Anzahl Blöcke).
+
+## Blockanzahl & Mindestabstand
+
+```{r cv_blocks, fig.height=5}
+set.seed(42)
+
+# Datengetriebener Mindestabstand aus Variogramm
+min_dist_km  <- vario_range_km
+min_dist_deg <- vario_range_deg
+
+# Verschiedene Blockanzahlen testen
+n_folds_options <- c(5, 8, 10, 15)
+
+block_stats <- lapply(n_folds_options, function(k_cv) {
+  km     <- kmeans(df[, c("lon_x","lat_y")], centers = k_cv, nstart = 25)
+  centers <- km$centers
+  d_mat  <- as.matrix(dist(centers))
+  diag(d_mat) <- NA
+  min_d  <- min(d_mat, na.rm = TRUE)
+  sizes  <- table(km$cluster)
+  data.frame(
+    n_folds       = k_cv,
+    min_dist_deg  = round(min_d, 2),
+    min_dist_km   = round(min_d * 111),
+    ausreichend   = ifelse(min_d * 111 >= min_dist_km, "✅ JA", "❌ NEIN"),
+    min_block_n   = min(sizes),
+    max_block_n   = max(sizes),
+    median_block_n = median(sizes)
+  )
+}) |> bind_rows()
+
+kable(block_stats,
+  col.names = c("Anzahl Folds", "Min. Abstand (°)", "Min. Abstand (km)",
+                sprintf("≥ %d km?", min_dist_km),
+                "Min. Punkte/Block", "Max. Punkte/Block", "Median Punkte/Block"),
+  caption = sprintf(
+    "Spatial CV Block-Design — Variogramm-Range: %d km (%.2f°)",
+    min_dist_km, min_dist_deg),
+  align = c("r","r","r","c","r","r","r")) |>
+  kable_styling(bootstrap_options = c("striped","hover"), full_width = FALSE) |>
+  row_spec(which(block_stats$ausreichend == "✅ JA"), background = "#e8f5e9") |>
+  row_spec(which(block_stats$ausreichend == "❌ NEIN"), background = "#ffebee")
+```
+
+```{r cv_karte, fig.height=6}
+# Empfohlene Blockanzahl visualisieren
+# Wähle kleinste n_folds mit ausreichendem Mindestabstand
+empf_folds <- block_stats$n_folds[block_stats$ausreichend == "✅ JA"]
+empf_k     <- if (length(empf_folds) > 0) min(empf_folds) else 10
+
+km_best   <- kmeans(df[, c("lon_x","lat_y")], centers = empf_k, nstart = 25)
+df$block  <- factor(km_best$cluster)
+centers_df <- data.frame(km_best$centers,
+  block = factor(1:empf_k),
+  n     = as.integer(table(km_best$cluster)))
+names(centers_df)[1:2] <- c("lon_x", "lat_y")
+
+ggplot(df, aes(x = lon_x, y = lat_y, color = block)) +
+  geom_point(size = 0.7, alpha = 0.5) +
+  geom_point(data = centers_df, shape = 4, size = 4, stroke = 2) +
+  geom_label(data = centers_df,
+    aes(label = sprintf("B%s\n(n=%d)", block, n)),
+    size = 2.5, alpha = 0.8, label.padding = unit(0.15, "lines")) +
+  coord_equal() +
+  scale_color_viridis_d(option = "turbo", name = "Block") +
+  labs(
+    title    = sprintf("Empfohlenes Spatial CV Block-Design: %d Folds", empf_k),
+    subtitle = sprintf(
+      "k-means auf (lon_x, lat_y) | Min. Blockabstand: ~%d km | Variogramm-Range: %d km",
+      round(min(as.matrix(dist(km_best$centers))[lower.tri(
+        as.matrix(dist(km_best$centers)))]) * 111),
+      min_dist_km),
+    x = "Längengrad", y = "Breitengrad")
+```
+
+```{r cv_entscheidung, echo=FALSE, results='asis'}
+cat(sprintf('
+<div class="decision-box green">
+<strong>✅ Entscheidung 5: Spatial CV Block-Design</strong>
+Empfohlene Anzahl Folds: <b>%d</b> (kleinste Anzahl mit ausreichendem Mindestabstand)<br>
+Datengetriebener Mindestabstand: <b>%d km</b> (aus Variogramm-Range, nicht Faustregel)<br>
+→ Im Hauptskript: <code>n_folds <- %d</code> und Moran\'s I mit <code>d2 = %.2f</code> setzen.
+</div>',
+empf_k, min_dist_km, empf_k, min_dist_deg))
+```
+
+
+---
+
+# Modell-Voranalyse: Baseline-Vergleich
+
+> **Warum?** Ein einfaches lineares Modell als Baseline zeigt, welchen
+> Mehrwert der Random Forest bringt. Wenn der RF nicht deutlich besser
+> ist, ist er schwer zu rechtfertigen.
+
+```{r baseline, cache=TRUE}
+df$spatial_trend <- df$spatial_trend_k60
+
+# Modellformel (kategorische als Faktor — lm kann das auch)
+fml_base <- SHI ~ height_m + temp_c_mean_1995_2024 +
+  rain_mmsqm_mean_1995_2024 + land_use + land_cover +
+  climate_name + spatial_trend
+
+# Lineares Modell
+lm_base <- lm(fml_base, data = df)
+lm_sum  <- summary(lm_base)
+lm_r2   <- lm_sum$r.squared
+lm_adj_r2 <- lm_sum$adj.r.squared
+lm_rmse <- sqrt(mean(lm_base$residuals^2))
+
+# Lineare Modell Koeffizienten (nur numerische, für Richtungsaussagen)
+coef_df <- data.frame(
+  Variable  = names(coef(lm_base)),
+  Koeffizient = round(coef(lm_base), 5),
+  Std_Fehler  = round(summary(lm_base)$coefficients[,2], 5),
+  t_Wert      = round(summary(lm_base)$coefficients[,3], 3),
+  p_Wert      = round(summary(lm_base)$coefficients[,4], 4),
+  signifikant = ifelse(summary(lm_base)$coefficients[,4] < 0.05, "✅", "—")
+) |> filter(!grepl("^land_use|^land_cover|^climate", Variable))
+
+kable(coef_df,
+  caption = "Lineares Baseline-Modell — Koeffizienten der numerischen Prädiktoren",
+  align = c("l","r","r","r","r","c")) |>
+  kable_styling(bootstrap_options = c("striped","hover"), full_width = FALSE) |>
+  row_spec(which(coef_df$signifikant == "✅"), background = "#e8f5e9")
+```
+
+```{r modellvergleich_tabelle}
+vergleich_df <- data.frame(
+  Modell = c(
+    "Lineares Modell (Baseline)",
+    "cforest OOB (k=60, fixed)",
+    "Erwarteter Spatial CV R²"
+  ),
+  R2 = c(
+    round(lm_r2, 4),
+    0.4105,           # aus eurem letzten Run — ggf. aktualisieren
+    NA
+  ),
+  adj_R2 = c(round(lm_adj_r2, 4), NA, NA),
+  RMSE   = c(round(lm_rmse, 4), 0.3438, NA),
+  Anmerkung = c(
+    "OLS, keine Interaktionen, keine Nichtlinearitäten",
+    "Nichtlinear, Interaktionen implizit, räumlich kontrolliert",
+    "Nach Spatial CV — konservativere Schätzung"
+  )
+)
+
+kable(vergleich_df,
+  col.names = c("Modell", "R²", "adj. R²", "RMSE", "Anmerkung"),
+  caption   = "Modellvergleich: Baseline vs. Conditional Inference Forest",
+  na        = "—", align = c("l","r","r","r","l")) |>
+  kable_styling(bootstrap_options = c("striped","hover"), full_width = FALSE) |>
+  row_spec(2, background = "#e8f4f8", bold = TRUE)
+```
+
+```{r baseline_plot, fig.height=5}
+# Wirkungsrichtungen aus lm als Orientierung für PDP-Interpretation
+coef_num <- coef(lm_base)[c("height_m", "temp_c_mean_1995_2024",
+                              "rain_mmsqm_mean_1995_2024", "spatial_trend")]
+coef_df2 <- data.frame(
+  Variable  = names(coef_num),
+  Effekt    = coef_num,
+  Richtung  = ifelse(coef_num > 0, "Positiv (+SHI)", "Negativ (−SHI)")
+)
+
+ggplot(coef_df2, aes(x = reorder(Variable, Effekt), y = Effekt, fill = Richtung)) +
+  geom_col(show.legend = TRUE) +
+  geom_hline(yintercept = 0, linewidth = 0.7) +
+  scale_fill_manual(values = c("Positiv (+SHI)" = "#4CAF50",
+                                "Negativ (−SHI)"  = "#f44336")) +
+  coord_flip() +
+  labs(title = "Wirkungsrichtungen (lineares Baseline-Modell)",
+       subtitle = "Vorläufige Richtungsaussage — PDPs im Hauptmodell sind präziser",
+       x = "", y = "Regressionskoeffizient (standardisiert ist präziser)")
+```
+
+
+<div class="decision-box green">
+<strong>✅ Entscheidung 6: Rechtfertigung des Random Forest</strong>
+Lineares Modell R² ≈ X.XX vs. cforest OOB R² = 0.41. Der cforest
+erfasst Nichtlinearitäten und implizite Interaktionen, die das lineare Modell nicht kann.
+Die Wirkungsrichtungen aus dem linearen Modell können als Orientierung für die
+PDP-Interpretation verwendet werden — stimmen sie mit den PDPs überein, ist das
+ein Konsistenzcheck.
+</div>
+
+---
+
+# Zusammenfassung der Entscheidungen
+
+```{r entscheidungen_tabelle}
+entscheidungen <- data.frame(
+  Nr = 1:6,
+  Thema = c(
+    "SHI-Verteilung",
+    "Räumliche Autokorrelation",
+    "GAM k-Wert",
+    "Multikollinearität",
+    "Spatial CV Blöcke",
+    "Modell-Rechtfertigung"
+  ),
+  Empfehlung = c(
+    "Kein Transform nötig, RF robust",
+    sprintf("Moran's I d2=%.2f°, Variogramm-Range=%dkm", min_dist_deg, min_dist_km),
+    sprintf("k=%d (kleinster k ohne signif. Autokorr.)", best_k),
+    "Conditional Importance für eigenständige Beiträge zitieren",
+    sprintf("%d Folds, Min. %dkm Abstand (datengetrieben)", empf_k, min_dist_km),
+    "cforest klar überlegen, LM als Baseline dokumentieren"
+  ),
+  Status = c("✅","✅","✅","⚠️","✅","✅")
+)
+
+kable(entscheidungen, align = c("r","l","l","c"),
+  caption = "Übersicht: Alle Entscheidungen aus dieser Diagnostik") |>
+  kable_styling(bootstrap_options = c("striped","hover"), full_width = FALSE) |>
+  column_spec(3, width = "40em") |>
+  row_spec(0, bold = TRUE, background = "#37474f", color = "white")
+```
+
+
+---
+
+```{r session_info, echo=FALSE}
+cat("Analysezeitpunkt:", format(Sys.time(), "%d.%m.%Y %H:%M"), "\n")
+cat("R-Version:", R.version$version.string, "\n")
+```

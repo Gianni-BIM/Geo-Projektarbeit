@@ -9,7 +9,9 @@ required_packages <- c(
   "spdep", # Für räumliche Autokorrelation (Moran's I)
   "sf", # Abhängigkeit von spdep
   "spData", # Abhängigkeit von spdep
-  "GGally" # Für Korrelationsmatrix
+  "GGally", # Für Korrelationsmatrix
+  "pdp",
+  "ICEbox"
 )
 
 # Prüfen, welche Pakete noch fehlen
