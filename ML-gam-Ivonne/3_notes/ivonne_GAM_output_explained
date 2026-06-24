@@ -1,0 +1,215 @@
+Explaination of different outputs (not super clean, not really finished)
+
+
+# MODEL SUMMARY
+# summary(gam_mod)
+==================
+> R-sq.(adj) =  0.433   Deviance explained = 45.5%
+
+Das Modell erklärt angeblich etwa 45.5% der Variabilität von SHI im Training!
+Der Rest ist wohl “Rauschen + ungemessene Faktoren” (normal in Ökologie)
+Für Umwelt- und Bodendaten sol das ein solides Ergebnis sein.
+
+----------------------
+
+> Approximate significance of smooth terms:
+                                 edf    Ref.df    F    p-value    
+> s(lon_x,lat_y)               120.476 160.769  3.426  <2e-16 ***
+> s(rain_mmsqm_mean_1995_2024)   6.075   7.206 12.432  <2e-16 ***
+> s(height_m)                    3.116   3.940  2.573  0.0367 *    
+---
+> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Location und Regen (p gering), F bei Regen besonders hoch
+"starker" Einfluss und signifikant: die 3 *** bei Regen und Location
+
+Höhe (p Höher)
+aber weniger signifikant
+
+Der F-Wert zeigt in diesem Zusammenhang, wie stark der jeweilige Glättungsterm zur Erklärung der Zielvariable beiträgt im Verhältnis zur verbleibenden unerklärten Variation. Der F-Wert ist immer relativ zum Modell und Datensatz — es gibt keinen universellen „guten“ Schwellenwert. In GAMs dient er eher zum Vergleich zwischen Termen im selben Modell, nicht als absolute Skala.
+
+Die Ergebnisse zeigen, dass alle drei Glättungsterme einen signifikanten Beitrag zum Modell leisten. Besonders stark ist der Effekt von Niederschlag, gefolgt von der räumlichen Struktur (lon/lat), während Höhe zwar schwächer, aber noch signifikant ist.
+
+-----------------------
+
+| Term                             | Estimate | Std. Error | t value| p-value     |
+|----------------------------------|----------|------------|--------|-------------|
+| (Intercept)                      | 3.092957 | 0.115883   | 26.690 | < 2e-16 *** |
+| land_coverGrassland              | 0.246474 | 0.017628   | 13.982 | < 2e-16 *** |
+| land_coverShrubland              | 0.355581 | 0.047021   | 7.562  | 5.06e-14 ***|
+| land_coverWoodland               | 0.334044 | 0.055132   | 6.059  | 1.52e-09 ***|
+| land_useFallow land              | -0.199355| 0.033727   | -5.911 | 3.74e-09 ***|
+| land_coverBareland               | 0.094920 | 0.035581   | 2.668  | 0.00767 **  |
+| land_useForestry                 | -0.057088| 0.055172   | -1.035 | 0.30087     |
+| land_useSemi natural and natural | -0.037652| 0.039071   | -0.964 | 0.33527     |
+| climate_class_simpleB            | -0.032650| 0.037639   | -0.867 | 0.38575     |
+| climate_class_simpleD            | -0.031195| 0.031478   | -0.991 | 0.32175     |
+| temp_c_mean_1995_2024            | -0.005161| 0.010104   | -0.511 | 0.60956     |   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Die Übersicht zeigt Richtung (positiv/negativ), Stärke des Effekts und statistische Signifikanz des Zusammenhangs mit SHI. Die Significance Codes zeigen, wie stark die Daten gegen die Annahme sprechen, dass kein Zusammenhang zwischen Variable und SHI besteht (bzw. dass der Effekt = 0 wäre).
+
+0 ‘***’   Sehr starke statistische Evidenz für einen Zusammenhang.
+0.05 '.'  classic “significant” threshold
+1 ‘ ’     Die Daten liefern keine ausreichende Evidenz für einen Zusammenhang.
+
+(Intercept): The intercept is the predicted SHI value for the reference categories when all continuous predictors are at zero; it mainly serves as a baseline for the model.
+Reference Categories: Land_use: Agriculture, Land_cover: Cropland, Climate_Class: C
+
+Grass, Shrub, Wood heben den SHI (Estimate ist positiv) und der Effekt scheint signifikant.
+Fallow senkt ihn (negativ) und ist signifikant
+Bareland hebt ihn, aber nur leicht (positiv), ist etwas weniger signifikant.
+
+# MODEL DIAGNOSTICS
+# gam.check(gam_mod)
+####################
+default k (k=10, no need to set it) is fine for rain and height
+but space is much more complex, k=250 set in model
+
+EDF (edf) stands for effective degrees of freedom, and it tells you how “wiggly” or flexible a smooth term is in your GAM—the higher the EDF, the more nonlinear and flexible the fitted effect.
+
+Basis dimension (k) checking results. Low p-value (k-index<1) may
+indicate that k is too low, especially if edf is close to k'.
+
+| Smooth term                   | k'     | edf    | k-index| p-value    |
+|-------------------------------|--------|--------|--------|------------|
+| s(lon_x, lat_y)               | 249.00 | 120.48 | 0.90   | <2e-16 *** |
+| s(rain_mmsqm_mean_1995_2024)  | 9.00   | 6.08   | 0.98   | 0.07 .     |
+| s(height_m)                   | 9.00   | 3.12   | 0.99   | 0.27       |
+---
+> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Die Glättungsterme wirken insgesamt gut spezifiziert, da die k-index-Werte für Niederschlag und Höhe nahe 1 liegen und somit kein klarer Hinweis auf zu geringe Flexibilität besteht. Nur der räumliche Term s(lon_x, lat_y) ist mit k-index = 0.90 leicht grenzwertig, wobei trotz bereits sehr hohem k keine klare Verbesserung durch weiteres Erhöhen zu erwarten ist; die k-Diagnostik prüft dabei nicht die Wichtigkeit der Variablen, sondern nur, ob die gewählte Basisdimension ausreichend flexibel ist.
+
+# PREDICTION PERFORMANCE
+# postResample(pred, test$SHI)
+##############################
+> RMSE        Rsquared    MAE 
+> 0.3879472   0.2978801   0.3101519 
+
+RMSE ≈ 0.39 / MAE ≈ 0.31 → your typical prediction error size on the test set
+
+Interpretation: The model captures meaningful structure, but a substantial part of the signal—especially spatial detail—does not generalize well to unseen data.
+
+
+!!!
+> R-sq.(adj) =   0.43
+On the data it was fitted to, the model explains ~43% of variation in SHI.
+
+> Rsquared = 0.2978801
+On new data, the model explains ~30% of variance in SHI predictions.
+
+
+
+Plots
+#####
+
+plot(gam_mod, select = 2) similar for 3 (height)
+------------------------------------------------
+This plot shows the estimated nonlinear effect of rainfall on the target variable, with the shaded region indicating uncertainty around the model’s estimate.
+
+> coef(gam_mod)[1]
+(Intercept) 
+3.031931 
+
+Das Modell sagt für die Referenzkategorien (Agriculture, Cropland and Climate Class C) einen SHI von 3.032 voraus, sofern die Glättungsterme (Regen, Höhe, räumlicher Effekt) jeweils ihren durchschnittlichen Beitrag von 0 leisten.
+Beispiel für plot Rain: ca. 800 mm Niederschlag erhöhen den vorhergesagten SHI um etwa 0.2 Einheiten gegenüber der Basisvorhersage.
+
+
+plot(gam_mod, select = 1)
+-------------------------
+A contour labeled 0.4 means all locations along that line have a spatial contribution of about +0.4 SHI units.
+A contour labeled −0.4 means those locations have a contribution of about −0.4 SHI units.
+
+This is after accounting for rainfall, elevation, climate, land cover, etc. The spatial smooth is capturing any remaining geographic pattern that those variables don't explain.
+
+
+Q-Q-Plot
+--------
+Q-Q-Plot der Residuen
+Der Q-Q-Plot zeigt, ob die Residuen ungefähr der theoretisch erwarteten Verteilung folgen und weist auf mögliche Abweichungen oder Ausreißer hin.
+
+Punkte auf der Linie → gute Übereinstimmung; starke Abweichungen von der Linie → Probleme wie Schiefe oder Ausreißer.
+
+Der Q-Q-Plot zeigt eine insgesamt gute Übereinstimmung mit der theoretischen Verteilung, mit leichten Abweichungen im Bereich der Extremwerte (Ausreißer bzw. dickere Tails).
+
+
+Response (real shi) vs. Fitted Values
+Response = echte Daten (beobachtet / vorhergesagt im Originalraum)
+------------------------------------------------------------------
+Der Plot „Response vs. Fitted Values“ zeigt, wie gut die vorhergesagten Werte des Modells mit den tatsächlich beobachteten Daten übereinstimmen. Er ist besonders hilfreich, um die Vorhersagegüte und mögliche systematische Abweichungen oder Ausreißer schnell zu erkennen.
+
+
+Residuals vs linear predictor
+Linear predictor = Modellrechnung im „internen Raum“ des GAM
+------------------------------------------------------------
+Bei Gaussian mit Identity-Link ist der lineare Prädiktor praktisch gleich den vorhergesagten Werten auf der Originalskala (SHI).
+Der Plot „Residuals vs. linear predictor“ zeigt, ob die Residuen auf der Modellskala zufällig um den Wert 0 verteilt sind. Wenn du eine gleichmäßige „Wolke“ um 0 ohne erkennbare Struktur siehst, spricht das dafür, dass dein Modell die Daten auf dieser Skala gut erfasst.
+
+
+Permutation importance
+######################
+> View(importance)
+> importance
+# output verschönert von Chatty:
+
+| Variable                  |Baseline RMSE | Perm RMSE |RMSE Increase |Perm SD    |
+|---------------------------|--------------|-----------|--------------|-----------|
+| rain_mmsqm_mean_1995_2024 | 0.3457116    | 0.4000289 | 0.0543173    | 0.0055039 |
+| land_cover                | 0.3457116    | 0.3979176 | 0.0522061    | 0.0044752 |
+| land_use                  | 0.3457116    | 0.3530545 | 0.0073429    | 0.0014772 |
+| height_m                  | 0.3457116    | 0.3517816 | 0.0060700    | 0.0013295 |
+| temp_c_mean_1995_2024     | 0.3457116    | 0.3470033 | 0.0012917    | 0.0004074 |
+| climate_class_simple      | 0.3457116    | 0.3466071 | 0.0008955    | 0.0003810 |
+
+Rainfall and land cover were the two most important predictors. Randomly permuting either variable increased the permutated RMSE of test by approximately 14.7% (ca. 0.05/0.34 = rmse increase/baseline rmse), indicating that the model relies on both variables for accurate SHI predictions. The low standard deviations across permutations suggest that these importance estimates are stable.
+
+
+# VERGLEICH ZWEIER GAMS - MIT UND OHNE SPACE
+############################################
+AIC (Akaike Information Criterion)
+df (degrees of freedom in GAMs - Maß für total model complexity)
+
+
+| Model        | df        | AIC       |
+|--------------|-----------|-----------|
+| gam_mod      | 146.07813 | 2508.305  |
+| gam_no_space | 27.40741  | 2904.261  |
+
+Das Modell mit räumlichem Glättungsterm (gam_mod mit s(lon, lat)) zeigt einen deutlich niedrigeren AIC-Wert und damit eine bessere Balance aus Modellgüte und Komplexität als das Modell ohne räumliche Struktur. Dies deutet darauf hin, dass die räumliche Variation einen wesentlichen zusätzlichen Erklärungsbeitrag für SHI liefert.
+
+
+
+
+
+
+
+mit Vorsicht genießen, das kam mal zwischendurch
+################################################
+
+Spatial permutation importance
+##############################
+
+The spatial term is statistically highly significant.
+But its unique predictive contribution beyond other covariates is modest because other variables already explain a lot of spatial structure. Space is real and structured but partly redundant with covariates.
+
+1. “Is there spatial structure in the data?”
+
+→ YES (very strong, p < 2e-16, high EDF)
+
+2. “Does the model need coordinates to predict well?”
+
+→ only slightly (small RMSE change when permuted)
+
+
+FAZIt in between
+#################
+
+Your dataset is:
+spatially autocorrelated + environmentally structured + redundant in predictors
+So your modelling situation is:
+spatial smooth = captures broad gradient
+climate/land use = already encode same gradient
+elevation + climate = partially collinear spatial proxies
+So your preprocessing is fine — but it creates a highly redundant spatial system, which is important context for interpretation.
