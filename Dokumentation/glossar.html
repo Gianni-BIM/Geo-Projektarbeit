@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekt-Glossar & Parametertabelle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --bg-color: #f8fafc;
+            --sidebar-bg: #1e293b;
+            --sidebar-hover: #334155;
+            --sidebar-text: #f1f5f9;
+            --sidebar-text-muted: #94a3b8;
+            --content-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent-color: #3b82f6;
+            --accent-light: #eff6ff;
+            --border-color: #e2e8f0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0f172a;
+                --sidebar-bg: #020617;
+                --sidebar-hover: #1e293b;
+                --content-bg: #1e293b;
+                --text-primary: #f8fafc;
+                --text-secondary: #cbd5e1;
+                --border-color: #334155;
+                --accent-light: #172554;
+            }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-sans); background-color: var(--bg-color); display: flex; height: 100vh; overflow: hidden; color: var(--text-primary); }
+        
+        /* Sidebar Styles */
+        .sidebar { width: 320px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; height: 100%; border-right: 1px solid var(--border-color); flex-shrink: 0; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h1 { color: #fff; font-size: 1.2rem; font-weight: 600; letter-spacing: 0.02em; }
+        .sidebar-header p { color: var(--sidebar-text-muted); font-size: 0.85rem; margin-top: 5px; }
+        
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 15px 0; }
+        
+        /* Accordion / Folder Structure */
+        .folder { margin-bottom: 5px; }
+        .folder-title { 
+            padding: 10px 20px; color: var(--sidebar-text-muted); font-size: 0.75rem; 
+            text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            transition: color 0.2s;
+        }
+        .folder-title:hover { color: #fff; }
+        .folder-title::after { content: '▼'; font-size: 0.6rem; transition: transform 0.3s; }
+        .folder.collapsed .folder-title::after { transform: rotate(-90deg); }
+        
+        .folder-content { list-style: none; overflow: hidden; transition: max-height 0.3s ease-out; max-height: 1000px; }
+        .folder.collapsed .folder-content { max-height: 0; }
+        
+        .nav-item { padding: 8px 20px 8px 30px; cursor: pointer; color: var(--sidebar-text); font-size: 0.9rem; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
+        .nav-item:hover { background-color: var(--sidebar-hover); }
+        .nav-item.active { background-color: var(--accent-color); color: #fff; font-weight: 500; border-left: 4px solid #fff; padding-left: 26px; }
+        .nav-item .badge { font-size: 0.65rem; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; margin-left: auto; font-family: var(--font-mono); }
+
+        /* Main Content Styles */
+        .main-content { flex: 1; overflow-y: auto; background-color: var(--bg-color); position: relative; scroll-behavior: smooth; }
+        
+        .panel { display: none; padding: 40px; max-width: 900px; margin: 0 auto; animation: fadeIn 0.3s ease-in-out; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .panel-header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid var(--border-color); }
+        .panel-category { color: var(--accent-color); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block; }
+        .panel-title { font-size: 2.2rem; color: var(--text-primary); font-weight: 700; margin-bottom: 10px; }
+        .panel-value { display: inline-block; font-family: var(--font-mono); font-size: 1.1rem; background-color: var(--accent-light); color: var(--accent-color); padding: 6px 12px; border-radius: 6px; font-weight: 600; }
+
+        /* W-Fragen Grid */
+        .q-grid { display: grid; gap: 20px; }
+        .q-card { background: var(--content-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .q-title { color: var(--accent-color); font-size: 1rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .q-title::before { content: '❓'; font-size: 1.2rem; }
+        .q-card.project .q-title::before { content: '📌'; }
+        .q-card.easy .q-title::before { content: '💡'; }
+        .q-card.lit .q-title::before { content: '📚'; }
+        .q-text { color: var(--text-secondary); line-height: 1.7; font-size: 1.05rem; }
+        .q-text strong { color: var(--text-primary); }
+        .q-text code { background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.9em; }
+        @media (prefers-color-scheme: dark) { .q-text code { background: rgba(255,255,255,0.1); } }
+
+        /* Welcome Screen */
+        #welcome { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+        #welcome h2 { font-size: 2rem; color: var(--text-primary); margin-bottom: 15px; }
+        #welcome p { color: var(--text-secondary); max-width: 500px; line-height: 1.6; }
+        #welcome .icon { font-size: 4rem; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Geoprojekt Glossar</h1>
+            <p>Interaktive Parametertabelle</p>
+        </div>
+        <div class="sidebar-nav">
+            
+            <!-- Folder 1 -->
+            <div class="folder">
+                <div class="folder-title" onclick="toggleFolder(this)">Grundlagen & Daten</div>
+                <ul class="folder-content">
+                    <li class="nav-item" onclick="showPanel('shi')">SHI <span class="badge">Target</span></li>
+                    <li class="nav-item" onclick="showPanel('hobley')">Hobley-Regel <span class="badge">n<30</span></li>
+                </ul>
+            </div>
+
+            <!-- Folder 2 -->
+            <div class="folder">
+                <div class="folder-title" onclick="toggleFolder(this)">GAM / Räumlicher Trend</div>
+                <ul class="folder-content">
+                    <li class="nav-item" onclick="showPanel('bs-tp')">bs = "tp" <span class="badge">Spline</span></li>
+                    <li class="nav-item" onclick="showPanel('k-100')">k = 100 <span class="badge">Knoten</span></li>
+                    <li class="nav-item" onclick="showPanel('edf')">EDF <span class="badge">78,82</span></li>
+                    <li class="nav-item" onclick="showPanel('adj-r2')">adj. R² <span class="badge">0,258</span></li>
+                    <li class="nav-item" onclick="showPanel('spatial-trend')">spatial_trend <span class="badge">Feature</span></li>
+                </ul>
+            </div>
+
+            <!-- Folder 3 -->
+            <div class="folder">
+                <div class="folder-title" onclick="toggleFolder(this)">Hyperparameter cforest</div>
+                <ul class="folder-content">
+                    <li class="nav-item" onclick="showPanel('cforest')">cforest <span class="badge">Modell</span></li>
+                    <li class="nav-item" onclick="showPanel('ntree')">ntree <span class="badge">500</span></li>
+                    <li class="nav-item" onclick="showPanel('mtry')">mtry <span class="badge">4</span></li>
+                    <li class="nav-item" onclick="showPanel('mincriterion')">mincriterion <span class="badge">0,90</span></li>
+                    <li class="nav-item" onclick="showPanel('replace')">replace <span class="badge">FALSE</span></li>
+                    <li class="nav-item" onclick="showPanel('fraction')">fraction <span class="badge">0,632</span></li>
+                </ul>
+            </div>
+
+            <!-- Folder 4 -->
+            <div class="folder">
+                <div class="folder-title" onclick="toggleFolder(this)">Modellgüte & Validierung</div>
+                <ul class="folder-content">
+                    <li class="nav-item" onclick="showPanel('train-r2')">Train R² <span class="badge">0,470</span></li>
+                    <li class="nav-item" onclick="showPanel('oob-r2')">OOB R² <span class="badge">0,416</span></li>
+                    <li class="nav-item" onclick="showPanel('oob-rmse')">OOB RMSE <span class="badge">0,342</span></li>
+                    <li class="nav-item" onclick="showPanel('spatial-r2')">Spatial CV R² <span class="badge">0,365</span></li>
+                    <li class="nav-item" onclick="showPanel('spatial-rmse')">Spatial CV RMSE <span class="badge">0,357</span></li>
+                    <li class="nav-item" onclick="showPanel('fold-span')">Fold-R² Spanne <span class="badge">0,10-0,66</span></li>
+                </ul>
+            </div>
+
+            <!-- Folder 5 -->
+            <div class="folder">
+                <div class="folder-title" onclick="toggleFolder(this)">Variable Importance</div>
+                <ul class="folder-content">
+                    <li class="nav-item" onclick="showPanel('vi-beding')">Bedingt vs Unbedingt <span class="badge">Methode</span></li>
+                    <li class="nav-item" onclick="showPanel('vi-landcover')">land_cover <span class="badge">26,9%</span></li>
+                    <li class="nav-item" onclick="showPanel('vi-rain')">Niederschlag <span class="badge">11,9%</span></li>
+                    <li class="nav-item" onclick="showPanel('vi-height')">height_m <span class="badge">7,4%</span></li>
+                    <li class="nav-item" onclick="showPanel('vi-landuse')">land_use <span class="badge">4,7%</span></li>
+                    <li class="nav-item" onclick="showPanel('vi-temp')">Temperatur <span class="badge">3,3%</span></li>
+                    <li class="nav-item" onclick="showPanel('vi-climate')">climate_name <span class="badge">1,7%</span></li>
+                </ul>
+            </div>
+
+            <!-- Folder 6 -->
+            <div class="folder">
+                <div class="folder-title" onclick="toggleFolder(this)">Problemfragen & Konzepte</div>
+                <ul class="folder-content">
+                    <li class="nav-item" style="color: #fca5a5;" onclick="showPanel('prob-autokorr')">Räumliche Autokorrelation</li>
+                    <li class="nav-item" style="color: #fca5a5;" onclick="showPanel('prob-bias')">Optimismus-Bias</li>
+                    <li class="nav-item" style="color: #fca5a5;" onclick="showPanel('prob-leakage')">Data Leakage (GAM)</li>
+                    <li class="nav-item" style="color: #fca5a5;" onclick="showPanel('prob-kmeans')">k-means & Buffering</li>
+                    <li class="nav-item" style="color: #fca5a5;" onclick="showPanel('prob-pearson')">Pearson vs Importance</li>
+                    <li class="nav-item" style="color: #fca5a5;" onclick="showPanel('prob-r2rmse')">R² vs RMSE</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        
+        <!-- Welcome Screen -->
+        <div id="welcome" class="panel active">
+            <div class="icon">📖</div>
+            <h2>Willkommen im interaktiven Projekt-Glossar</h2>
+            <p>Wähle einen Parameter, eine Metrik oder eine Problemfrage aus der Sidebar auf der linken Seite aus. Jeder Begriff wird dir ausführlich im Q&A-Format erklärt (Was, Warum, Wie, Projektbezug etc.).</p>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- GRUNDLAGEN -->
+        <!-- ============================================== -->
+        
+        <div id="shi" class="panel">
+            <div class="panel-header">
+                <span class="panel-category">Grundlagen & Daten</span>
+                <h1 class="panel-title">Soil Health Index (SHI)</h1>
+                <div class="panel-value">Wert im Datensatz: 1,5 bis 4,5</div>
+            </div>
+            <div class="q-grid">
+                <div class="q-card">
+                    <div class="q-title">Was ist das?</div>
+                    <div class="q-text">Ein numerischer Index, der die allgemeine Gesundheit und Fruchtbarkeit des Bodens an einem bestimmten geografischen Punkt beschreibt.</div>
+                </div>
+                <div class="q-card">
+                    <div class="q-title">Wozu brauche ich das?</div>
+                    <div class="q-text">Boden ist extrem komplex (Chemie, Biologie, pH-Wert). Der SHI fasst all diese unzähligen, schwer greifbaren Eigenschaften in einer einzigen, leicht verständlichen Zahl zusammen. Ohne ihn müssten wir hunderte Modelle bauen.</div>
+                </div>
+                <div class="q-card">
+                    <div class="q-title">Wer macht das / Wo wird das gemacht?</div>
+                    <div class="q-text">Wissenschaftler in der Agrarökologie und Bodenkunde weltweit. Laborproben werden genommen und standardisiert ausgewertet (z.B. im LUCAS-Datensatz der EU).</div>
+                </div>
+                <div class="q-card">
+                    <div class="q-title">Wie wird das gemacht?</div>
+                    <div class="q-text">Zahlreiche Laborwerte (wie z.B. organischer Kohlenstoff, Mikrobenaktivität) werden gewichtet und mathematisch zu einem Index aufaddiert.</div>
+                </div>
+                <div class="q-card">
+                    <div class="q-title">Warum wird das gemacht? (Muss man das machen?)</div>
+                    <div class="q-text">Ja, das ist ein absoluter Standardansatz. Es ist die einzige Möglichkeit, um Böden global vergleichen zu können und eine übergeordnete Aussage ("Ist der Boden gesund?") zu treffen.</div>
+                </div>
+                <div class="q-card project">
+                    <div class="q-title">Beispiel & Bezug zum Projekt</div>
+                    <div class="q-text">Der SHI ist unsere <strong>Zielvariable (Target)</strong>. Unser gesamtes Machine-Learning-Modell hat nur ein einziges Ziel: Den SHI-Wert eines Ortes in Europa vorherzusagen, basierend auf Umweltfaktoren (Klima, Regen, Landnutzung), ohne den Boden physisch testen zu müssen.</div>
+                </div>
+                <div class="q-card easy">
+                    <div class="q-title">Ganz einfache Erklärung</div>
+                    <div class="q-text">Der SHI ist wie die "Schulnote" für einen Boden. Eine 1.5 ist mangelhaft (z.B. toter, trockener Ackerboden), eine 4.5 ist ein "Sehr gut" (z.B. ein nährstoffreicher Waldboden).</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="hobley" class="panel">
+            <div class="panel-header">
+                <span class="panel-category">Grundlagen & Daten</span>
+                <h1 class="panel-title">Hobley-Regel (n < 30)</h1>
+                <div class="panel-value">Filterregel für den Datensatz</div>
+            </div>
+            <div class="q-grid">
+                <div class="q-card">
+                    <div class="q-title">Was ist das?</div>
+                    <div class="q-text">Eine Datenbereinigungsregel. Sie besagt, dass alle Kategorien (z.B. extrem seltene Klimazonen), die in unserem Datensatz weniger als 30 Mal vorkommen, komplett aus der Tabelle gelöscht werden.</div>
+                </div>
+                <div class="q-card">
+                    <div class="q-title">Wozu brauche ich das?</div>
+                    <div class="q-text">Um das Modell davor zu schützen, unsinnige Regeln aus Ausnahmen zu lernen. Ein Algorithmus braucht ausreichend Beispiele, um ein echtes Muster zu erkennen.</div>
+                </div>
+                <div class="q-card">
+                    <div class="q-title">Wie wird das gemacht?</div>
+                    <div class="q-text">Das R-Skript zählt für jede Klimaklasse die Anzahl der Zeilen in der Tabelle. Sind es z.B. nur 26 Zeilen für die Klasse "BSh", wird diese Klasse komplett herausgefiltert.</div>
+                </div>
+                <div class="q-card">
+                    <div class="q-title">Warum wird das gemacht? (Ist das üblich?)</div>
+                    <div class="q-text">Ja, das ist eine eiserne Grundregel der Statistik. Die Zahl 30 gilt in der Statistik als magische Grenze (Zentraler Grenzwertsatz), ab der man davon ausgehen kann, dass eine Stichprobe verlässliche Durchschnitte liefert und kein reiner Zufall mehr ist.</div>
+                </div>
+                <div class="q-card project">
+                    <div class="q-title">Beispiel & Bezug zum Projekt</div>
+                    <div class="q-text">Wir haben 3 sehr seltene Köppen-Geiger-Klimaklassen (BSh, Dsb, Dfc) mit insgesamt 41 Punkten aus unserem Datensatz entfernt. Das macht unser finales Modell für den Rest Europas wesentlich robuster.</div>
+                </div>
+                <div class="q-card easy">
+                    <div class="q-title">Ganz einfache Erklärung</div>
+                    <div class="q-text">Wenn du wissen willst, wie sich Schüler in einer Schule verhalten, darfst du keine Rückschlüsse aus einer Klasse ziehen, in der nur 1 einziger Schüler sitzt. Du brauchst eine Mindestanzahl.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- PROBLEMFRAGEN (Die tiefen konzeptionellen Fragen) -->
+        <!-- ============================================== -->
+
+        <div id="prob-autokorr" class="panel">
+            <div class="panel-header">
+                <span class="panel-category">Problemfragen & Konzepte</span>
+                <h1 class="panel-title">Räumliche Autokorrelation</h1>
+                <div class="panel-value">Toblers Erstes Gesetz der Geographie</div>
+            </div>
+            <div class="q-grid">
+                <div class="q-card">
+                    <div class="q-title">Was ist das?</div>
+                    <div class="q-text">Das Prinzip, dass Dinge, die räumlich nahe beieinander liegen, sich ähnlicher sind als Dinge, die weit entfernt sind. Böden in Norddeutschland ähneln einander mehr als Böden in Südspanien.</div>
+                </div>
+                <div class="q-card">
+                    <div class="q-title">Warum ist das im Machine Learning ein Problem?</div>
+                    <div class="q-text">Machine Learning Modelle (wie normale Random Forests) gehen davon aus, dass alle Datenpunkte unabhängig voneinander gewürfelt wurden. Wenn zwei Messpunkte aber auf dem gleichen Acker 10 Meter nebeneinander liegen, sind sie fast Klone. Das Modell lernt dann nicht die wahren Zusammenhänge, sondern "spickt" einfach beim Nachbarn.</div>
+                </div>
+                <div class="q-card project">
+                    <div class="q-title">Wie lösen wir das in unserem Projekt?</div>
+                    <div class="q-text">Wir lösen es auf zwei Ebenen:<br>1. **Beim Training:** Wir füttern das Modell mit dem `spatial_trend` (aus dem GAM), damit das Modell lernt: "Aha, das liegt nur an der Region".<br>2. **Beim Testen:** Wir nutzen Spatial Cross-Validation (k-means), um sicherzustellen, dass Testpunkte hunderte Kilometer von den Trainingspunkten entfernt liegen.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="prob-leakage" class="panel">
+            <div class="panel-header">
+                <span class="panel-category">Problemfragen & Konzepte</span>
+                <h1 class="panel-title">Data Leakage (Datenleck) beim GAM</h1>
+                <div class="panel-value">Eine methodische Limitierung</div>
+            </div>
+            <div class="q-grid">
+                <div class="q-card">
+                    <div class="q-title">Was ist das?</div>
+                    <div class="q-text">Data Leakage ist einer der gefährlichsten Fehler im Machine Learning. Es passiert, wenn das Modell beim Training aus Versehen Informationen aus der Zukunft (aus den Testdaten) sieht, die es eigentlich nicht haben dürfte. Dadurch wirkt das Modell künstlich besser als es ist.</div>
+                </div>
+                <div class="q-card project">
+                    <div class="q-title">Beispiel & Bezug zum Projekt</div>
+                    <div class="q-text">Wir haben ein minimales Datenleck begangen (wie es oft in der Praxis aus Effizienzgründen passiert). Wir haben in Schritt 1b das GAM (welches den `spatial_trend` berechnet) über <strong>alle</strong> Punkte Europas gelegt. Als wir danach in Schritt 4b das Modell in geografische Blöcke aufgeteilt haben, um es "blind" zu testen, steckte im `spatial_trend`-Wert des Testpunktes bereits minimale Information über genau diesen Punkt aus dem GAM-Schritt.</div>
+                </div>
+                <div class="q-card lit">
+                    <div class="q-title">Wie wäre es methodisch perfekt?</div>
+                    <div class="q-text">Methodisch 100% sauber wäre gewesen: Das GAM in jeder der 10 Test-Runden komplett neu nur auf den jeweiligen 9 Trainingsblöcken zu berechnen und den Testblock auszusparen. Das war für den Rahmen dieser Arbeit zu rechenintensiv, ist aber ein perfekter Diskussionspunkt für die Abschlussarbeit!</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="prob-bias" class="panel">
+            <div class="panel-header">
+                <span class="panel-category">Problemfragen & Konzepte</span>
+                <h1 class="panel-title">Optimismus-Bias</h1>
+                <div class="panel-value">Wert: 0,051 (5,1%)</div>
+            </div>
+            <div class="q-grid">
+                <div class="q-card">
+                    <div class="q-title">Was ist das?</div>
+                    <div class="q-text">Die Differenz zwischen der geschummelten OOB-Modellgüte (bei der Trainings- und Testpunkte Nachbarn sein können) und der ehrlichen Spatial-CV-Modellgüte (bei der die Distanz erzwungen wird).<br><br><code>41.6% (OOB) - 36.5% (Spatial) = 5.1% Bias</code></div>
+                </div>
+                <div class="q-card">
+                    <div class="q-title">Wozu brauche ich das?</div>
+                    <div class="q-text">Der Bias sagt uns, wie stark wir uns selbst belügen würden, wenn wir die billige OOB-Methode nutzen würden. Er misst direkt die Stärke der "Räumlichen Autokorrelation" im Fehler des Modells.</div>
+                </div>
+                <div class="q-card project">
+                    <div class="q-title">Interpretation für unser Projekt</div>
+                    <div class="q-text">Ein Bias von 5,1% ist relativ klein. Das bedeutet: Unser Modell profitiert zwar davon, wenn es direkt neben einem bekannten Punkt testen darf, aber es bricht nicht komplett zusammen, wenn man es hunderte Kilometer in unbekanntes Terrain schickt. Unser Modell lernt echte Physik/Biologie, nicht nur Geografie!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add script dynamically to generate the rest of the panels to avoid writing 10,000 lines of HTML in one go -->
+        <script>
+            // We are using JS to fill in the repetitive structural data so the HTML isn't huge.
+            // I'll define the content data here and generate the panels.
+            const data = [
+                // GAM
+                { id: 'bs-tp', cat: 'GAM / Räumlicher Trend', title: 'bs = "tp"', val: 'Thin-Plate-Spline', q_was: 'Ein flexibler mathematischer 2D-Teppich, der über die Europa-Karte gelegt wird, um geografische Muster weich zu glätten.', q_warum: 'Erlaubt dem GAM, den komplexen Nord-Süd- und West-Ost-Gradienten Europas natürlich zu modellieren (im Gegensatz zum harten Schachbrettmuster klassischer Baum-Modelle).', q_proj: 'Wir nutzen es in R mit dem Paket `mgcv`.' },
+                { id: 'k-100', cat: 'GAM / Räumlicher Trend', title: 'k = 100', val: '100 (Knotenanzahl)', q_was: 'Die maximal erlaubte Flexibilität (Welligkeit) des Splines. Je höher k, desto detaillierter kann sich der Teppich an die Landschaft anpassen.', q_proj: 'Das Modell schöpft diese Flexibilität fast vollständig aus (siehe EDF). Hätten wir ein zu kleines k gewählt, wäre der Trend zu grob.' },
+                { id: 'edf', cat: 'GAM / Räumlicher Trend', title: 'EDF (Effective Degrees of Freedom)', val: '78,82', q_was: 'Die tatsächlich genutzte Komplexität des Modells von den maximal 100 erlaubten.', q_proj: 'Ein sehr hoher EDF von 78,82 zeigt, dass der SHI-Gradient in Europa räumlich enorm komplex ist und keinem einfachen, geraden Strich folgt.' },
+                { id: 'adj-r2', cat: 'GAM / Räumlicher Trend', title: 'adj. R² (Güte des GAM)', val: '0,258 (25,8%)', q_was: 'Der Anteil der SHI-Varianz, der allein durch die geografische Lage (Längen- und Breitengrad) erklärt wird.', q_warum: 'Es beweist, dass allein der Wohnort schon einen massiven Einfluss auf den Boden hat.', q_proj: 'Ohne diese Erkenntnis würden wir lokales Wetter für Effekte verantwortlich machen, die eigentlich großräumig durch die Lage bedingt sind.' },
+                { id: 'spatial-trend', cat: 'GAM / Räumlicher Trend', title: 'spatial_trend', val: '2,65 bis 3,86', q_was: 'Das Output-Ergebnis des GAM, das als neue numerische Spalte in unsere Daten eingefügt wird. Es ist der vorhergesagte SHI-Wert allein aufgrund der Lage.', q_proj: 'Dies löst unser Problem, dass der Random Forest keine rohen Lon/Lat-Koordinaten versteht. Es ist quasi der "Mietspiegel" der Bodengesundheit.' },
+                
+                // Hyperparameter
+                { id: 'cforest', cat: 'Hyperparameter', title: 'cforest', val: 'Conditional Inference Forest', q_was: 'Ein Random Forest Algorithmus, der statistische p-Werte für jeden Entscheidungs-Ast nutzt.', q_warum: 'Klassische Modelle bevorzugen kontinuierliche Variablen extrem. Der cforest ist "unbiased" und geht fair mit Kategorien (Wald/Acker) um.', q_lit: 'Hothorn, T., Hornik, K., & Zeileis, A. (2006). Unbiased Recursive Partitioning.' },
+                { id: 'ntree', cat: 'Hyperparameter', title: 'ntree', val: '500', q_was: 'Die Anzahl der Entscheidungsbäume, die der Algorithmus baut. Die Ergebnisse aller 500 Bäume werden am Ende demokratisch gemittelt.', q_warum: 'Mehr Bäume sorgen für eine stabilere Vorhersage. 500 ist der bewährte Standardwert.' },
+                { id: 'mtry', cat: 'Hyperparameter', title: 'mtry', val: '4', q_was: 'Bei jeder Astgabelung darf das Modell nicht alle Variablen anschauen, sondern zieht zufällig z.B. 4 aus 7 Variablen.', q_warum: 'Zwingt die Bäume zur Vielfalt. Wenn immer alle Variablen da wären, sähe jeder Baum fast gleich aus (weil die stärkste Variable immer dominiert).', q_proj: 'Wir haben ein Grid Search gemacht. mtry=4 lieferte das beste Ergebnis.' },
+                { id: 'mincriterion', cat: 'Hyperparameter', title: 'mincriterion', val: '0,90', q_was: 'Ein Baum wächst nur weiter, wenn er sich zu mindestens 90% sicher ist, dass der statistische Test (p < 0.10) signifikant ist.', q_proj: '0.90 war der lockerste getestete Wert. Unser Modell brauchte diese Freiheit, um tiefe Bäume wachsen zu lassen.' },
+                { id: 'replace', cat: 'Hyperparameter', title: 'replace', val: 'FALSE', q_was: 'Subsampling ohne Zurücklegen.', q_warum: 'Zwingend notwendig nach Strobl et al. (2007). Zieht man mit Zurücklegen (Bootstrap), entsteht eine Verzerrung zugunsten kontinuierlicher Variablen. FALSE hält das Modell unbiased.' },
+                { id: 'fraction', cat: 'Hyperparameter', title: 'fraction', val: '0,632', q_was: 'Der Anteil der Originaldaten (63,2%), den jeder Baum zum Üben bekommt. Der Rest (36,8%) dient zum Testen dieses einen Baumes.' },
+                
+                // Güte
+                { id: 'train-r2', cat: 'Modellgüte & Validierung', title: 'Train R²', val: '0,470 (47,0%)', q_was: 'Das Bestimmtheitsmaß auf den Trainingsdaten selbst.', q_warum: 'Dient nur als Check für Overfitting. Natürlich ist das Modell hier gut, weil es die Antworten schon kennt.' },
+                { id: 'oob-r2', cat: 'Modellgüte & Validierung', title: 'OOB R²', val: '0,416 (41,6%)', q_was: 'Out-of-Bag R². Das Modell testet sich selbst an den 36,8% Daten, die beim Baum-Bau weggelassen wurden.', q_proj: 'Wird oft zitiert, ist bei geografischen Daten aber geschummelt, da die weggelassenen Punkte zufällig direkt neben den geübten Punkten liegen können.' },
+                { id: 'oob-rmse', cat: 'Modellgüte & Validierung', title: 'OOB RMSE', val: '0,342', q_was: 'Der mittlere Fehler in echten Einheiten (SHI). Das Modell liegt im Schnitt um 0,342 SHI-Punkte daneben.' },
+                { id: 'spatial-r2', cat: 'Modellgüte & Validierung', title: 'Spatial CV R²', val: '0,365 (36,5%)', q_was: 'Das absolut ehrliche R². Hier wurde die Europa-Karte in 10 Blöcke zerschnitten. Trainings- und Testdaten sind hunderte Kilometer getrennt.', q_proj: 'Das ist die Referenzzahl für die wissenschaftliche Publikation! 36,5% ist für hochkomplexe Bodendaten extrem gut.' },
+                { id: 'spatial-rmse', cat: 'Modellgüte & Validierung', title: 'Spatial CV RMSE', val: '0,357', q_was: 'Der ehrliche Fehlerwert. Nur marginal schlechter als der OOB RMSE, was für unser Modell spricht.' },
+                { id: 'fold-span', cat: 'Modellgüte & Validierung', title: 'Fold-R² Spanne', val: '0,10 bis 0,66', q_was: 'Die Schwankungsbreite der R²-Werte aus den 10 verschiedenen geografischen Blöcken.', q_proj: 'Zeigt, dass das Modell in manchen Regionen Europas (wo es z.B. 66% erklärt) super funktioniert, in anderen (10%) aber sehr schlecht. Eine perfekte Grundlage für die Diskussion.' },
+
+                // Variable Importance
+                { id: 'vi-beding', cat: 'Variable Importance', title: 'Bedingt vs. Unbedingt', val: 'Methode', q_was: 'Unbedingte Importance würfelt Variablen blind durcheinander. Bedingte Importance friert korrelierende Variablen beim Würfeln ein.', q_warum: 'Korrelierende Variablen (wie Regen und geografische Lage) verfälschen die unbedingte Methode, da sie dieselbe Information tragen. Bedingte VI isoliert den wahren Effekt.' },
+                { id: 'vi-landcover', cat: 'Variable Importance', title: 'land_cover (Landbedeckung)', val: '26,9 %', q_was: 'Eine kategoriale Variable, die sagt, ob der Boden Wald, Acker, Wasser etc. ist.', q_proj: 'Der mit Abstand wichtigste echte Umweltfaktor in unserem Projekt! Nur der cforest konnte dies beweisen, da Sinas altes Modell diese Info aus methodischen Gründen verwarf.' },
+                { id: 'vi-rain', cat: 'Variable Importance', title: 'Niederschlag (rain_mean)', val: '11,9 %', q_was: 'Der mittlere Jahresniederschlag der letzten Jahrzehnte.', q_proj: 'Der zweitwichtigste Umweltfaktor.' },
+                { id: 'vi-height', cat: 'Variable Importance', title: 'height_m (Höhe)', val: '7,4 %', q_was: 'Topografische Höhe in Metern.', q_proj: 'Moderater Einfluss, reguliert oft indirekt Mikroklima und Bodentyp.' },
+                { id: 'vi-landuse', cat: 'Variable Importance', title: 'land_use (Nutzungsart)', val: '4,7 %', q_was: 'Menschliche Nutzung.', q_proj: 'Ein schwacher Einfluss, da er inhaltlich stark mit der Landbedeckung (land_cover) überlappt und daher wenig Neues beiträgt.' },
+                { id: 'vi-temp', cat: 'Variable Importance', title: 'Temperatur (temp_mean)', val: '3,3 %', q_was: 'Mittlere Jahrestemperatur.', q_proj: 'Schwacher eigenständiger Effekt, da die Information bereits durch den geografischen Trend (Nord-Süd-Gefälle) abgedeckt ist.' },
+                { id: 'vi-climate', cat: 'Variable Importance', title: 'climate_name (Köppen-Geiger)', val: '1,7 %', q_was: 'Grobe Klimazonen.', q_proj: 'Völlig irrelevant. Das Modell hat bereits exakte Regen- und Temperaturzahlen, die groben Zonen werden vom Algorithmus aussortiert.' },
+
+                // Problemfragen extra
+                { id: 'prob-kmeans', cat: 'Problemfragen & Konzepte', title: 'k-means Block Design & Spatial Buffering', val: 'Geostatistik', q_was: 'k-means schneidet Europa in 10 große Puzzleteile für die Kreuzvalidierung. Buffering würde noch eine 50km "Todeszone" um jeden Testblock legen, in der keine Trainingspunkte sein dürfen.', q_proj: 'Wir nutzen k-means. Wir haben auf Buffering verzichtet, weil uns sonst zu viele Trainingspunkte verloren gegangen wären.' },
+                { id: 'prob-pearson', cat: 'Problemfragen & Konzepte', title: 'Pearson-Korrelation vs. Variable Importance', val: 'Vergleich', q_was: 'Pearson ist dumm und schaut nur zwei Variablen isoliert an (linear). Variable Importance (Random Forest) ist schlau und schaut alle Variablen gleichzeitig an und berücksichtigt nicht-lineare Effekte.', q_proj: 'Wir nutzen Pearson in Schritt 2 nur zum Gucken. Das Endergebnis stammt ausschließlich aus der Variable Importance (Schritt 5).' },
+                { id: 'prob-r2rmse', cat: 'Problemfragen & Konzepte', title: 'R² vs. RMSE', val: 'Metrik-Vergleich', q_was: 'R² misst den erklärten Prozentsatz der Unterschiede (0 bis 1). RMSE misst den Fehler in echten Maßeinheiten (hier SHI-Punkte).', q_proj: 'R² = 36,5% klingt nach Schulnote 4, ist aber super. RMSE = 0,35 bedeutet, bei einer SHI-Skala von 1.5 bis 4.5 liegen wir im Schnitt nur 0,35 daneben. Das Modell ist absolut alltagstauglich.' }
+            ];
+
+            const mainContent = document.querySelector('.main-content');
+            
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.id = item.id;
+                div.className = 'panel';
+                
+                let inner = `
+                    <div class="panel-header">
+                        <span class="panel-category">${item.cat}</span>
+                        <h1 class="panel-title">${item.title}</h1>
+                        <div class="panel-value">${item.val}</div>
+                    </div>
+                    <div class="q-grid">
+                `;
+
+                if(item.q_was) {
+                    inner += `<div class="q-card"><div class="q-title">Was ist das? / Wie wird es gemacht?</div><div class="q-text">${item.q_was}</div></div>`;
+                }
+                if(item.q_warum) {
+                    inner += `<div class="q-card"><div class="q-title">Wozu / Warum wird das gemacht?</div><div class="q-text">${item.q_warum}</div></div>`;
+                }
+                if(item.q_proj) {
+                    inner += `<div class="q-card project"><div class="q-title">Beispiel & Bezug zum Projekt</div><div class="q-text">${item.q_proj}</div></div>`;
+                }
+                if(item.q_lit) {
+                    inner += `<div class="q-card lit"><div class="q-title">Literatur</div><div class="q-text">${item.q_lit}</div></div>`;
+                }
+
+                inner += `</div>`;
+                div.innerHTML = inner;
+                mainContent.appendChild(div);
+            });
+        </script>
+
+        <script>
+            // UI Logic
+            function toggleFolder(el) {
+                el.parentElement.classList.toggle('collapsed');
+            }
+
+            function showPanel(id) {
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                
+                const targetPanel = document.getElementById(id);
+                if(targetPanel) {
+                    targetPanel.classList.add('active');
+                }
+                
+                // Highlight sidebar item
+                const evt = event;
+                if(evt && evt.currentTarget) {
+                    evt.currentTarget.classList.add('active');
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>

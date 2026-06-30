@@ -1,0 +1,1258 @@
+[output_lat-long           output_lat-long/Grafiken_png                                   FALSE                                  FALSE  output_lat-long/Modell_Zusammenfassung                                   FALSE  ✓ Konfiguration abgeschlossen.   Input:  ./input/Daten/points.csv    Output: output_lat-long; --- Schritt 1: Datenaufbereitung ---  Ursprüngliche Zeilenanzahl: 4467 Ausgeschlossene Spalten: POINT_ID, X, Y  Verteilung Landnutzung (land_use):  Agriculture (excluding fallow land and kitchen gardens)                                                     3096                                              Fallow land                                                      221                                                 Forestry                                                      849                Semi-natural and natural areas not in use                                                      301   Verteilung Landbedeckung (land_cover):   Bareland  Cropland Grassland Shrubland  Woodland        178      2184      1010       131       964; Köppen-Geiger Legende: 30 Einträge geladen. ; Prüfe Kategorien auf Hobley-Regel (<30 Beobachtungen)...    Entferne aus kg_climate_class: 6 (BSh  Arid, steppe, hot), 18 (Dsb  Cold, dry summer, warm summer), 27 (Dfc  Cold, no dry season, cold summer) (n=9, 6, 26)  Ergebnis: 4467 → 4426 Zeilen (3 Kategorien entfernt)  Features: 8 (3 kategorisch als Faktoren — kein One-Hot-Encoding)   land_use:     4 Levels   land_cover:   5 Levels   climate_name: 7 Levels [Zeit] Datenaufbereitung & Cleaning: 8.1 s (0.13 min); --- Schritt 1b: GAM Thin-Plate-Spline (k=100) ---  Fitte GAM: SHI ~ s(lon_x, lat_y, bs='tp', k=100) ...  Family: gaussian  Link function: identity   Formula: SHI ~ s(lon_x, lat_y, bs = "tp", k = 100)  Parametric coefficients:             Estimate Std. Error t value Pr(>|t|)     (Intercept) 3.138251   0.005798   541.3   <2e-16 *** --- Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1  Approximate significance of smooth terms:                  edf Ref.df     F p-value     s(lon_x,lat_y) 78.82  92.17 16.59  <2e-16 *** --- Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1  R-sq.(adj) =  0.258   Deviance explained = 27.1% -REML = 2186.4  Scale est. = 0.14877   n = 4426  GAM EDF:  78.82 GAM adj. R²: 0.258; Feature 'spatial_trend':   Min = 2.651 | Median = 3.128 | Max = 3.861  df_model: 7 Features (inkl. spatial_trend, ohne lon_x/lat_y):   height_m, temp_c_mean_1995_2024, rain_mmsqm_mean_1995_2024, land_use, land_cover, climate_name, spatial_trend [Zeit] GAM Räumlicher Trend: 15.7 s (0.26 min); --- Schritt 2: EDA ---
+
+Korrelationsmatrix:
+                          height_m temp_c_mean_1995_2024
+height_m                     1.000                -0.051
+temp_c_mean_1995_2024       -0.051                 1.000
+rain_mmsqm_mean_1995_2024    0.044                -0.328
+spatial_trend               -0.164                -0.470
+SHI                          0.080                -0.350
+                          rain_mmsqm_mean_1995_2024 spatial_trend    SHI
+height_m                                      0.044        -0.164  0.080
+temp_c_mean_1995_2024                        -0.328        -0.470 -0.350
+rain_mmsqm_mean_1995_2024                     1.000         0.641  0.455
+spatial_trend                                 0.641         1.000  0.521
+SHI                                           0.455         0.521  1.000; --- Schritt 3: Grid Search ---
+
+Modellformel: SHI ~ height_m + temp_c_mean_1995_2024 + rain_mmsqm_mean_1995_2024 + 
+
+ Modellformel:     land_use + land_cover + climate_name + spatial_trend
+
+Grid Search: 9 Kombinationen (ntree=500)...
+
+  [1/9] mtry=2, mincriterion=0.90 ... OOB R²=0.4059, RMSE=0.3451
+  [2/9] mtry=3, mincriterion=0.90 ... OOB R²=0.4134, RMSE=0.3429
+  [3/9] mtry=4, mincriterion=0.90 ... OOB R²=0.4161, RMSE=0.3421
+  [4/9] mtry=2, mincriterion=0.95 ... OOB R²=0.4018, RMSE=0.3463
+  [5/9] mtry=3, mincriterion=0.95 ... OOB R²=0.4089, RMSE=0.3442
+  [6/9] mtry=4, mincriterion=0.95 ... OOB R²=0.4112, RMSE=0.3436
+  [7/9] mtry=2, mincriterion=0.99 ... OOB R²=0.3945, RMSE=0.3484
+  [8/9] mtry=3, mincriterion=0.99 ... OOB R²=0.4025, RMSE=0.3461
+  [9/9] mtry=4, mincriterion=0.99 ... OOB R²=0.4043, RMSE=0.3456
+
+Grid-Search-Ergebnisse:
+  mtry mincriterion ntree    oob_r2  oob_rmse
+1    2         0.90   500 0.4058759 0.3451085
+2    3         0.90   500 0.4133665 0.3429261
+3    4         0.90   500 0.4161229 0.3421195
+4    2         0.95   500 0.4017511 0.3463044
+5    3         0.95   500 0.4088721 0.3442372
+6    4         0.95   500 0.4111891 0.3435619
+7    2         0.99   500 0.3944912 0.3483993
+8    3         0.99   500 0.4025340 0.3460777
+9    4         0.99   500 0.4043083 0.3455635; 
+Beste Parameter:
+  mtry=4 | mincriterion=0.90 | OOB R²=0.4161 | RMSE=0.3421
+[Zeit] Hyperparameter-Optimierung (Grid Search): 1551.5 s (25.86 min); --- Schritt 4: Modellevaluation ---
+
+Train R²:   0.4696  |  Train RMSE: 0.3261
+OOB R²:     0.4161  |  OOB RMSE:   0.3421; [Zeit] Modellevaluation: 100.5 s (1.67 min);
+--- Schritt 4b: Spatial Cross-Validation ---
+
+Anzahl Blöcke: 10
+Punkte/Block: min=163, max=852, median=414
+Minimaler Abstand Blockmittelpunkte: 4.16° (~462 km)
+Moran's I Testdistanz (~73 km): ✓ OK; Starte 10-fache Leave-One-Block-Out CV...
+
+  Fold  1/10 | n_train=4263 | n_test= 163 | R²=0.6595, RMSE=0.2644
+  Fold  2/10 | n_train=4022 | n_test= 404 | R²=0.1046, RMSE=0.3765
+  Fold  3/10 | n_train=4126 | n_test= 300 | R²=0.2668, RMSE=0.3670
+  Fold  4/10 | n_train=3857 | n_test= 569 | R²=0.5490, RMSE=0.3675
+  Fold  5/10 | n_train=3941 | n_test= 485 | R²=0.1317, RMSE=0.3545
+  Fold  6/10 | n_train=3574 | n_test= 852 | R²=0.3763, RMSE=0.3865
+  Fold  7/10 | n_train=4184 | n_test= 242 | R²=0.3938, RMSE=0.3351
+  Fold  8/10 | n_train=3757 | n_test= 669 | R²=0.4631, RMSE=0.3241
+  Fold  9/10 | n_train=4001 | n_test= 425 | R²=0.2639, RMSE=0.3557
+  Fold 10/10 | n_train=4109 | n_test= 317 | R²=0.4387, RMSE=0.3463
+
+--- Spatial CV Ergebnisse ---
+  Gesamt Spatial CV R²:   0.3650
+  Gesamt Spatial CV RMSE: 0.3568
+  Mittlerer Fold R²:      0.3647 ± 0.1760
+  OOB R²:                 0.4161
+  Optimismus-Bias:        0.0511  (⚠ OOB überschätzt — Spatial CV ist Referenz); [Zeit] Spatial Cross-Validation (Block CV): 286.9 s (4.78 min)
+; Loading required package: grid
+
+Loading required package: mvtnorm
+
+Loading required package: modeltools
+
+Loading required package: stats4
+
+Loading required package: strucchange
+
+Loading required package: zoo
+
+
+Attaching package: ‘zoo’
+
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+
+Loading required package: sandwich
+
+Loading required package: nlme
+...
+
+Loading required package: sf
+
+Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE
+Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+                       output_lat-long           output_lat-long/Grafiken_png 
+                                 FALSE                                  FALSE 
+output_lat-long/Modell_Zusammenfassung 
+                                 FALSE 
+✓ Konfiguration abgeschlossen.
+  Input:  ./input/Daten/points.csv 
+  Output: output_lat-long
+--- Schritt 1: Datenaufbereitung ---
+
+Ursprüngliche Zeilenanzahl: 4467
+Ausgeschlossene Spalten: POINT_ID, X, Y
+
+Verteilung Landnutzung (land_use):
+
+Agriculture (excluding fallow land and kitchen gardens) 
+                                                   3096 
+                                            Fallow land 
+                                                    221 
+                                               Forestry 
+                                                    849 
+              Semi-natural and natural areas not in use 
+                                                    301 
+
+Verteilung Landbedeckung (land_cover):
+
+ Bareland  Cropland Grassland Shrubland  Woodland 
+      178      2184      1010       131       964
+Köppen-Geiger Legende: 30 Einträge geladen.
+Prüfe Kategorien auf Hobley-Regel (<30 Beobachtungen)...
+
+  Entferne aus kg_climate_class: 6 (BSh  Arid, steppe, hot), 18 (Dsb  Cold, dry summer, warm summer), 27 (Dfc  Cold, no dry season, cold summer) (n=9, 6, 26)
+
+Ergebnis: 4467 → 4426 Zeilen (3 Kategorien entfernt)
+
+Features: 8 (3 kategorisch als Faktoren — kein One-Hot-Encoding)
+  land_use:     4 Levels
+  land_cover:   5 Levels
+  climate_name: 7 Levels
+[Zeit] Datenaufbereitung & Cleaning: 8.1 s (0.13 min)
+--- Schritt 1b: GAM Thin-Plate-Spline (k=100) ---
+
+Fitte GAM: SHI ~ s(lon_x, lat_y, bs='tp', k=100) ...
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+SHI ~ s(lon_x, lat_y, bs = "tp", k = 100)
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 3.138251   0.005798   541.3   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Approximate significance of smooth terms:
+                 edf Ref.df     F p-value    
+s(lon_x,lat_y) 78.82  92.17 16.59  <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+R-sq.(adj) =  0.258   Deviance explained = 27.1%
+-REML = 2186.4  Scale est. = 0.14877   n = 4426
+
+GAM EDF:  78.82
+GAM adj. R²: 0.258
+Moran's I Test auf GAM-Residuen...
+
+HINWEIS: 14 isolierte Punkte bei d2=0.66 → erhöhe auf d2=1.5
+Moran's I = -0.0066  |  p = 0.990500
+✓ Keine signifikante räumliche Autokorrelation in den GAM-Residuen.
+Feature 'spatial_trend':
+  Min = 2.651 | Median = 3.128 | Max = 3.861
+
+df_model: 7 Features (inkl. spatial_trend, ohne lon_x/lat_y):
+  height_m, temp_c_mean_1995_2024, rain_mmsqm_mean_1995_2024, land_use, land_cover, climate_name, spatial_trend
+[Zeit] GAM Räumlicher Trend: 15.7 s (0.26 min)
+--- Schritt 2: EDA ---
+
+Korrelationsmatrix:
+                          height_m temp_c_mean_1995_2024
+height_m                     1.000                -0.051
+temp_c_mean_1995_2024       -0.051                 1.000
+rain_mmsqm_mean_1995_2024    0.044                -0.328
+spatial_trend               -0.164                -0.470
+SHI                          0.080                -0.350
+                          rain_mmsqm_mean_1995_2024 spatial_trend    SHI
+height_m                                      0.044        -0.164  0.080
+temp_c_mean_1995_2024                        -0.328        -0.470 -0.350
+rain_mmsqm_mean_1995_2024                     1.000         0.641  0.455
+spatial_trend                                 0.641         1.000  0.521
+SHI                                           0.455         0.521  1.000
+[Zeit] Explorative Datenanalyse (EDA): 8.7 s (0.15 min)
+--- Schritt 3: Grid Search ---
+
+Modellformel: SHI ~ height_m + temp_c_mean_1995_2024 + rain_mmsqm_mean_1995_2024 + 
+
+ Modellformel:     land_use + land_cover + climate_name + spatial_trend
+
+Grid Search: 9 Kombinationen (ntree=500)...
+
+  [1/9] mtry=2, mincriterion=0.90 ... OOB R²=0.4059, RMSE=0.3451
+  [2/9] mtry=3, mincriterion=0.90 ... OOB R²=0.4134, RMSE=0.3429
+  [3/9] mtry=4, mincriterion=0.90 ... OOB R²=0.4161, RMSE=0.3421
+  [4/9] mtry=2, mincriterion=0.95 ... OOB R²=0.4018, RMSE=0.3463
+  [5/9] mtry=3, mincriterion=0.95 ... OOB R²=0.4089, RMSE=0.3442
+  [6/9] mtry=4, mincriterion=0.95 ... OOB R²=0.4112, RMSE=0.3436
+  [7/9] mtry=2, mincriterion=0.99 ... OOB R²=0.3945, RMSE=0.3484
+  [8/9] mtry=3, mincriterion=0.99 ... OOB R²=0.4025, RMSE=0.3461
+  [9/9] mtry=4, mincriterion=0.99 ... OOB R²=0.4043, RMSE=0.3456
+
+Grid-Search-Ergebnisse:
+  mtry mincriterion ntree    oob_r2  oob_rmse
+1    2         0.90   500 0.4058759 0.3451085
+2    3         0.90   500 0.4133665 0.3429261
+3    4         0.90   500 0.4161229 0.3421195
+4    2         0.95   500 0.4017511 0.3463044
+5    3         0.95   500 0.4088721 0.3442372
+6    4         0.95   500 0.4111891 0.3435619
+7    2         0.99   500 0.3944912 0.3483993
+8    3         0.99   500 0.4025340 0.3460777
+9    4         0.99   500 0.4043083 0.3455635
+
+Beste Parameter:
+  mtry=4 | mincriterion=0.90 | OOB R²=0.4161 | RMSE=0.3421
+[Zeit] Hyperparameter-Optimierung (Grid Search): 1551.5 s (25.86 min)
+--- Schritt 4: Modellevaluation ---
+
+Train R²:   0.4696  |  Train RMSE: 0.3261
+OOB R²:     0.4161  |  OOB RMSE:   0.3421
+[Zeit] Modellevaluation: 100.5 s (1.67 min)
+--- Schritt 4b: Spatial Cross-Validation ---
+
+Anzahl Blöcke: 10
+Punkte/Block: min=163, max=852, median=414
+Minimaler Abstand Blockmittelpunkte: 4.16° (~462 km)
+Moran's I Testdistanz (~73 km): ✓ OK
+
+Starte 10-fache Leave-One-Block-Out CV...
+
+  Fold  1/10 | n_train=4263 | n_test= 163 | R²=0.6595, RMSE=0.2644
+  Fold  2/10 | n_train=4022 | n_test= 404 | R²=0.1046, RMSE=0.3765
+  Fold  3/10 | n_train=4126 | n_test= 300 | R²=0.2668, RMSE=0.3670
+  Fold  4/10 | n_train=3857 | n_test= 569 | R²=0.5490, RMSE=0.3675
+  Fold  5/10 | n_train=3941 | n_test= 485 | R²=0.1317, RMSE=0.3545
+  Fold  6/10 | n_train=3574 | n_test= 852 | R²=0.3763, RMSE=0.3865
+  Fold  7/10 | n_train=4184 | n_test= 242 | R²=0.3938, RMSE=0.3351
+  Fold  8/10 | n_train=3757 | n_test= 669 | R²=0.4631, RMSE=0.3241
+  Fold  9/10 | n_train=4001 | n_test= 425 | R²=0.2639, RMSE=0.3557
+  Fold 10/10 | n_train=4109 | n_test= 317 | R²=0.4387, RMSE=0.3463
+
+--- Spatial CV Ergebnisse ---
+  Gesamt Spatial CV R²:   0.3650
+  Gesamt Spatial CV RMSE: 0.3568
+  Mittlerer Fold R²:      0.3647 ± 0.1760
+  OOB R²:                 0.4161
+  Optimismus-Bias:        0.0511  (⚠ OOB überschätzt — Spatial CV ist Referenz)
+[Zeit] Spatial Cross-Validation (Block CV): 286.9 s (4.78 min)
+--- Schritt 5: Variable Importance ---
+
+Berechne unbedingte VI (nperm=20)...
+Berechne bedingte VI (nperm=5)...
+
+Variable Importance:
+                  Variable  Importance Importance_Cond Importance_Pct
+             spatial_trend 0.051025905    1.090176e-02      44.154353
+                land_cover 0.031080603    6.641931e-03      26.895043
+ rain_mmsqm_mean_1995_2024 0.013700313    1.552326e-03      11.855320
+                  height_m 0.008521637    1.474636e-03       7.374046
+                  land_use 0.005487720    3.351986e-04       4.748700
+     temp_c_mean_1995_2024 0.003833397    3.952662e-04       3.317162
+              climate_name 0.001912995    6.723551e-05       1.655376
+
+  spatial_trend: Rang 1/7 | 44.2% | unbed.=0.0510 | bed.=0.0109; [Zeit] Variable Importance (Permutationsbasiert): 1872.2 s (31.20 min)
+; Loading required package: grid
+
+Loading required package: mvtnorm
+
+Loading required package: modeltools
+
+Loading required package: stats4
+
+Loading required package: strucchange
+
+Loading required package: zoo
+
+
+Attaching package: ‘zoo’
+
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+
+Loading required package: sandwich
+
+Loading required package: nlme
+...
+
+Loading required package: sf
+
+Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE
+Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+                       output_lat-long           output_lat-long/Grafiken_png 
+                                 FALSE                                  FALSE 
+output_lat-long/Modell_Zusammenfassung 
+                                 FALSE 
+✓ Konfiguration abgeschlossen.
+  Input:  ./input/Daten/points.csv 
+  Output: output_lat-long
+--- Schritt 1: Datenaufbereitung ---
+
+Ursprüngliche Zeilenanzahl: 4467
+Ausgeschlossene Spalten: POINT_ID, X, Y
+
+Verteilung Landnutzung (land_use):
+
+Agriculture (excluding fallow land and kitchen gardens) 
+                                                   3096 
+                                            Fallow land 
+                                                    221 
+                                               Forestry 
+                                                    849 
+              Semi-natural and natural areas not in use 
+                                                    301 
+
+Verteilung Landbedeckung (land_cover):
+
+ Bareland  Cropland Grassland Shrubland  Woodland 
+      178      2184      1010       131       964
+Köppen-Geiger Legende: 30 Einträge geladen.
+Prüfe Kategorien auf Hobley-Regel (<30 Beobachtungen)...
+
+  Entferne aus kg_climate_class: 6 (BSh  Arid, steppe, hot), 18 (Dsb  Cold, dry summer, warm summer), 27 (Dfc  Cold, no dry season, cold summer) (n=9, 6, 26)
+
+Ergebnis: 4467 → 4426 Zeilen (3 Kategorien entfernt)
+
+Features: 8 (3 kategorisch als Faktoren — kein One-Hot-Encoding)
+  land_use:     4 Levels
+  land_cover:   5 Levels
+  climate_name: 7 Levels
+[Zeit] Datenaufbereitung & Cleaning: 8.1 s (0.13 min)
+--- Schritt 1b: GAM Thin-Plate-Spline (k=100) ---
+
+Fitte GAM: SHI ~ s(lon_x, lat_y, bs='tp', k=100) ...
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+SHI ~ s(lon_x, lat_y, bs = "tp", k = 100)
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 3.138251   0.005798   541.3   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Approximate significance of smooth terms:
+                 edf Ref.df     F p-value    
+s(lon_x,lat_y) 78.82  92.17 16.59  <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+R-sq.(adj) =  0.258   Deviance explained = 27.1%
+-REML = 2186.4  Scale est. = 0.14877   n = 4426
+
+GAM EDF:  78.82
+GAM adj. R²: 0.258
+Moran's I Test auf GAM-Residuen...
+
+HINWEIS: 14 isolierte Punkte bei d2=0.66 → erhöhe auf d2=1.5
+Moran's I = -0.0066  |  p = 0.990500
+✓ Keine signifikante räumliche Autokorrelation in den GAM-Residuen.
+Feature 'spatial_trend':
+  Min = 2.651 | Median = 3.128 | Max = 3.861
+
+df_model: 7 Features (inkl. spatial_trend, ohne lon_x/lat_y):
+  height_m, temp_c_mean_1995_2024, rain_mmsqm_mean_1995_2024, land_use, land_cover, climate_name, spatial_trend
+[Zeit] GAM Räumlicher Trend: 15.7 s (0.26 min)
+--- Schritt 2: EDA ---
+
+Korrelationsmatrix:
+                          height_m temp_c_mean_1995_2024
+height_m                     1.000                -0.051
+temp_c_mean_1995_2024       -0.051                 1.000
+rain_mmsqm_mean_1995_2024    0.044                -0.328
+spatial_trend               -0.164                -0.470
+SHI                          0.080                -0.350
+                          rain_mmsqm_mean_1995_2024 spatial_trend    SHI
+height_m                                      0.044        -0.164  0.080
+temp_c_mean_1995_2024                        -0.328        -0.470 -0.350
+rain_mmsqm_mean_1995_2024                     1.000         0.641  0.455
+spatial_trend                                 0.641         1.000  0.521
+SHI                                           0.455         0.521  1.000
+[Zeit] Explorative Datenanalyse (EDA): 8.7 s (0.15 min)
+--- Schritt 3: Grid Search ---
+
+Modellformel: SHI ~ height_m + temp_c_mean_1995_2024 + rain_mmsqm_mean_1995_2024 + 
+
+ Modellformel:     land_use + land_cover + climate_name + spatial_trend
+
+Grid Search: 9 Kombinationen (ntree=500)...
+
+  [1/9] mtry=2, mincriterion=0.90 ... OOB R²=0.4059, RMSE=0.3451
+  [2/9] mtry=3, mincriterion=0.90 ... OOB R²=0.4134, RMSE=0.3429
+  [3/9] mtry=4, mincriterion=0.90 ... OOB R²=0.4161, RMSE=0.3421
+  [4/9] mtry=2, mincriterion=0.95 ... OOB R²=0.4018, RMSE=0.3463
+  [5/9] mtry=3, mincriterion=0.95 ... OOB R²=0.4089, RMSE=0.3442
+  [6/9] mtry=4, mincriterion=0.95 ... OOB R²=0.4112, RMSE=0.3436
+  [7/9] mtry=2, mincriterion=0.99 ... OOB R²=0.3945, RMSE=0.3484
+  [8/9] mtry=3, mincriterion=0.99 ... OOB R²=0.4025, RMSE=0.3461
+  [9/9] mtry=4, mincriterion=0.99 ... OOB R²=0.4043, RMSE=0.3456
+
+Grid-Search-Ergebnisse:
+  mtry mincriterion ntree    oob_r2  oob_rmse
+1    2         0.90   500 0.4058759 0.3451085
+2    3         0.90   500 0.4133665 0.3429261
+3    4         0.90   500 0.4161229 0.3421195
+4    2         0.95   500 0.4017511 0.3463044
+5    3         0.95   500 0.4088721 0.3442372
+6    4         0.95   500 0.4111891 0.3435619
+7    2         0.99   500 0.3944912 0.3483993
+8    3         0.99   500 0.4025340 0.3460777
+9    4         0.99   500 0.4043083 0.3455635
+
+Beste Parameter:
+  mtry=4 | mincriterion=0.90 | OOB R²=0.4161 | RMSE=0.3421
+[Zeit] Hyperparameter-Optimierung (Grid Search): 1551.5 s (25.86 min)
+--- Schritt 4: Modellevaluation ---
+
+Train R²:   0.4696  |  Train RMSE: 0.3261
+OOB R²:     0.4161  |  OOB RMSE:   0.3421
+[Zeit] Modellevaluation: 100.5 s (1.67 min)
+--- Schritt 4b: Spatial Cross-Validation ---
+
+Anzahl Blöcke: 10
+Punkte/Block: min=163, max=852, median=414
+Minimaler Abstand Blockmittelpunkte: 4.16° (~462 km)
+Moran's I Testdistanz (~73 km): ✓ OK
+
+Starte 10-fache Leave-One-Block-Out CV...
+
+  Fold  1/10 | n_train=4263 | n_test= 163 | R²=0.6595, RMSE=0.2644
+  Fold  2/10 | n_train=4022 | n_test= 404 | R²=0.1046, RMSE=0.3765
+  Fold  3/10 | n_train=4126 | n_test= 300 | R²=0.2668, RMSE=0.3670
+  Fold  4/10 | n_train=3857 | n_test= 569 | R²=0.5490, RMSE=0.3675
+  Fold  5/10 | n_train=3941 | n_test= 485 | R²=0.1317, RMSE=0.3545
+  Fold  6/10 | n_train=3574 | n_test= 852 | R²=0.3763, RMSE=0.3865
+  Fold  7/10 | n_train=4184 | n_test= 242 | R²=0.3938, RMSE=0.3351
+  Fold  8/10 | n_train=3757 | n_test= 669 | R²=0.4631, RMSE=0.3241
+  Fold  9/10 | n_train=4001 | n_test= 425 | R²=0.2639, RMSE=0.3557
+  Fold 10/10 | n_train=4109 | n_test= 317 | R²=0.4387, RMSE=0.3463
+
+--- Spatial CV Ergebnisse ---
+  Gesamt Spatial CV R²:   0.3650
+  Gesamt Spatial CV RMSE: 0.3568
+  Mittlerer Fold R²:      0.3647 ± 0.1760
+  OOB R²:                 0.4161
+  Optimismus-Bias:        0.0511  (⚠ OOB überschätzt — Spatial CV ist Referenz)
+[Zeit] Spatial Cross-Validation (Block CV): 286.9 s (4.78 min)
+--- Schritt 5: Variable Importance ---
+
+Berechne unbedingte VI (nperm=20)...
+Berechne bedingte VI (nperm=5)...
+
+Variable Importance:
+                  Variable  Importance Importance_Cond Importance_Pct
+             spatial_trend 0.051025905    1.090176e-02      44.154353
+                land_cover 0.031080603    6.641931e-03      26.895043
+ rain_mmsqm_mean_1995_2024 0.013700313    1.552326e-03      11.855320
+                  height_m 0.008521637    1.474636e-03       7.374046
+                  land_use 0.005487720    3.351986e-04       4.748700
+     temp_c_mean_1995_2024 0.003833397    3.952662e-04       3.317162
+              climate_name 0.001912995    6.723551e-05       1.655376
+
+  spatial_trend: Rang 1/7 | 44.2% | unbed.=0.0510 | bed.=0.0109
+[Zeit] Variable Importance (Permutationsbasiert): 1872.2 s (31.20 min)
+--- Schritt 6: PDPs ---
+Berechne PDPs (force_pdp= TRUE )...
+
+  [1/3] land_cover (kategorial)...
+  [2/3] spatial_trend (numerisch, n_grid=20)...
+  [3/3] Niederschlag (numerisch, n_grid=20)...
+PDPs gespeichert (Cache für nächste Läufe).; [Zeit] Partial Dependence Plots (PDPs): 4060.5 s (67.67 min)
+; --- Schritt 7: Conditional Inference Tree ---
+
+quartz_off_screen 
+                2 
+Decision Tree gespeichert: decision_tree.png
+(Interaktiver Plot im Plot-Fenster)
+[Zeit] Decision Tree Visualisierung: 0.2 s (0.00 min); Loading required package: grid
+
+Loading required package: mvtnorm
+
+Loading required package: modeltools
+
+Loading required package: stats4
+
+Loading required package: strucchange
+
+Loading required package: zoo
+
+
+Attaching package: ‘zoo’
+
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+
+Loading required package: sandwich
+
+Loading required package: nlme
+...
+
+Loading required package: sf
+
+Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE
+Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+                       output_lat-long           output_lat-long/Grafiken_png 
+                                 FALSE                                  FALSE 
+output_lat-long/Modell_Zusammenfassung 
+                                 FALSE 
+✓ Konfiguration abgeschlossen.
+  Input:  ./input/Daten/points.csv 
+  Output: output_lat-long
+--- Schritt 1: Datenaufbereitung ---
+
+Ursprüngliche Zeilenanzahl: 4467
+Ausgeschlossene Spalten: POINT_ID, X, Y
+
+Verteilung Landnutzung (land_use):
+
+Agriculture (excluding fallow land and kitchen gardens) 
+                                                   3096 
+                                            Fallow land 
+                                                    221 
+                                               Forestry 
+                                                    849 
+              Semi-natural and natural areas not in use 
+                                                    301 
+
+Verteilung Landbedeckung (land_cover):
+
+ Bareland  Cropland Grassland Shrubland  Woodland 
+      178      2184      1010       131       964
+Köppen-Geiger Legende: 30 Einträge geladen.
+Prüfe Kategorien auf Hobley-Regel (<30 Beobachtungen)...
+
+  Entferne aus kg_climate_class: 6 (BSh  Arid, steppe, hot), 18 (Dsb  Cold, dry summer, warm summer), 27 (Dfc  Cold, no dry season, cold summer) (n=9, 6, 26)
+
+Ergebnis: 4467 → 4426 Zeilen (3 Kategorien entfernt)
+
+Features: 8 (3 kategorisch als Faktoren — kein One-Hot-Encoding)
+  land_use:     4 Levels
+  land_cover:   5 Levels
+  climate_name: 7 Levels
+[Zeit] Datenaufbereitung & Cleaning: 8.1 s (0.13 min)
+--- Schritt 1b: GAM Thin-Plate-Spline (k=100) ---
+
+Fitte GAM: SHI ~ s(lon_x, lat_y, bs='tp', k=100) ...
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+SHI ~ s(lon_x, lat_y, bs = "tp", k = 100)
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 3.138251   0.005798   541.3   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Approximate significance of smooth terms:
+                 edf Ref.df     F p-value    
+s(lon_x,lat_y) 78.82  92.17 16.59  <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+R-sq.(adj) =  0.258   Deviance explained = 27.1%
+-REML = 2186.4  Scale est. = 0.14877   n = 4426
+
+GAM EDF:  78.82
+GAM adj. R²: 0.258
+Moran's I Test auf GAM-Residuen...
+
+HINWEIS: 14 isolierte Punkte bei d2=0.66 → erhöhe auf d2=1.5
+Moran's I = -0.0066  |  p = 0.990500
+✓ Keine signifikante räumliche Autokorrelation in den GAM-Residuen.
+Feature 'spatial_trend':
+  Min = 2.651 | Median = 3.128 | Max = 3.861
+
+df_model: 7 Features (inkl. spatial_trend, ohne lon_x/lat_y):
+  height_m, temp_c_mean_1995_2024, rain_mmsqm_mean_1995_2024, land_use, land_cover, climate_name, spatial_trend
+[Zeit] GAM Räumlicher Trend: 15.7 s (0.26 min)
+--- Schritt 2: EDA ---
+
+Korrelationsmatrix:
+                          height_m temp_c_mean_1995_2024
+height_m                     1.000                -0.051
+temp_c_mean_1995_2024       -0.051                 1.000
+rain_mmsqm_mean_1995_2024    0.044                -0.328
+spatial_trend               -0.164                -0.470
+SHI                          0.080                -0.350
+                          rain_mmsqm_mean_1995_2024 spatial_trend    SHI
+height_m                                      0.044        -0.164  0.080
+temp_c_mean_1995_2024                        -0.328        -0.470 -0.350
+rain_mmsqm_mean_1995_2024                     1.000         0.641  0.455
+spatial_trend                                 0.641         1.000  0.521
+SHI                                           0.455         0.521  1.000
+[Zeit] Explorative Datenanalyse (EDA): 8.7 s (0.15 min)
+--- Schritt 3: Grid Search ---
+
+Modellformel: SHI ~ height_m + temp_c_mean_1995_2024 + rain_mmsqm_mean_1995_2024 + 
+
+ Modellformel:     land_use + land_cover + climate_name + spatial_trend
+
+Grid Search: 9 Kombinationen (ntree=500)...
+
+  [1/9] mtry=2, mincriterion=0.90 ... OOB R²=0.4059, RMSE=0.3451
+  [2/9] mtry=3, mincriterion=0.90 ... OOB R²=0.4134, RMSE=0.3429
+  [3/9] mtry=4, mincriterion=0.90 ... OOB R²=0.4161, RMSE=0.3421
+  [4/9] mtry=2, mincriterion=0.95 ... OOB R²=0.4018, RMSE=0.3463
+  [5/9] mtry=3, mincriterion=0.95 ... OOB R²=0.4089, RMSE=0.3442
+  [6/9] mtry=4, mincriterion=0.95 ... OOB R²=0.4112, RMSE=0.3436
+  [7/9] mtry=2, mincriterion=0.99 ... OOB R²=0.3945, RMSE=0.3484
+  [8/9] mtry=3, mincriterion=0.99 ... OOB R²=0.4025, RMSE=0.3461
+  [9/9] mtry=4, mincriterion=0.99 ... OOB R²=0.4043, RMSE=0.3456
+
+Grid-Search-Ergebnisse:
+  mtry mincriterion ntree    oob_r2  oob_rmse
+1    2         0.90   500 0.4058759 0.3451085
+2    3         0.90   500 0.4133665 0.3429261
+3    4         0.90   500 0.4161229 0.3421195
+4    2         0.95   500 0.4017511 0.3463044
+5    3         0.95   500 0.4088721 0.3442372
+6    4         0.95   500 0.4111891 0.3435619
+7    2         0.99   500 0.3944912 0.3483993
+8    3         0.99   500 0.4025340 0.3460777
+9    4         0.99   500 0.4043083 0.3455635
+
+Beste Parameter:
+  mtry=4 | mincriterion=0.90 | OOB R²=0.4161 | RMSE=0.3421
+[Zeit] Hyperparameter-Optimierung (Grid Search): 1551.5 s (25.86 min)
+--- Schritt 4: Modellevaluation ---
+
+Train R²:   0.4696  |  Train RMSE: 0.3261
+OOB R²:     0.4161  |  OOB RMSE:   0.3421
+[Zeit] Modellevaluation: 100.5 s (1.67 min)
+--- Schritt 4b: Spatial Cross-Validation ---
+
+Anzahl Blöcke: 10
+Punkte/Block: min=163, max=852, median=414
+Minimaler Abstand Blockmittelpunkte: 4.16° (~462 km)
+Moran's I Testdistanz (~73 km): ✓ OK
+
+Starte 10-fache Leave-One-Block-Out CV...
+
+  Fold  1/10 | n_train=4263 | n_test= 163 | R²=0.6595, RMSE=0.2644
+  Fold  2/10 | n_train=4022 | n_test= 404 | R²=0.1046, RMSE=0.3765
+  Fold  3/10 | n_train=4126 | n_test= 300 | R²=0.2668, RMSE=0.3670
+  Fold  4/10 | n_train=3857 | n_test= 569 | R²=0.5490, RMSE=0.3675
+  Fold  5/10 | n_train=3941 | n_test= 485 | R²=0.1317, RMSE=0.3545
+  Fold  6/10 | n_train=3574 | n_test= 852 | R²=0.3763, RMSE=0.3865
+  Fold  7/10 | n_train=4184 | n_test= 242 | R²=0.3938, RMSE=0.3351
+  Fold  8/10 | n_train=3757 | n_test= 669 | R²=0.4631, RMSE=0.3241
+  Fold  9/10 | n_train=4001 | n_test= 425 | R²=0.2639, RMSE=0.3557
+  Fold 10/10 | n_train=4109 | n_test= 317 | R²=0.4387, RMSE=0.3463
+
+--- Spatial CV Ergebnisse ---
+  Gesamt Spatial CV R²:   0.3650
+  Gesamt Spatial CV RMSE: 0.3568
+  Mittlerer Fold R²:      0.3647 ± 0.1760
+  OOB R²:                 0.4161
+  Optimismus-Bias:        0.0511  (⚠ OOB überschätzt — Spatial CV ist Referenz)
+[Zeit] Spatial Cross-Validation (Block CV): 286.9 s (4.78 min)
+--- Schritt 5: Variable Importance ---
+
+Berechne unbedingte VI (nperm=20)...
+Berechne bedingte VI (nperm=5)...
+
+Variable Importance:
+                  Variable  Importance Importance_Cond Importance_Pct
+             spatial_trend 0.051025905    1.090176e-02      44.154353
+                land_cover 0.031080603    6.641931e-03      26.895043
+ rain_mmsqm_mean_1995_2024 0.013700313    1.552326e-03      11.855320
+                  height_m 0.008521637    1.474636e-03       7.374046
+                  land_use 0.005487720    3.351986e-04       4.748700
+     temp_c_mean_1995_2024 0.003833397    3.952662e-04       3.317162
+              climate_name 0.001912995    6.723551e-05       1.655376
+
+  spatial_trend: Rang 1/7 | 44.2% | unbed.=0.0510 | bed.=0.0109
+[Zeit] Variable Importance (Permutationsbasiert): 1872.2 s (31.20 min)
+--- Schritt 6: PDPs ---
+Berechne PDPs (force_pdp= TRUE )...
+
+  [1/3] land_cover (kategorial)...
+  [2/3] spatial_trend (numerisch, n_grid=20)...
+  [3/3] Niederschlag (numerisch, n_grid=20)...
+PDPs gespeichert (Cache für nächste Läufe).
+[Zeit] Partial Dependence Plots (PDPs): 4060.5 s (67.67 min)
+--- Schritt 7: Conditional Inference Tree ---
+
+quartz_off_screen 
+                2 
+Decision Tree gespeichert: decision_tree.png
+(Interaktiver Plot im Plot-Fenster)
+[Zeit] Decision Tree Visualisierung: 0.2 s (0.00 min)
+--- Schritt 8: Zusammenfassung ---
+
+Validierungsvergleich:
+          Metrik   Wert                                     Interpretation
+        Train R² 0.4696                 Trainingsdaten (Overfitting-Check)
+          OOB R² 0.4161             Zufällige Splits — leicht optimistisch
+        OOB RMSE 0.3421                   Mittlerer Vorhersagefehler (OOB)
+   Spatial CV R² 0.3650 Räumlich getrennte Blöcke — belastbarste Schätzung
+ Spatial CV RMSE 0.3568            Mittlerer Vorhersagefehler (Spatial CV)
+ Optimismus-Bias 0.0511        OOB minus Spatial CV — räumliche Verzerrung; Loading required package: grid
+
+Loading required package: mvtnorm
+
+Loading required package: modeltools
+
+Loading required package: stats4
+
+Loading required package: strucchange
+
+Loading required package: zoo
+
+
+Attaching package: ‘zoo’
+
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+
+Loading required package: sandwich
+
+Loading required package: nlme
+...
+
+Loading required package: sf
+
+Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE
+Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+                       output_lat-long           output_lat-long/Grafiken_png 
+                                 FALSE                                  FALSE 
+output_lat-long/Modell_Zusammenfassung 
+                                 FALSE 
+✓ Konfiguration abgeschlossen.
+  Input:  ./input/Daten/points.csv 
+  Output: output_lat-long
+--- Schritt 1: Datenaufbereitung ---
+
+Ursprüngliche Zeilenanzahl: 4467
+Ausgeschlossene Spalten: POINT_ID, X, Y
+
+Verteilung Landnutzung (land_use):
+
+Agriculture (excluding fallow land and kitchen gardens) 
+                                                   3096 
+                                            Fallow land 
+                                                    221 
+                                               Forestry 
+                                                    849 
+              Semi-natural and natural areas not in use 
+                                                    301 
+
+Verteilung Landbedeckung (land_cover):
+
+ Bareland  Cropland Grassland Shrubland  Woodland 
+      178      2184      1010       131       964
+Köppen-Geiger Legende: 30 Einträge geladen.
+Prüfe Kategorien auf Hobley-Regel (<30 Beobachtungen)...
+
+  Entferne aus kg_climate_class: 6 (BSh  Arid, steppe, hot), 18 (Dsb  Cold, dry summer, warm summer), 27 (Dfc  Cold, no dry season, cold summer) (n=9, 6, 26)
+
+Ergebnis: 4467 → 4426 Zeilen (3 Kategorien entfernt)
+
+Features: 8 (3 kategorisch als Faktoren — kein One-Hot-Encoding)
+  land_use:     4 Levels
+  land_cover:   5 Levels
+  climate_name: 7 Levels
+[Zeit] Datenaufbereitung & Cleaning: 8.1 s (0.13 min)
+--- Schritt 1b: GAM Thin-Plate-Spline (k=100) ---
+
+Fitte GAM: SHI ~ s(lon_x, lat_y, bs='tp', k=100) ...
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+SHI ~ s(lon_x, lat_y, bs = "tp", k = 100)
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 3.138251   0.005798   541.3   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Approximate significance of smooth terms:
+                 edf Ref.df     F p-value    
+s(lon_x,lat_y) 78.82  92.17 16.59  <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+R-sq.(adj) =  0.258   Deviance explained = 27.1%
+-REML = 2186.4  Scale est. = 0.14877   n = 4426
+
+GAM EDF:  78.82
+GAM adj. R²: 0.258
+Moran's I Test auf GAM-Residuen...
+
+HINWEIS: 14 isolierte Punkte bei d2=0.66 → erhöhe auf d2=1.5
+Moran's I = -0.0066  |  p = 0.990500
+✓ Keine signifikante räumliche Autokorrelation in den GAM-Residuen.
+Feature 'spatial_trend':
+  Min = 2.651 | Median = 3.128 | Max = 3.861
+
+df_model: 7 Features (inkl. spatial_trend, ohne lon_x/lat_y):
+  height_m, temp_c_mean_1995_2024, rain_mmsqm_mean_1995_2024, land_use, land_cover, climate_name, spatial_trend
+[Zeit] GAM Räumlicher Trend: 15.7 s (0.26 min)
+--- Schritt 2: EDA ---
+
+Korrelationsmatrix:
+                          height_m temp_c_mean_1995_2024
+height_m                     1.000                -0.051
+temp_c_mean_1995_2024       -0.051                 1.000
+rain_mmsqm_mean_1995_2024    0.044                -0.328
+spatial_trend               -0.164                -0.470
+SHI                          0.080                -0.350
+                          rain_mmsqm_mean_1995_2024 spatial_trend    SHI
+height_m                                      0.044        -0.164  0.080
+temp_c_mean_1995_2024                        -0.328        -0.470 -0.350
+rain_mmsqm_mean_1995_2024                     1.000         0.641  0.455
+spatial_trend                                 0.641         1.000  0.521
+SHI                                           0.455         0.521  1.000
+[Zeit] Explorative Datenanalyse (EDA): 8.7 s (0.15 min)
+--- Schritt 3: Grid Search ---
+
+Modellformel: SHI ~ height_m + temp_c_mean_1995_2024 + rain_mmsqm_mean_1995_2024 + 
+
+ Modellformel:     land_use + land_cover + climate_name + spatial_trend
+
+Grid Search: 9 Kombinationen (ntree=500)...
+
+  [1/9] mtry=2, mincriterion=0.90 ... OOB R²=0.4059, RMSE=0.3451
+  [2/9] mtry=3, mincriterion=0.90 ... OOB R²=0.4134, RMSE=0.3429
+  [3/9] mtry=4, mincriterion=0.90 ... OOB R²=0.4161, RMSE=0.3421
+  [4/9] mtry=2, mincriterion=0.95 ... OOB R²=0.4018, RMSE=0.3463
+  [5/9] mtry=3, mincriterion=0.95 ... OOB R²=0.4089, RMSE=0.3442
+  [6/9] mtry=4, mincriterion=0.95 ... OOB R²=0.4112, RMSE=0.3436
+  [7/9] mtry=2, mincriterion=0.99 ... OOB R²=0.3945, RMSE=0.3484
+  [8/9] mtry=3, mincriterion=0.99 ... OOB R²=0.4025, RMSE=0.3461
+  [9/9] mtry=4, mincriterion=0.99 ... OOB R²=0.4043, RMSE=0.3456
+
+Grid-Search-Ergebnisse:
+  mtry mincriterion ntree    oob_r2  oob_rmse
+1    2         0.90   500 0.4058759 0.3451085
+2    3         0.90   500 0.4133665 0.3429261
+3    4         0.90   500 0.4161229 0.3421195
+4    2         0.95   500 0.4017511 0.3463044
+5    3         0.95   500 0.4088721 0.3442372
+6    4         0.95   500 0.4111891 0.3435619
+7    2         0.99   500 0.3944912 0.3483993
+8    3         0.99   500 0.4025340 0.3460777
+9    4         0.99   500 0.4043083 0.3455635
+
+Beste Parameter:
+  mtry=4 | mincriterion=0.90 | OOB R²=0.4161 | RMSE=0.3421
+[Zeit] Hyperparameter-Optimierung (Grid Search): 1551.5 s (25.86 min)
+--- Schritt 4: Modellevaluation ---
+
+Train R²:   0.4696  |  Train RMSE: 0.3261
+OOB R²:     0.4161  |  OOB RMSE:   0.3421
+[Zeit] Modellevaluation: 100.5 s (1.67 min)
+--- Schritt 4b: Spatial Cross-Validation ---
+
+Anzahl Blöcke: 10
+Punkte/Block: min=163, max=852, median=414
+Minimaler Abstand Blockmittelpunkte: 4.16° (~462 km)
+Moran's I Testdistanz (~73 km): ✓ OK
+
+Starte 10-fache Leave-One-Block-Out CV...
+
+  Fold  1/10 | n_train=4263 | n_test= 163 | R²=0.6595, RMSE=0.2644
+  Fold  2/10 | n_train=4022 | n_test= 404 | R²=0.1046, RMSE=0.3765
+  Fold  3/10 | n_train=4126 | n_test= 300 | R²=0.2668, RMSE=0.3670
+  Fold  4/10 | n_train=3857 | n_test= 569 | R²=0.5490, RMSE=0.3675
+  Fold  5/10 | n_train=3941 | n_test= 485 | R²=0.1317, RMSE=0.3545
+  Fold  6/10 | n_train=3574 | n_test= 852 | R²=0.3763, RMSE=0.3865
+  Fold  7/10 | n_train=4184 | n_test= 242 | R²=0.3938, RMSE=0.3351
+  Fold  8/10 | n_train=3757 | n_test= 669 | R²=0.4631, RMSE=0.3241
+  Fold  9/10 | n_train=4001 | n_test= 425 | R²=0.2639, RMSE=0.3557
+  Fold 10/10 | n_train=4109 | n_test= 317 | R²=0.4387, RMSE=0.3463
+
+--- Spatial CV Ergebnisse ---
+  Gesamt Spatial CV R²:   0.3650
+  Gesamt Spatial CV RMSE: 0.3568
+  Mittlerer Fold R²:      0.3647 ± 0.1760
+  OOB R²:                 0.4161
+  Optimismus-Bias:        0.0511  (⚠ OOB überschätzt — Spatial CV ist Referenz)
+[Zeit] Spatial Cross-Validation (Block CV): 286.9 s (4.78 min)
+--- Schritt 5: Variable Importance ---
+
+Berechne unbedingte VI (nperm=20)...
+Berechne bedingte VI (nperm=5)...
+
+Variable Importance:
+                  Variable  Importance Importance_Cond Importance_Pct
+             spatial_trend 0.051025905    1.090176e-02      44.154353
+                land_cover 0.031080603    6.641931e-03      26.895043
+ rain_mmsqm_mean_1995_2024 0.013700313    1.552326e-03      11.855320
+                  height_m 0.008521637    1.474636e-03       7.374046
+                  land_use 0.005487720    3.351986e-04       4.748700
+     temp_c_mean_1995_2024 0.003833397    3.952662e-04       3.317162
+              climate_name 0.001912995    6.723551e-05       1.655376
+
+  spatial_trend: Rang 1/7 | 44.2% | unbed.=0.0510 | bed.=0.0109
+[Zeit] Variable Importance (Permutationsbasiert): 1872.2 s (31.20 min)
+--- Schritt 6: PDPs ---
+Berechne PDPs (force_pdp= TRUE )...
+
+  [1/3] land_cover (kategorial)...
+  [2/3] spatial_trend (numerisch, n_grid=20)...
+  [3/3] Niederschlag (numerisch, n_grid=20)...
+PDPs gespeichert (Cache für nächste Läufe).
+[Zeit] Partial Dependence Plots (PDPs): 4060.5 s (67.67 min)
+--- Schritt 7: Conditional Inference Tree ---
+
+quartz_off_screen 
+                2 
+Decision Tree gespeichert: decision_tree.png
+(Interaktiver Plot im Plot-Fenster)
+[Zeit] Decision Tree Visualisierung: 0.2 s (0.00 min)
+--- Schritt 8: Zusammenfassung ---
+
+Validierungsvergleich:
+          Metrik   Wert                                     Interpretation
+        Train R² 0.4696                 Trainingsdaten (Overfitting-Check)
+          OOB R² 0.4161             Zufällige Splits — leicht optimistisch
+        OOB RMSE 0.3421                   Mittlerer Vorhersagefehler (OOB)
+   Spatial CV R² 0.3650 Räumlich getrennte Blöcke — belastbarste Schätzung
+ Spatial CV RMSE 0.3568            Mittlerer Vorhersagefehler (Spatial CV)
+ Optimismus-Bias 0.0511        OOB minus Spatial CV — räumliche Verzerrung
+
+Optimierte Hyperparameter:
+    Parameter  Wert                                  Bedeutung
+        ntree   500                               Anzahl Bäume
+         mtry     4                         Features pro Split
+ mincriterion   0.9                 p-Wert-Schwelle für Splits
+      replace FALSE Subsampling ohne Zurücklegen (Strobl 2007)
+     fraction 0.632                          Anteil Daten/Baum
+
+PDP-Erkenntnisse:
+  land_cover: höchster SHI = Woodland | niedrigster SHI = Cropland
+  Niederschlag: Wirkungsrichtung positiv (monoton steigend); Loading required package: grid
+
+Loading required package: mvtnorm
+
+Loading required package: modeltools
+
+Loading required package: stats4
+
+Loading required package: strucchange
+
+Loading required package: zoo
+
+
+Attaching package: ‘zoo’
+
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+
+Loading required package: sandwich
+
+Loading required package: nlme
+...
+
+Loading required package: sf
+
+Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE
+Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+                       output_lat-long           output_lat-long/Grafiken_png 
+                                 FALSE                                  FALSE 
+output_lat-long/Modell_Zusammenfassung 
+                                 FALSE 
+✓ Konfiguration abgeschlossen.
+  Input:  ./input/Daten/points.csv 
+  Output: output_lat-long
+--- Schritt 1: Datenaufbereitung ---
+
+Ursprüngliche Zeilenanzahl: 4467
+Ausgeschlossene Spalten: POINT_ID, X, Y
+
+Verteilung Landnutzung (land_use):
+
+Agriculture (excluding fallow land and kitchen gardens) 
+                                                   3096 
+                                            Fallow land 
+                                                    221 
+                                               Forestry 
+                                                    849 
+              Semi-natural and natural areas not in use 
+                                                    301 
+
+Verteilung Landbedeckung (land_cover):
+
+ Bareland  Cropland Grassland Shrubland  Woodland 
+      178      2184      1010       131       964
+Köppen-Geiger Legende: 30 Einträge geladen.
+Prüfe Kategorien auf Hobley-Regel (<30 Beobachtungen)...
+
+  Entferne aus kg_climate_class: 6 (BSh  Arid, steppe, hot), 18 (Dsb  Cold, dry summer, warm summer), 27 (Dfc  Cold, no dry season, cold summer) (n=9, 6, 26)
+
+Ergebnis: 4467 → 4426 Zeilen (3 Kategorien entfernt)
+
+Features: 8 (3 kategorisch als Faktoren — kein One-Hot-Encoding)
+  land_use:     4 Levels
+  land_cover:   5 Levels
+  climate_name: 7 Levels
+[Zeit] Datenaufbereitung & Cleaning: 8.1 s (0.13 min)
+--- Schritt 1b: GAM Thin-Plate-Spline (k=100) ---
+
+Fitte GAM: SHI ~ s(lon_x, lat_y, bs='tp', k=100) ...
+
+Family: gaussian 
+Link function: identity 
+
+Formula:
+SHI ~ s(lon_x, lat_y, bs = "tp", k = 100)
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 3.138251   0.005798   541.3   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Approximate significance of smooth terms:
+                 edf Ref.df     F p-value    
+s(lon_x,lat_y) 78.82  92.17 16.59  <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+R-sq.(adj) =  0.258   Deviance explained = 27.1%
+-REML = 2186.4  Scale est. = 0.14877   n = 4426
+
+GAM EDF:  78.82
+GAM adj. R²: 0.258
+Moran's I Test auf GAM-Residuen...
+
+HINWEIS: 14 isolierte Punkte bei d2=0.66 → erhöhe auf d2=1.5
+Moran's I = -0.0066  |  p = 0.990500
+✓ Keine signifikante räumliche Autokorrelation in den GAM-Residuen.
+Feature 'spatial_trend':
+  Min = 2.651 | Median = 3.128 | Max = 3.861
+
+df_model: 7 Features (inkl. spatial_trend, ohne lon_x/lat_y):
+  height_m, temp_c_mean_1995_2024, rain_mmsqm_mean_1995_2024, land_use, land_cover, climate_name, spatial_trend
+[Zeit] GAM Räumlicher Trend: 15.7 s (0.26 min)
+--- Schritt 2: EDA ---
+
+Korrelationsmatrix:
+                          height_m temp_c_mean_1995_2024
+height_m                     1.000                -0.051
+temp_c_mean_1995_2024       -0.051                 1.000
+rain_mmsqm_mean_1995_2024    0.044                -0.328
+spatial_trend               -0.164                -0.470
+SHI                          0.080                -0.350
+                          rain_mmsqm_mean_1995_2024 spatial_trend    SHI
+height_m                                      0.044        -0.164  0.080
+temp_c_mean_1995_2024                        -0.328        -0.470 -0.350
+rain_mmsqm_mean_1995_2024                     1.000         0.641  0.455
+spatial_trend                                 0.641         1.000  0.521
+SHI                                           0.455         0.521  1.000
+[Zeit] Explorative Datenanalyse (EDA): 8.7 s (0.15 min)
+--- Schritt 3: Grid Search ---
+
+Modellformel: SHI ~ height_m + temp_c_mean_1995_2024 + rain_mmsqm_mean_1995_2024 + 
+
+ Modellformel:     land_use + land_cover + climate_name + spatial_trend
+
+Grid Search: 9 Kombinationen (ntree=500)...
+
+  [1/9] mtry=2, mincriterion=0.90 ... OOB R²=0.4059, RMSE=0.3451
+  [2/9] mtry=3, mincriterion=0.90 ... OOB R²=0.4134, RMSE=0.3429
+  [3/9] mtry=4, mincriterion=0.90 ... OOB R²=0.4161, RMSE=0.3421
+  [4/9] mtry=2, mincriterion=0.95 ... OOB R²=0.4018, RMSE=0.3463
+  [5/9] mtry=3, mincriterion=0.95 ... OOB R²=0.4089, RMSE=0.3442
+  [6/9] mtry=4, mincriterion=0.95 ... OOB R²=0.4112, RMSE=0.3436
+  [7/9] mtry=2, mincriterion=0.99 ... OOB R²=0.3945, RMSE=0.3484
+  [8/9] mtry=3, mincriterion=0.99 ... OOB R²=0.4025, RMSE=0.3461
+  [9/9] mtry=4, mincriterion=0.99 ... OOB R²=0.4043, RMSE=0.3456
+
+Grid-Search-Ergebnisse:
+  mtry mincriterion ntree    oob_r2  oob_rmse
+1    2         0.90   500 0.4058759 0.3451085
+2    3         0.90   500 0.4133665 0.3429261
+3    4         0.90   500 0.4161229 0.3421195
+4    2         0.95   500 0.4017511 0.3463044
+5    3         0.95   500 0.4088721 0.3442372
+6    4         0.95   500 0.4111891 0.3435619
+7    2         0.99   500 0.3944912 0.3483993
+8    3         0.99   500 0.4025340 0.3460777
+9    4         0.99   500 0.4043083 0.3455635
+
+Beste Parameter:
+  mtry=4 | mincriterion=0.90 | OOB R²=0.4161 | RMSE=0.3421
+[Zeit] Hyperparameter-Optimierung (Grid Search): 1551.5 s (25.86 min)
+--- Schritt 4: Modellevaluation ---
+
+Train R²:   0.4696  |  Train RMSE: 0.3261
+OOB R²:     0.4161  |  OOB RMSE:   0.3421
+[Zeit] Modellevaluation: 100.5 s (1.67 min)
+--- Schritt 4b: Spatial Cross-Validation ---
+
+Anzahl Blöcke: 10
+Punkte/Block: min=163, max=852, median=414
+Minimaler Abstand Blockmittelpunkte: 4.16° (~462 km)
+Moran's I Testdistanz (~73 km): ✓ OK
+
+Starte 10-fache Leave-One-Block-Out CV...
+
+  Fold  1/10 | n_train=4263 | n_test= 163 | R²=0.6595, RMSE=0.2644
+  Fold  2/10 | n_train=4022 | n_test= 404 | R²=0.1046, RMSE=0.3765
+  Fold  3/10 | n_train=4126 | n_test= 300 | R²=0.2668, RMSE=0.3670
+  Fold  4/10 | n_train=3857 | n_test= 569 | R²=0.5490, RMSE=0.3675
+  Fold  5/10 | n_train=3941 | n_test= 485 | R²=0.1317, RMSE=0.3545
+  Fold  6/10 | n_train=3574 | n_test= 852 | R²=0.3763, RMSE=0.3865
+  Fold  7/10 | n_train=4184 | n_test= 242 | R²=0.3938, RMSE=0.3351
+  Fold  8/10 | n_train=3757 | n_test= 669 | R²=0.4631, RMSE=0.3241
+  Fold  9/10 | n_train=4001 | n_test= 425 | R²=0.2639, RMSE=0.3557
+  Fold 10/10 | n_train=4109 | n_test= 317 | R²=0.4387, RMSE=0.3463
+
+--- Spatial CV Ergebnisse ---
+  Gesamt Spatial CV R²:   0.3650
+  Gesamt Spatial CV RMSE: 0.3568
+  Mittlerer Fold R²:      0.3647 ± 0.1760
+  OOB R²:                 0.4161
+  Optimismus-Bias:        0.0511  (⚠ OOB überschätzt — Spatial CV ist Referenz)
+[Zeit] Spatial Cross-Validation (Block CV): 286.9 s (4.78 min)
+--- Schritt 5: Variable Importance ---
+
+Berechne unbedingte VI (nperm=20)...
+Berechne bedingte VI (nperm=5)...
+
+Variable Importance:
+                  Variable  Importance Importance_Cond Importance_Pct
+             spatial_trend 0.051025905    1.090176e-02      44.154353
+                land_cover 0.031080603    6.641931e-03      26.895043
+ rain_mmsqm_mean_1995_2024 0.013700313    1.552326e-03      11.855320
+                  height_m 0.008521637    1.474636e-03       7.374046
+                  land_use 0.005487720    3.351986e-04       4.748700
+     temp_c_mean_1995_2024 0.003833397    3.952662e-04       3.317162
+              climate_name 0.001912995    6.723551e-05       1.655376
+
+  spatial_trend: Rang 1/7 | 44.2% | unbed.=0.0510 | bed.=0.0109
+[Zeit] Variable Importance (Permutationsbasiert): 1872.2 s (31.20 min)
+--- Schritt 6: PDPs ---
+Berechne PDPs (force_pdp= TRUE )...
+
+  [1/3] land_cover (kategorial)...
+  [2/3] spatial_trend (numerisch, n_grid=20)...
+  [3/3] Niederschlag (numerisch, n_grid=20)...
+PDPs gespeichert (Cache für nächste Läufe).
+[Zeit] Partial Dependence Plots (PDPs): 4060.5 s (67.67 min)
+--- Schritt 7: Conditional Inference Tree ---
+
+quartz_off_screen 
+                2 
+Decision Tree gespeichert: decision_tree.png
+(Interaktiver Plot im Plot-Fenster)
+[Zeit] Decision Tree Visualisierung: 0.2 s (0.00 min)
+--- Schritt 8: Zusammenfassung ---
+
+Validierungsvergleich:
+          Metrik   Wert                                     Interpretation
+        Train R² 0.4696                 Trainingsdaten (Overfitting-Check)
+          OOB R² 0.4161             Zufällige Splits — leicht optimistisch
+        OOB RMSE 0.3421                   Mittlerer Vorhersagefehler (OOB)
+   Spatial CV R² 0.3650 Räumlich getrennte Blöcke — belastbarste Schätzung
+ Spatial CV RMSE 0.3568            Mittlerer Vorhersagefehler (Spatial CV)
+ Optimismus-Bias 0.0511        OOB minus Spatial CV — räumliche Verzerrung
+
+Optimierte Hyperparameter:
+    Parameter  Wert                                  Bedeutung
+        ntree   500                               Anzahl Bäume
+         mtry     4                         Features pro Split
+ mincriterion   0.9                 p-Wert-Schwelle für Splits
+      replace FALSE Subsampling ohne Zurücklegen (Strobl 2007)
+     fraction 0.632                          Anteil Daten/Baum
+
+PDP-Erkenntnisse:
+  land_cover: höchster SHI = Woodland | niedrigster SHI = Cropland
+  Niederschlag: Wirkungsrichtung positiv (monoton steigend)
+[Zeit] Modell-Zusammenfassung & Export: 10.0 s (0.17 min)
+
+=====================================================
+LAUFZEITÜBERSICHT
+=====================================================
+Datenaufbereitung & Cleaning                       8.1 s ( 0.13 min)
+GAM Räumlicher Trend                             15.7 s ( 0.26 min)
+Explorative Datenanalyse (EDA)                     8.7 s ( 0.15 min)
+Hyperparameter-Optimierung (Grid Search)        1551.5 s (25.86 min)
+Modellevaluation                                 100.5 s ( 1.67 min)
+Spatial Cross-Validation (Block CV)              286.9 s ( 4.78 min)
+Variable Importance (Permutationsbasiert)       1872.2 s (31.20 min)
+Partial Dependence Plots (PDPs)                 4060.5 s (67.67 min)
+Decision Tree Visualisierung                       0.2 s ( 0.00 min)
+Modell-Zusammenfassung & Export                   10.0 s ( 0.17 min)
+-----------------------------------------------------
+GESAMTLAUFZEIT: 8007.4 s (133.46 min)
+=====================================================
+
+✓ Analyse erfolgreich abgeschlossen!
+  Alle Outputs in: output_lat-long/; R version 4.5.2 (2025-10-31)
+Platform: aarch64-apple-darwin20
+Running under: macOS Tahoe 26.5.1
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+time zone: Europe/Berlin
+tzcode source: internal
+
+attached base packages:
+[1] stats4    grid      stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] gridExtra_2.3     reshape2_1.4.5    ggplot2_4.0.3     spdep_1.4-2      
+ [5] sf_1.1-1          spData_2.3.5      mgcv_1.9-4        nlme_3.1-169     
+ [9] party_1.3-20      strucchange_1.5-4 sandwich_3.1-1    zoo_1.8-15       
+[13] modeltools_0.2-24 mvtnorm_1.4-1    
+
+loaded via a namespace (and not attached):
+...
+[45] sp_2.2-1           spDataLarge_2.2.0  matrixStats_1.5.0  otel_0.2.0        
+[49] evaluate_1.0.5     knitr_1.51         viridisLite_0.4.3  s2_1.1.11         
+[53] rlang_1.2.0        Rcpp_1.1.1-1.1     glue_1.8.1         DBI_1.3.0         
+[57] jsonlite_2.0.0     plyr_1.8.9         R6_2.6.1           units_1.0-1
+Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...

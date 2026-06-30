@@ -1,0 +1,126 @@
+Die große Frage zuerst
+Du willst wissen: Was macht Böden in Europa gesund oder ungesund?
+Dafür hast du an 4.426 Punkten in Europa gemessen, wie gesund der Boden ist — das ist dein SHI (Soil Health Index). Außerdem hast du für jeden Punkt weitere Informationen: Wie viel regnet es dort? Wie warm ist es? Was wächst dort? Wie hoch liegt der Punkt?
+Die Idee: Wenn du weißt, welche dieser Faktoren den SHI am stärksten beeinflussen, kannst du verstehen was Böden gesund macht — und vielleicht vorhersagen, wie gesund ein Boden woanders sein könnte.
+
+Schritt 1 — Daten aufräumen
+Bevor du irgendetwas berechnest, musst du die Daten sauber machen.
+Problem 1: Manche Kategorien haben sehr wenige Punkte. Stell dir vor, du hast eine Klimaklasse mit nur 6 Punkten in ganz Europa. Wenn du damit ein Modell trainierst, kann der Computer aus 6 Punkten keine verlässliche Regel lernen — das wäre wie eine Schulklasse mit einem einzigen Schüler. Deshalb schmeißt du alle Kategorien mit weniger als 30 Punkten raus (das ist die Hobley-Regel). Bei dir waren das 3 Klimaklassen (BSh, Dsb, Dfc) mit zusammen 41 Punkten.
+Problem 2: Die Koordinaten (lon, lat) sind keine echten Prädiktoren für das Modell — die brauchst du nur um die Punkte auf der Karte zu zeigen. Die werden also aus dem Modell-Datensatz entfernt, aber für später aufgehoben.
+
+Schritt 1b — Das räumliche Problem
+Hier wird es zum ersten Mal richtig wichtig, also pass gut auf.
+Das Problem: Böden in Nordeuropa sind anders als Böden in Südeuropa. Böden im Westen anders als im Osten. Das hat nichts mit Landbedeckung oder Niederschlag zu tun — das ist einfach ein großräumiger geographischer Hintergrundtrend. Wenn du den ignorierst, passiert folgendes: Dein Modell sieht, dass Punkte in Nordeuropa hohe SHI-Werte haben. Es sieht auch, dass es in Nordeuropa viel regnet. Es schlussfolgert dann: Regen macht Böden gesund. Das stimmt vielleicht — aber vielleicht liegt es auch einfach daran, dass Nordeuropa grundsätzlich andere Böden hat, egal wie viel es regnet.
+Die Lösung: Du berechnest zuerst diesen geographischen Trend mit einem GAM (Generalized Additive Model). Das ist ein statistisches Modell, das eine glatte Kurve über die Karte legt und sagt: "An dieser geographischen Position würde man aufgrund der Lage allein einen SHI von X erwarten." Diesen erwarteten Wert nennst du spatial_trend und gibst ihn als normalen Prädiktor ins Modell.
+Was kam raus? Das GAM mit adj. R²=0,258 bedeutet: Allein die geographische Lage erklärt schon 25,8% des SHI. Das ist enorm — fast ein Viertel der Unterschiede zwischen Böden lässt sich schon damit erklären, wo sie auf der Karte liegen.
+
+Schritt 2 — Erst schauen, dann modellieren
+Bevor das eigentliche Modell läuft, schaust du dir die Daten an. Wichtigste Erkenntnis: spatial_trend und Niederschlag korrelieren mit r=0,641 sehr stark miteinander. Das bedeutet: In Regionen wo es viel regnet, ist der räumliche Trend auch hoch — und umgekehrt. Die beiden Variablen erzählen teilweise dieselbe Geschichte. Das ist kein Fehler, aber du musst es später bei der Interpretation im Hinterkopf behalten.
+
+Schritt 3 — Das eigentliche Modell: der Conditional Inference Forest
+Jetzt kommt das Herzstück.
+Ein Random Forest ist vereinfacht gesagt eine Sammlung von vielen Entscheidungsbäumen. Stell dir einen einzelnen Entscheidungsbaum vor wie ein Flussdiagramm: "Ist der Niederschlag über 600mm? Wenn ja, ist die Landbedeckung Wald? Wenn ja, ist der SHI hoch." Ein Forest macht das mit 500 verschiedenen solchen Bäumen gleichzeitig, jeder ein bisschen anders, und mittelt dann die Ergebnisse.
+Der Conditional Inference Forest (cforest) ist eine verbesserte Version, die fair mit verschiedenen Variablentypen umgeht — wichtig weil du sowohl Zahlen (Niederschlag, Temperatur) als auch Kategorien (Landbedeckung) hast.
+Du hast drei Stellschrauben ausprobiert:
+
+mtry=4: Bei jedem Split im Baum zieht das Modell zufällig 4 von 7 Variablen — das sorgt dafür, dass die Bäume nicht alle gleich aussehen
+mincriterion=0,90: Ein Split wird nur gemacht wenn er statistisch signifikant ist (p < 0,10) — schützt vor sinnlosen Splits
+replace=FALSE: Das Modell zieht Trainingsdaten ohne Zurücklegen — wichtig damit später die Wichtigkeit der Variablen nicht verzerrt ist
+
+Du hast 9 Kombinationen getestet und die beste genommen. Wichtig: Die R²-Werte lagen alle zwischen 0,394 und 0,416 — das bedeutet das Modell ist robust, egal welche Kombination du nimmst.
+
+Schritt 4 — Wie gut ist das Modell?
+Hier hast du drei Zahlen:
+Train R²=0,470 — das Modell auf den Daten, mit denen es trainiert wurde. Natürlich gut, weil es die Daten "kennt". Zum Vergleich mit OOB.
+OOB R²=0,416 — jeder Baum wird auf ~63% der Daten trainiert. Die restlichen 37% hat er nicht gesehen — auf denen wird er getestet. Das ist schon ehrlicher, aber: die Testpunkte liegen zufällig verteilt, also auch direkt neben Trainingspunkten. Benachbarte Böden sind ähnlich, deshalb ist die Vorhersage etwas zu einfach.
+Spatial CV R²=0,365 — das ist die ehrlichste Zahl. Hier werden die Punkte in 10 geographische Blöcke aufgeteilt. Immer ein kompletter Block wird als Test verwendet, alle anderen als Training. Der Mindestabstand zwischen Blöcken ist ~462 km — damit keine Trainingspunkte in der Nähe der Testpunkte liegen. Das simuliert die echte Frage: "Kann mein Modell den SHI in einer Region vorhersagen, die es noch nie gesehen hat?"
+Der Optimismus-Bias von 0,051 zeigt: OOB ist leicht zu optimistisch. Deshalb ist Spatial CV R²=0,365 deine Zahl für Publikationen.
+
+Schritt 5 — Was ist wichtig?
+Das Modell sagt dir auch, welche Variablen am meisten zur Vorhersage beitragen. Es permutiert jede Variable zufällig — also mischt die Werte durcheinander — und schaut wie viel schlechter die Vorhersage wird. Je mehr sie schlechter wird, desto wichtiger war die Variable.
+Ergebnis:
+
+spatial_trend 44,2% — aber das ist die Kontrollvariable, kein inhaltlicher Befund
+land_cover 26,9% — das ist dein wichtigster echter Befund
+Niederschlag 11,9%, Höhe 7,4%
+
+Warum sinkt spatial_trend in der bedingten Importance auf 0,011? Weil es stark mit Niederschlag korreliert (r=0,641) — wenn du für Niederschlag kontrollierst, hat spatial_trend kaum noch eigenständige Information.
+
+Schritt 6 — In welche Richtung wirken die Faktoren?
+Variable Importance sagt wie viel, aber nicht wie. Die Partial Dependence Plots zeigen die Richtung: Sie fragen für jeden möglichen Wert einer Variable "wie würde sich der SHI verändern, wenn ich nur diese Variable ändere und alles andere gleich lasse?"
+Ergebnis:
+
+Woodland → höchster SHI, Cropland → niedrigster SHI — Wald ist gut für Böden, Ackerflächen schlecht
+Niederschlag → positiv monoton — mehr Regen = bessere Bodengesundheit, ohne Sättigungseffekt
+
+
+Die Antwort auf deine Forschungsfrage
+Dein Modell erklärt 36,5% der SHI-Varianz auf Regionen, die es noch nie gesehen hat. Die wichtigsten Faktoren für gesunde Böden in Europa sind — nach Kontrolle des räumlichen Hintergrundtrends — Landbedeckung (Wald gut, Acker schlecht), Niederschlag (mehr ist besser) und Höhenlage. Die restlichen ~63,5% erklärter Varianz fehlt wahrscheinlich weil du keine direkten Bodeninformationen (pH, organischer Kohlenstoff, Textur) in deinem Datensatz hast.
+
+Welcher Schritt ist dir noch unklar? Ich gehe gerne tiefer in einen davon rein.Du hast gesagt: schritt 4: 2.schritt 4: 2.frage: du meinst er trainiert punkte aus 9 blöcken und testet punkte aus 1 block. Was ist aber wenn er einen punkt im test block testet welcher an der grenze eines trainingsblocks liegt in der nähe? dann ist es doch nicht 462km entfernt oder. 2.frage: wenn er dabei ist beim testblock den shi der punkte vorherzugen welche faktoren hat er alles da nur den spatial_trend ode rkoordinaten oder auch die anderen niederschlag landbedeckung usw? 3.frage: ist dieser schritt nur notwendig weil wir das problem haben dass wir zu viele benachtbarte punkte haben sodass unser modell es einfacher hat vorherzusagen? 4.frage: was ist der Optimismus-Bias? ist er auf dem spatial cv r oder oob vom cforest angelehnt? und was meisnt du mit zu optimistisch. und wie sieht der ablauf jz aus, daten aufräumen -> spatial trend (ode gam?) berechnen -> cforest modellieren (damit kriege ich vorhersagen und alle wirkungen der variablen miteinander?) -> spatial cv berechnen und punkte in blöcke teilen und noch mal modellieren und vorhersagen treffen -> fertiges modell und genauigkeiten des modells und wirkungen der variablen? und aus welchen schritten kommt die variable importance, premutation und die korrelationsmatrixen?Mehr anzeigen18:54Claude hat geantwortet: Sehr gute Fragen — ich gehe jede einzeln durch.Sehr gute Fragen — ich gehe jede einzeln durch.
+
+Frage 1: Was wenn ein Testpunkt direkt an der Blockgrenze liegt?
+Du hast völlig recht — die 462 km sind der Abstand zwischen den Blockmittelpunkten, nicht zwischen den Randpunkten. An der Grenze zwischen zwei Blöcken können Punkte durchaus nur wenige Kilometer auseinanderliegen. Das ist eine bekannte Schwäche des k-means-Block-Designs. In der Praxis akzeptiert man das, weil es mit vertretbarem Aufwand nicht vollständig lösbar ist — und weil der Großteil der Testpunkte weit genug von den Trainingspunkten entfernt ist. Der Optimismus-Bias von 0,051 enthält auch diesen Randeffekt bereits. Für eine Publikation würde man genau das als Limitation nennen.
+
+Frage 2: Welche Faktoren hat das Modell beim Vorhersagen im Testblock?
+Alle. Für jeden Testpunkt kennt das Modell: Niederschlag, Temperatur, Höhe, Landbedeckung, Landnutzung, Klimazone und spatial_trend. Es kennt nur den SHI-Wert nicht — den soll es ja vorhersagen. Dann vergleicht es seine Vorhersage mit dem echten SHI-Wert und berechnet daraus R² und RMSE.
+
+Frage 3: Ist Spatial CV nur wegen der Nachbarpunkte nötig?
+Genau. Das ist der einzige Grund. Das Phänomen heißt räumliche Autokorrelation — benachbarte Punkte haben ähnliche SHI-Werte, weil sie im selben Klima, auf denselben Böden, unter derselben Vegetation liegen. Wenn Trainings- und Testpunkte Nachbarn sind, hat das Modell es künstlich leicht. Spatial CV erzwingt echte räumliche Trennung damit die Güte ehrlich gemessen wird.
+
+Frage 4: Was ist der Optimismus-Bias?
+Optimismus-Bias = OOB R² minus Spatial CV R² = 0,416 − 0,365 = 0,051.
+Er misst wie stark das OOB-Ergebnis die echte Modellgüte überschätzt — also wie viel "zu optimistisch" OOB ist. "Zu optimistisch" bedeutet: OOB sagt dem Modell ist besser als es wirklich ist, weil die Testpunkte zu nah an Trainingspunkten liegen. Spatial CV ist die Korrektur davon. Der Bias hängt also an beiden — OOB liefert den oberen Wert, Spatial CV den ehrlicheren unteren, der Unterschied ist der Bias.
+
+Frage 5: Wie sieht der gesamte Ablauf aus?
+Du hast es fast richtig — hier der genaue Ablauf:
+Daten aufräumen (Schritt 1)
+        ↓
+GAM berechnen → erzeugt spatial_trend als neues Feature (Schritt 1b)
+        ↓
+EDA — Korrelationen anschauen, kein Modell (Schritt 2)
+        ↓
+Grid Search — 9 cforest-Modelle trainieren, beste Parameter finden (Schritt 3)
+        ↓
+Finales cforest-Modell mit besten Parametern trainieren (Schritt 3 Ende)
+        ↓
+        ├── OOB R² & RMSE berechnen (Schritt 4) ← kommt gratis aus dem cforest
+        ├── Variable Importance berechnen (Schritt 5) ← auch aus dem finalen cforest
+        ├── PDPs berechnen (Schritt 6) ← auch aus dem finalen cforest
+        └── Spatial CV: 10x neues cforest-Modell trainieren & testen (Schritt 4b)
+                ↓
+        Spatial CV R² & RMSE als Referenzwert
+Wichtig: Die Spatial CV trainiert 10 neue cforest-Modelle — eines pro Fold. Diese sind nur für die Gütemessung. Das finale Modell für Importance und PDPs bleibt das aus Schritt 3.
+
+Aus welchen Schritten kommen Variable Importance, PDPs und die Korrelationsmatrix?
+
+Korrelationsmatrix → Schritt 2 (EDA), vor dem Modell, nur zum Anschauen
+Variable Importance → Schritt 5, aus dem finalen cforest-Modell (Schritt 3)
+PDPs → Schritt 6, ebenfalls aus dem finalen cforest-Modell (Schritt 3)
+OOB R² → kommt automatisch beim Training des finalen cforest-Modells mit raus
+Spatial CV R² → Schritt 4b, aus den 10 separaten Fold-Modellen
+Du hast gesagt: würde es nicht sinn machen nur trainingspunkte zu nehmen die wirklich 462km vom testpunkt entfernt sind und nicht einfach den mittelpunnkt vom block?würde es nicht sinn machen nur trainingspunkte zu nehmen die wirklich 462km vom testpunkt entfernt sind und nicht einfach den mittelpunnkt vom block?. Braucht man bei spatial cv eigentlich die variable spatial_trend? man hat doch schon training und testblöcke gebaut die räumlich unterschiedich sind. macht das nicht sinn fürs modell dass er nur mit den anderen variablen trainiert und testet?. bei 4.: also bedeutet es wenn der optimismus bias groß wäre, dass das lösen der benachtbarten punkte einen großen unterschied machen würde? weil der jetzige 0,051 hört sich ja nicht viel an. bedeutet das das unsere lösung mit den blöcken also der spatial cv keinen unterschied bei der vorhersage gemacht hat?. Bedeutet eig ein hohes r2 eine gute vorhersage?. Wie machst du bei EDA die korrelationen zwischen den variablen? ich dachte man macht/findet im cforest heraus.19:08Claude hat geantwortet: Sehr gute und tiefe Fragen — das zeigt dass du wirklich mitdenkst.Sehr gute und tiefe Fragen — das zeigt dass du wirklich mitdenkst.
+
+Frage 1: Würde es nicht Sinn machen, nur Trainingspunkte zu nehmen die wirklich 462 km vom Testpunkt entfernt sind?
+Ja, das wäre methodisch sauberer — und genau das macht ein Ansatz namens spatial buffering. Du würdest um jeden Testblock einen Puffer legen und alle Trainingspunkte innerhalb dieses Puffers aus dem Training entfernen. Das eliminiert den Randeffekt komplett.
+Der Grund warum das hier nicht gemacht wurde: Bei 4.426 Punkten und 462 km Puffer würdest du für jeden Fold sehr viele Trainingspunkte verlieren — das Modell hätte dann deutlich weniger Daten zum Lernen. Es ist ein klassischer Kompromiss zwischen methodischer Sauberkeit und Datenverfügbarkeit. Für eine Publikation wäre es aber eine sinnvolle Sensitivitätsanalyse.
+
+Frage 2: Braucht man bei Spatial CV die Variable spatial_trend?
+Das ist eine der klügsten Fragen die man stellen kann — und du hast einen echten Punkt.
+Die ehrliche Antwort: spatial_trend wurde mit dem GAM auf allen 4.426 Punkten berechnet, bevor die Blöcke gebildet wurden. Das bedeutet: Auch die spatial_trend-Werte der Testpunkte wurden vom GAM "gesehen" — das GAM kannte deren Position und SHI schon beim Fitten. Streng genommen ist das ein Data Leakage: Information aus dem Testblock fließt indirekt über spatial_trend ins Modell.
+Methodisch sauber wäre: Für jeden Fold das GAM nur auf den Trainingspunkten fitten, und dann spatial_trend für den Testblock daraus vorhersagen. Das wurde hier nicht gemacht — in den meisten publizierten Studien mit ähnlichem Design übrigens auch nicht, aber es wäre die korrektere Variante.
+
+Frage 3: Bedeutet ein großer Optimismus-Bias dass der räumliche Effekt groß wäre?
+Genau richtig. Ein großer Bias würde bedeuten: OOB und Spatial CV unterscheiden sich stark — das Modell profitiert massiv davon dass Trainings- und Testpunkte Nachbarn sind. Bei dir ist der Bias 0,051 — das ist klein. Das bedeutet: Die räumliche Autokorrelation macht bei deinen Daten keinen riesigen Unterschied. Die Spatial CV hat also schon einen Unterschied gemacht, aber keinen dramatischen.
+Das ist eigentlich eine gute Nachricht — es bedeutet dass dein OOB-Ergebnis nicht stark verzerrt war.
+
+Frage 4: Bedeutet ein hohes R² eine gute Vorhersage?
+Nicht unbedingt — R² und RMSE messen zwei verschiedene Dinge.
+R² sagt: Wie viel der Unterschiede zwischen Punkten erkläre ich? Ein R²=0,365 bedeutet du erklärst 36,5% der Varianz. Das klingt wenig, aber wenn der SHI stark von Faktoren abhängt die du gar nicht gemessen hast (Bodentyp, pH), ist 36,5% eigentlich respektabel.
+RMSE sagt: Wie weit liege ich im Schnitt daneben — in echten SHI-Einheiten? Das ist die praktisch relevantere Zahl. Ein R²=0,9 mit RMSE=2,0 kann schlechter sein als R²=0,5 mit RMSE=0,1 — je nachdem wie groß deine SHI-Skala ist.
+Deshalb war meine Frage nach dem Min/Max deines SHI wichtig — ohne die Skala zu kennen kann man RMSE=0,357 nicht einordnen.
+
+Frage 5: Wie berechnet man Korrelationen in der EDA — macht das nicht der cforest?
+Der cforest und die Korrelationsmatrix messen zwei komplett verschiedene Dinge:
+Korrelationsmatrix (EDA, Schritt 2): Pearson-Korrelation — misst den linearen Zusammenhang zwischen je zwei Variablen. Zum Beispiel: Wie sehr steigen Niederschlag und spatial_trend gemeinsam? Das ist rein deskriptiv, kein Modell, kein SHI involviert. Du schaust nur ob Prädiktoren untereinander zusammenhängen.
+Variable Importance (cforest, Schritt 5): Misst wie viel jede Variable zur Vorhersage des SHI beiträgt — nach Kontrolle aller anderen Variablen gleichzeitig. Das ist modellbasiert und berücksichtigt alle Wechselwirkungen. Die Korrelationsmatrix hilft dir zu verstehen warum die Importance-Werte so aussehen wie sie aussehen. Zum Beispiel: spatial_trend hat 44% Importance, sinkt aber bedingt auf 0,011 — und die Korrelationsmatrix erklärt warum: r=0,641 mit Niederschlag. Ohne die EDA würdest du das nicht verstehen.

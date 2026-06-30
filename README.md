@@ -36,10 +36,14 @@ install.packages(c("party", "mgcv", "ggplot2", "reshape2",
 
 ```bash
 # Basismodell (ohne räumlichen Trend)
-Rscript random_forest_shi.R
+cd Modell
+Rscript cforest_shi.rmd
+cd ..
 
 # Erweitertes Modell (mit GAM lat/lon → spatial_trend)
-Rscript random_forest_shi_lat-long.R
+cd Modell_LatLong
+Rscript cforest_shi_latlong.rmd
+cd ..
 ```
 
 ---
@@ -110,13 +114,13 @@ Im erweiterten Skript (`lat-long`) kommt zusätzlich `spatial_trend` hinzu — e
 - Der **räumliche Trend** codiert großräumige West‑Ost‑ und Nord‑Süd‑Gradienten, die über reine Klima‑ und Landnutzungsdaten hinausgehen.
 
 ---
-## 6. Visuelle Erklärung des Skriptes `random_forest_shi_lat-long.R`
+## 6. Visuelle Erklärung des Skriptes `cforest_shi_latlong.rmd`
 
 https://codesplain.ai/share/3e44c29bb29f99337efd5cdf1465804d
 
-![alt text](temp/image4.png)
-![alt text](temp/image-1.png)
-![alt text](temp/image-2.png)
+![alt text](Dokumentation/README_Bilder/image4.png)
+![alt text](Dokumentation/README_Bilder/image-1.png)
+![alt text](Dokumentation/README_Bilder/image-2.png)
 
 
 ## 7. Projektstruktur
@@ -124,29 +128,27 @@ https://codesplain.ai/share/3e44c29bb29f99337efd5cdf1465804d
 ```
 RandomForest_R
 
-├── random_forest_shi.R                  # Basismodell
-├── random_forest_shi_lat-long.R         # Erweitertes Modell mit Lat/Long
-├── random_forest_shi_lat-long.Rmd       # Interaktiver Report (RMarkdown)
-├── tps_fitting_plot.R                   # Thin-Plate-Spline-Fitting (GAM) & 2D/3D-Visualisierung
-├── install_packages.R                   # Paketinstallation
-│
-├── input/
-│   └── Daten/
-│       ├── points.csv                   # Eingabedaten
-│       └── legend.txt                   # Köppen-Geiger-Legende
-│
-├── output/                              # Ergebnisse Basismodell
-│   ├── Grafiken_png/
-│   └── Modell_Zusammenfassung/
-│
-├── output_lat-long/                     # Ergebnisse erweitertes Modell
-│   ├── Grafiken_png/
-│   ├── Modell_Zusammenfassung/
-│   └── tps_fitting_plot-Modell/         # Ergebnisse des Thin-Plate-Spline Fitts (2D/3D-Plots & Walkthrough)
-│
-├── Dokumentation/
+├── Dokumentation/                       # Glossar, Erklärungen und Visualisierungen
+│   ├── glossar.html                     # Ausführliches Glossar und Begriffsdefinitionen
 │   ├── DATEN_DOKUMENTATION.md
-│   └── DATEN_DOKUMENTATION_LAT-LONG.md
+│   ├── DATEN_DOKUMENTATION_LAT-LONG.md
+│   ├── tps_fitting/                     # Thin-Plate-Spline Fitts (2D/3D-Plots)
+│   └── README_Bilder/                   # Bilder für das README
 │
+├── Modell/                              # Basismodell (ohne GAM)
+│   ├── input/                           # Eingabedaten (points.csv, legend.txt)
+│   ├── output/                          # Ergebnisse, Grafiken, Zusammenfassung
+│   ├── cforest_shi.rmd                  # Hauptskript Basismodell
+│   └── install_packages.R
+│
+├── Modell_LatLong/                      # Erweitertes Modell (mit GAM / LatLong)
+│   ├── input/                           # Eingabedaten (Kopie)
+│   ├── output/                          # Ergebnisse, Grafiken, Zusammenfassung, Interpretation
+│   ├── cforest_shi_latlong.rmd          # Hauptskript Erweitertes Modell
+│   └── install_packages.R
+│
+├── Archiv/                              # Log-Dateien und alte Ausgaben
+│
+├── shi_diagnostik.Rmd                   # Voranalyse und Datendiagnostik
 └── .gitignore
 ```

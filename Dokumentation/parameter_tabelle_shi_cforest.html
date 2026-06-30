@@ -1,0 +1,269 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.wrap { padding: 1rem 0; }
+h2.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+.section { margin-bottom: 2rem; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 8px 14px; border-radius: var(--border-radius-md); }
+.section-header span { font-size: 13px; font-weight: 500; }
+.s-gam    { background: #E1F5EE; }
+.s-gam span    { color: #0F6E56; }
+.s-hp     { background: #EEEDFE; }
+.s-hp span     { color: #3C3489; }
+.s-guete  { background: #E6F1FB; }
+.s-guete span  { color: #0C447C; }
+.s-imp    { background: #FAEEDA; }
+.s-imp span    { color: #633806; }
+.s-pdp    { background: #EAF3DE; }
+.s-pdp span    { color: #27500A; }
+@media (prefers-color-scheme: dark) {
+  .s-gam    { background: #085041; } .s-gam span    { color: #9FE1CB; }
+  .s-hp     { background: #3C3489; } .s-hp span     { color: #CECBF6; }
+  .s-guete  { background: #0C447C; } .s-guete span  { color: #B5D4F4; }
+  .s-imp    { background: #633806; } .s-imp span    { color: #FAC775; }
+  .s-pdp    { background: #27500A; } .s-pdp span    { color: #C0DD97; }
+}
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th { text-align: left; font-weight: 500; font-size: 12px; color: var(--color-text-secondary); padding: 6px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+td { padding: 9px 12px; vertical-align: top; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); line-height: 1.5; }
+tr:last-child td { border-bottom: none; }
+.param { font-family: var(--font-mono); font-size: 12.5px; color: var(--color-text-primary); }
+.val { font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; }
+.val.good { color: #0F6E56; }
+.val.warn { color: #BA7517; }
+.val.ref  { color: #185FA5; font-weight: 500; }
+@media (prefers-color-scheme: dark) {
+  .val.good { color: #5DCAA5; }
+  .val.warn { color: #EF9F27; }
+  .val.ref  { color: #85B7EB; }
+}
+.note { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
+.badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }
+.badge-ref  { background: #E6F1FB; color: #0C447C; }
+.badge-warn { background: #FAEEDA; color: #633806; }
+.badge-ok   { background: #EAF3DE; color: #27500A; }
+@media (prefers-color-scheme: dark) {
+  .badge-ref  { background: #0C447C; color: #B5D4F4; }
+  .badge-warn { background: #633806; color: #FAC775; }
+  .badge-ok   { background: #27500A; color: #C0DD97; }
+}
+</style>
+
+<div class="wrap">
+<h2 class="sr-only">Parametertabelle: CForest SHI-Modell mit Werten, Bedeutung und Interpretation</h2>
+
+<div class="section">
+  <div class="section-header s-gam"><i class="ti ti-wave-sine" aria-hidden="true"></i><span>GAM — räumlicher Trend (Schritt 1b)</span></div>
+  <table>
+    <thead><tr><th style="width:18%">Parameter</th><th style="width:14%">Wert</th><th style="width:34%">Bedeutung</th><th>Interpretation für unser Ergebnis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="param">bs = "tp"</span></td>
+        <td><span class="val">Thin-Plate-Spline</span></td>
+        <td>Typ des 2D-Splines über lon/lat — passt sich flexibel an räumliche Muster an</td>
+        <td>Erlaubt dem GAM, den komplexen europäischen Nord-Süd- und West-Ost-Gradienten frei zu modellieren</td>
+      </tr>
+      <tr>
+        <td><span class="param">k = 100</span></td>
+        <td><span class="val">100</span></td>
+        <td>Maximale Anzahl Basisfunktionen (Knoten) des Splines — steuert maximale Flexibilität</td>
+        <td>GAM nutzt davon EDF = 78,82 → Gradient ist komplex, fast alle Freiheitsgrade werden gebraucht</td>
+      </tr>
+      <tr>
+        <td><span class="param">EDF</span></td>
+        <td><span class="val warn">78,82</span></td>
+        <td>Effective degrees of freedom — tatsächlich genutzte Komplexität des Splines</td>
+        <td>Hoher EDF = der europäische SHI-Gradient ist räumlich sehr komplex, kein einfacher linearer Trend</td>
+      </tr>
+      <tr>
+        <td><span class="param">adj. R²</span></td>
+        <td><span class="val warn">0,258</span></td>
+        <td>Anteil der SHI-Varianz, der allein durch geographische Lage erklärt wird</td>
+        <td><strong>Geographie erklärt schon 25,8% des SHI</strong> — ohne Kontrollvariable würden andere Faktoren scheinbar wichtiger erscheinen</td>
+      </tr>
+      <tr>
+        <td><span class="param">spatial_trend</span></td>
+        <td><span class="val">2,65–3,86</span></td>
+        <td>Output des GAM — neues numerisches Feature, das den räumlichen Hintergrundtrend kodiert</td>
+        <td>Wird als Prädiktor an den cforest übergeben; repräsentiert atlantisch-kontinentalen und N-S-Gradienten</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header s-hp"><i class="ti ti-settings" aria-hidden="true"></i><span>Hyperparameter cforest (Schritt 3 — Grid Search)</span></div>
+  <table>
+    <thead><tr><th style="width:18%">Parameter</th><th style="width:14%">Wert</th><th style="width:34%">Bedeutung</th><th>Interpretation für unser Ergebnis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="param">ntree</span></td>
+        <td><span class="val">500</span></td>
+        <td>Anzahl Bäume im Forest — mehr Bäume = stabilere Schätzungen, aber längere Laufzeit</td>
+        <td>500 ist Standard und ausreichend stabil; ab ~300 Bäumen kaum noch Verbesserung</td>
+      </tr>
+      <tr>
+        <td><span class="param">mtry</span></td>
+        <td><span class="val good">4</span></td>
+        <td>Anzahl zufällig gezogener Features pro Split — niedrig = mehr Baumvielfalt, hoch = mehr Information</td>
+        <td>Bei 7 Features ist mtry=4 (~57%) optimal; getestet: {2, 3, 4} — 4 brachte bestes OOB R²</td>
+      </tr>
+      <tr>
+        <td><span class="param">mincriterion</span></td>
+        <td><span class="val good">0,90</span></td>
+        <td>p-Wert-Schwelle für einen Split (= 1 − α); höher = konservativere, tiefere Bäume weniger wahrscheinlich</td>
+        <td>0,90 (lockerster getesteter Wert) gewinnt — das Modell profitiert von etwas mehr Splits; getestet: {0.90, 0.95, 0.99}</td>
+      </tr>
+      <tr>
+        <td><span class="param">replace</span></td>
+        <td><span class="val good">FALSE</span></td>
+        <td>Subsampling ohne Zurücklegen (statt Bootstrap mit Zurücklegen) — gemäß Strobl et al. 2007</td>
+        <td>Pflicht für unbiased Variable Importance — ohne diesen Fix wären kategorische Variablen bevorzugt</td>
+      </tr>
+      <tr>
+        <td><span class="param">fraction</span></td>
+        <td><span class="val">0,632</span></td>
+        <td>Anteil der Daten, die jeder Baum zum Training zieht (~63,2%); die restlichen ~36,8% sind OOB</td>
+        <td>Standard-Subsampling-Anteil; die OOB-Menge (~1628 Punkte/Baum) ist groß genug für stabile Schätzung</td>
+      </tr>
+      <tr>
+        <td><span class="param">R²-Spanne</span></td>
+        <td><span class="val good">0,022</span></td>
+        <td>Differenz zwischen bestem und schlechtestem OOB R² über alle 9 Kombinationen</td>
+        <td>Sehr klein → das Modell ist <strong>robust gegenüber der Hyperparameterwahl</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header s-guete"><i class="ti ti-chart-line" aria-hidden="true"></i><span>Modellgüte (Schritt 4 & 4b)</span></div>
+  <table>
+    <thead><tr><th style="width:18%">Metrik</th><th style="width:14%">Wert</th><th style="width:34%">Bedeutung</th><th>Interpretation für unser Ergebnis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="param">Train R²</span></td>
+        <td><span class="val">0,4696</span></td>
+        <td>R² auf den Trainingsdaten selbst — misst Fit, nicht Generalisierung</td>
+        <td>Overfitting-Check: Delta zu OOB = 0,054 — moderat, kein Problem</td>
+      </tr>
+      <tr>
+        <td><span class="param">OOB R²</span></td>
+        <td><span class="val warn">0,4161</span></td>
+        <td>Out-of-Bag R² — validiert auf Punkten, die ein Baum nicht gesehen hat; schnell, aber rein zufällige Splits</td>
+        <td>Leicht optimistisch wegen räumlicher Autokorrelation — nicht für Publikationen zitieren</td>
+      </tr>
+      <tr>
+        <td><span class="param">OOB RMSE</span></td>
+        <td><span class="val">0,3421</span></td>
+        <td>Mittlerer Vorhersagefehler in SHI-Einheiten (OOB)</td>
+        <td>Im Mittel liegt das Modell ~0,34 SHI-Einheiten daneben (OOB-Schätzung)</td>
+      </tr>
+      <tr>
+        <td><span class="param">Spatial CV R²</span><span class="badge badge-ref">Referenz</span></td>
+        <td><span class="val ref">0,3650</span></td>
+        <td>R² aus 10-facher Leave-One-Block-Out CV — Testblöcke sind räumlich getrennt (k-means, ~462 km Mindestabstand)</td>
+        <td><strong>Das ist die für Publikationen zu zitierende Zahl</strong> — echte räumliche Generalisierung auf ungesehene Regionen</td>
+      </tr>
+      <tr>
+        <td><span class="param">Spatial CV RMSE</span></td>
+        <td><span class="val ref">0,3568</span></td>
+        <td>Mittlerer Vorhersagefehler in SHI-Einheiten (Spatial CV)</td>
+        <td>Etwas höher als OOB-RMSE — ehrlichere Schätzung des echten Fehlers</td>
+      </tr>
+      <tr>
+        <td><span class="param">Optimismus-Bias</span><span class="badge badge-warn">Achtung</span></td>
+        <td><span class="val warn">0,0511</span></td>
+        <td>OOB R² minus Spatial CV R² — misst, wie stark räumliche Autokorrelation die OOB-Schätzung verzerrt</td>
+        <td>Knapp über 0,05-Schwelle → OOB überschätzt leicht; Spatial CV ist Referenz</td>
+      </tr>
+      <tr>
+        <td><span class="param">Fold-R² Spanne</span><span class="badge badge-warn">wichtig</span></td>
+        <td><span class="val warn">0,10 – 0,66</span></td>
+        <td>R² pro geographischem Block (SD=0,176) — zeigt, wie gleichmäßig das Modell über Europa funktioniert</td>
+        <td>Große Streuung → <strong>das Modell erklärt SHI in manchen europäischen Regionen viel besser als in anderen</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header s-imp"><i class="ti ti-list-numbers" aria-hidden="true"></i><span>Variable Importance (Schritt 5 — permutationsbasiert)</span></div>
+  <table>
+    <thead><tr><th style="width:18%">Variable</th><th style="width:14%">Wert</th><th style="width:34%">Bedeutung</th><th>Interpretation für unser Ergebnis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="param">spatial_trend</span></td>
+        <td><span class="val">44,2 %<br><span class="note">bed. 0,011</span></span></td>
+        <td>Unbedingte Importance: Rang 1. Bedingte Importance (nach Korrektur für Korrelationen): stark reduziert</td>
+        <td><strong>Kontrollvariable, kein inhaltlicher Befund.</strong> Starker Rückgang bedingt↔unbedingt erklärt sich durch r=0,641 mit Niederschlag</td>
+      </tr>
+      <tr>
+        <td><span class="param">land_cover</span></td>
+        <td><span class="val good">26,9 %</span></td>
+        <td>Stärkster messbarer Umweltfaktor — kategorial (5 Klassen)</td>
+        <td>Landbedeckung ist der wichtigste inhaltliche Prädiktor für SHI nach Kontrolle des räumlichen Trends</td>
+      </tr>
+      <tr>
+        <td><span class="param">Niederschlag</span></td>
+        <td><span class="val good">11,9 %</span></td>
+        <td>Mittlerer Jahresniederschlag 1995–2024 (mm/m²) — numerisch</td>
+        <td>Zweitwichtigster messbarer Faktor; korreliert stark mit spatial_trend (r=0,641) → inhaltlicher Überlapp</td>
+      </tr>
+      <tr>
+        <td><span class="param">height_m</span></td>
+        <td><span class="val">7,4 %</span></td>
+        <td>Höhenlage in Metern — numerisch</td>
+        <td>Moderater Einfluss; Höhe beeinflusst Bodentemperatur, Feuchte und Vegetationstyp</td>
+      </tr>
+      <tr>
+        <td><span class="param">land_use</span></td>
+        <td><span class="val">4,7 %</span></td>
+        <td>Landnutzungsklasse (4 Klassen: Ackerbau, Brache, Forst, Halbnatural)</td>
+        <td>Schwächerer Effekt als land_cover — Nutzung und Bedeckung überlappen inhaltlich</td>
+      </tr>
+      <tr>
+        <td><span class="param">Temperatur</span></td>
+        <td><span class="val">3,3 %</span></td>
+        <td>Mittlere Jahrestemperatur 1995–2024 (°C) — numerisch</td>
+        <td>Schwacher eigenständiger Effekt; viel Varianz wird durch spatial_trend und Niederschlag abgedeckt</td>
+      </tr>
+      <tr>
+        <td><span class="param">climate_name</span></td>
+        <td><span class="val">1,7 %</span></td>
+        <td>Köppen-Geiger-Klimazone (7 Klassen) — nahe der Zufallsschwelle (14,3 %)</td>
+        <td>Kaum eigenständiger Beitrag — die Information steckt bereits in Temperatur, Niederschlag und spatial_trend</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header s-pdp"><i class="ti ti-trending-up" aria-hidden="true"></i><span>Partial Dependence — Wirkungsrichtungen (Schritt 6)</span></div>
+  <table>
+    <thead><tr><th style="width:18%">Variable</th><th style="width:14%">Richtung</th><th style="width:34%">Bedeutung</th><th>Interpretation für unser Ergebnis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="param">land_cover</span></td>
+        <td><span class="val good">Woodland &gt; … &gt; Cropland</span></td>
+        <td>Marginaler Effekt der Landbedeckungsklasse auf SHI, gemittelt über alle anderen Variablen</td>
+        <td>Waldbedeckung hat den höchsten SHI, Ackerflächen den niedrigsten — klare Wirkungsrichtung im Einklang mit Bodenökologie</td>
+      </tr>
+      <tr>
+        <td><span class="param">Niederschlag</span></td>
+        <td><span class="val good">positiv monoton</span></td>
+        <td>Mehr Niederschlag → höherer SHI, über den gesamten Wertebereich</td>
+        <td>Kein Sättigungseffekt erkennbar — feuchte Regionen haben konsistent bessere Bodengesundheit</td>
+      </tr>
+      <tr>
+        <td><span class="param">spatial_trend</span></td>
+        <td><span class="val">N-S / W-O Gradient</span></td>
+        <td>Repräsentiert den großräumigen geographischen Hintergrundtrend des SHI über Europa</td>
+        <td>Zeigt atlantisch-kontinentalen und Nord-Süd-Gradienten — inhaltlich stark durch Klima (Niederschlag) vermittelt</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>

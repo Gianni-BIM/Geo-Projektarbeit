@@ -1,6 +1,6 @@
 # Dokumentation der Eingabedaten für das lat‑long‑Skript
 
-Dieses Dokument beschreibt die Datengrundlage, die für das Random‑Forest‑Modell zur Bewertung der Bodengesundheit (SHI) im Projekt **`random_forest_shi_lat-long.R`** genutzt wird.
+Dieses Dokument beschreibt die Datengrundlage, die für das Random‑Forest‑Modell zur Bewertung der Bodengesundheit (SHI) im Projekt **`cforest_shi_latlong.rmd`** genutzt wird.
 
 ## 1. Was sind das für Daten und warum brauchen wir sie?
 Die Daten bestehen aus räumlichen Stichproben (Punkten in Europa), für die verschiedene Umwelt‑, Landnutzungs‑ und Klimaparameter sowie der "Soil Health Index" (SHI) erfasst wurden. Wir benötigen diese Daten, um ein maschinelles Lernmodell (Random Forest) zu trainieren. Das Modell soll herausfinden, welche Umweltfaktoren die Bodengesundheit am stärksten beeinflussen und wie diese zusammenhängen.
