@@ -1,0 +1,135 @@
+--- Schritt 1: Datenaufbereitung ---
+Ursprüngliche Zeilenanzahl: 4467
+Ausgeschlossene Spalten: POINT_ID, X, Y, lon_x, lat_y
+
+Verteilung Landnutzung (land_use):
+
+Agriculture (excluding fallow land and kitchen gardens) 
+                                                   3096 
+                                            Fallow land 
+                                                    221 
+                                               Forestry 
+                                                    849 
+              Semi-natural and natural areas not in use 
+                                                    301 
+
+Verteilung Landbedeckung (land_cover):
+
+ Bareland  Cropland Grassland Shrubland  Woodland 
+      178      2184      1010       131       964 
+
+Köppen-Geiger Legende geladen:
+  1: Af   Tropical, rainforest
+  2: Am   Tropical, monsoon
+  3: Aw   Tropical, savannah
+  4: BWh  Arid, desert, hot
+...
+Anzahl Features: 6 (davon 3 kategorisch als Faktoren — KEIN One-Hot-Encoding)
+  land_use     : 4 Levels
+  land_cover   : 5 Levels
+  climate_name : 7 Levels
+
+
+  --- Schritt 2: Explorative Datenanalyse (EDA) ---
+Korrelationsmatrix der numerischen Variablen:
+                          height_m temp_c_mean_1995_2024
+height_m                     1.000                -0.051
+temp_c_mean_1995_2024       -0.051                 1.000
+rain_mmsqm_mean_1995_2024    0.044                -0.328
+SHI                          0.080                -0.350
+                          rain_mmsqm_mean_1995_2024    SHI
+height_m                                      0.044  0.080
+temp_c_mean_1995_2024                        -0.328 -0.350
+rain_mmsqm_mean_1995_2024                     1.000  0.455
+SHI                                           0.455  1.000
+
+--- Schritt 3: Hyperparameter-Optimierung ---
+Modellformel: SHI ~ height_m + temp_c_mean_1995_2024 + rain_mmsqm_mean_1995_2024 + 
+ Modellformel:     land_use + land_cover + climate_name
+Starte Grid Search über 9 Kombinationen (ntree=500)...
+  [1/9] mtry=2, mincriterion=0.90 ... OOB R²=0.3667, RMSE=0.3563
+  [2/9] mtry=3, mincriterion=0.90 ... OOB R²=0.3727, RMSE=0.3546
+  [3/9] mtry=4, mincriterion=0.90 ... OOB R²=0.3724, RMSE=0.3547
+  [4/9] mtry=2, mincriterion=0.95 ... OOB R²=0.3625, RMSE=0.3575
+  [5/9] mtry=3, mincriterion=0.95 ... OOB R²=0.3666, RMSE=0.3563
+  [6/9] mtry=4, mincriterion=0.95 ... OOB R²=0.3668, RMSE=0.3563
+  [7/9] mtry=2, mincriterion=0.99 ... OOB R²=0.3518, RMSE=0.3605
+  [8/9] mtry=3, mincriterion=0.99 ... OOB R²=0.3551, RMSE=0.3595
+  [9/9] mtry=4, mincriterion=0.99 ... OOB R²=0.3561, RMSE=0.3593
+
+Beste Parameter gefunden:
+  mtry = 3
+  mincriterion = 0.90
+  Bester OOB R²: 0.3727
+  Bester OOB RMSE: 0.3546
+
+
+--- Schritt 4: Modellevaluation ---
+Train R²:   0.4167  |  Train RMSE: 0.3420
+OOB R²:     0.3727  |  OOB RMSE:   0.3546
+
+--- Schritt 4b: Spatial Cross-Validation ---
+
+Anzahl Blöcke: 10
+Punkte/Block: min=163, max=852, median=414
+
+Starte 10-fache Leave-One-Block-Out CV...
+  Fold  1: R²=0.5872
+  Fold  2: R²=-0.1443
+  Fold  3: R²=-0.1040
+  Fold  4: R²=0.4595
+  Fold  5: R²=0.1369
+  Fold  6: R²=0.2901
+  Fold  7: R²=0.3720
+  Fold  8: R²=0.4314
+  Fold  9: R²=0.2209
+  Fold 10: R²=0.3499
+
+--- Spatial CV Ergebnisse ---
+  Gesamt Spatial CV R²:   0.2686
+  Gesamt Spatial CV RMSE: 0.3829
+  OOB R²:                 0.3727
+  Optimismus-Bias:        0.1040
+
+  --- Schritt 5: Variable Importance ---
+Berechne permutationsbasierte Variable Importance (kann einige Minuten dauern)...
+
+Variable Importance (Permutation, unbiased):
+                  Variable  Importance Importance_Pct
+ rain_mmsqm_mean_1995_2024 0.037885521      34.066711
+                land_cover 0.034342970      30.881244
+     temp_c_mean_1995_2024 0.013880370      12.481247
+              climate_name 0.009115740       8.196885
+                  height_m 0.008933983       8.033450
+                  land_use 0.007051217       6.340464
+
+
+--- Schritt 6: Partial Dependence Plots ---
+
+Berechne PDP für Niederschlag...
+  Niederschlag: SHI steigt von 3.011 (min) auf 3.431 (max)
+Berechne PDP für Temperatur...
+  Temperatur: SHI Spanne von 3.013 bis 3.246
+Berechne PDP für Höhe...
+  Höhe: SHI Spanne von 3.132 bis 3.151
+Berechne PDP für Landbedeckung...
+  Landbedeckung PD-Werte:
+    Bareland       : 3.0558
+    Cropland       : 3.0429
+    Grassland      : 3.2404
+    Shrubland      : 3.2737
+    Woodland       : 3.2762
+
+--- PDP-Plots gespeichert ---
+
+
+--- Schritt 7: Decision Tree (ctree) ---
+quartz_off_screen 
+                2 
+Entscheidungsbaum (mit gekürzten Labels und n in Knoten) als 'decision_tree.png' gespeichert.
+
+--- Schritt 8: Ergebnisse zusammenfassen ---
+Markdown-Zusammenfassung erstellt unter './output/Modell_Zusammenfassung/model_summary.md'.
+Alle Diagramme im Ordner 'output/' gespeichert.
+--- Analyse erfolgreich abgeschlossen! ---
+

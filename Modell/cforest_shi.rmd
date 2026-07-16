@@ -1,21 +1,4 @@
----
-title: "Conditional Inference Forest Bodengesundheit (SHI) - Basismodell"
-subtitle: "Modellierung ohne räumlichen Trend"
-author: ""
-date: "`r format(Sys.time(), '%d. %B %Y')`"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
-    toc_depth: 3
-    number_sections: true
-    theme: flatly
-    highlight: tango
-    df_print: paged
-    code_folding: show
----
+Conditional Inference Forest Bodengesundheit (SHI) Basismodell
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -29,34 +12,26 @@ knitr::opts_chunk$set(
 )
 ```
 
+
 # Pakete & Konfiguration
+
 ```{r setup_env}
-# RANDOM FOREST MODELL ZUR BEWERTUNG DER BODENGESUNDHEIT (SHI)
-# ============================================================================
-# Implementierung mit dem R-Paket "party" (Conditional Inference Forest)
-# Vorteil: Native Verarbeitung kategorischer Variablen (Faktoren),
-#          d.h. KEIN One-Hot-Encoding nötig.
-#          Der Algorithmus kann direkt auf Kategorien splitten,
-#          z.B. {woodland, grassland} vs {cropland}.
-#
-# Referenz: Hothorn, T., Hornik, K., & Zeileis, A. (2006).
-#           Unbiased Recursive Partitioning: A Conditional Inference Framework.
-#           Journal of Computational and Graphical Statistics, 15(3), 651-674.
 ```
+
 
 ---
 
-# --- Pakete laden ---
+# Pakete laden
+
 ```{r pakete}
 library(party)
 library(ggplot2)
 library(reshape2)
 library(gridExtra)
 
-# Reproduzierbarkeit
 set.seed(42)
 
-# --- Pfade konfigurieren ---
+# Pfade konfigurieren
 # Skript kann vom Projektroot aus gestartet werden
 if (file.exists("input/Daten/points.csv")) {
   base_dir <- "."
@@ -69,7 +44,7 @@ if (file.exists("input/Daten/points.csv")) {
 
 input_csv   <- file.path(base_dir, "input", "Daten", "points.csv")
 legend_path <- file.path(base_dir, "input", "Daten", "legend.txt")
-output_dir  <- file.path(base_dir, "output")
+output_dir  <- file.path(base_dir, "Modell", "output")
 output_png_dir <- file.path(output_dir, "Grafiken_png")
 output_png_labeled_dir <- file.path(output_png_dir, "Grafik_mit_Beschriftung")
 output_mod_dir <- file.path(output_dir, "Modell_Zusammenfassung")
@@ -100,15 +75,17 @@ theme_pub <- theme_minimal(base_size = 14) +
 theme_set(theme_pub)
 ```
 
+
 ---
 
 # 1. DATENAUFBEREITUNG & CLEANING
+
 ```{r datenaufbereitung}
 cat("--- Schritt 1: Datenaufbereitung ---\n")
 df <- read.csv(input_csv, stringsAsFactors = FALSE)
 cat(sprintf("Ursprüngliche Zeilenanzahl: %d\n", nrow(df)))
 
-# Identifier-Spalten entfernen
+# Spalten entfernen
 exclude_cols <- c("POINT_ID", "X", "Y", "lon_x", "lat_y")
 coords_df <- df[, c("X", "Y")]  # Koordinaten aufbewahren
 df_clean <- df[, !(names(df) %in% exclude_cols)]
@@ -120,7 +97,7 @@ print(table(df_clean$land_use))
 cat("\nVerteilung Landbedeckung (land_cover):\n")
 print(table(df_clean$land_cover))
 
-# --- Köppen-Geiger Legende einlesen ---
+# Köppen-Geiger Legende einlesen
 legend_map <- list()
 if (file.exists(legend_path)) {
   legend_lines <- readLines(legend_path)
@@ -131,7 +108,6 @@ if (file.exists(legend_path)) {
       parts <- strsplit(line, ":")[[1]]
       code_str <- trimws(parts[1])
       desc_raw <- trimws(parts[2])
-      # Entferne RGB-Angaben in eckigen Klammern
       desc <- trimws(gsub("\\[.*\\]", "", desc_raw))
       code <- suppressWarnings(as.integer(code_str))
       if (!is.na(code)) {
@@ -148,8 +124,8 @@ for (k in sort(as.integer(names(legend_map)))[1:5]) {
 # Konvertiere kg_climate_class zu integer
 df_clean$kg_climate_class <- as.integer(df_clean$kg_climate_class)
 
-# --- Hobley-Regel: Kategorien mit <30 Beobachtungen ausschließen ---
-cat("\nPrüfe Kategorien auf Hobley-Regel (<30 Beobachtungen ausschließen)...\n")
+# Kategorien mit <30 Beobachtungen ausschließen
+cat("\nPrüfe Kategorien (<30 Beobachtungen ausschließen)...\n")
 cat_cols <- c("land_use", "land_cover", "kg_climate_class")
 
 for (col in cat_cols) {
@@ -171,7 +147,6 @@ for (col in cat_cols) {
   }
 }
 
-# Koordinaten an gefilterte Zeilen anpassen
 coords_df <- coords_df[as.integer(rownames(df_clean)), ]
 rownames(df_clean) <- NULL
 rownames(coords_df) <- NULL
@@ -179,17 +154,15 @@ rownames(coords_df) <- NULL
 cat(sprintf("Zeilenanzahl nach Filterung: %d (Entfernt: %d Zeilen)\n",
             nrow(df_clean), nrow(df) - nrow(df_clean)))
 
-# --- Klimanamen mappen ---
+# Klimanamen mappen
 df_clean$climate_name <- sapply(df_clean$kg_climate_class, function(x) {
   key <- as.character(x)
   if (key %in% names(legend_map)) legend_map[[key]] else "Unbekannt"
 })
 
-# ============================================================================
-# KERNPUNKT: Kategorische Variablen als FACTOR setzen — KEIN One-Hot-Encoding!
-# Das party-Paket verarbeitet Faktoren nativ und kann direkt auf
-# Kategorie-Gruppen splitten (z.B. {Woodland, Grassland} vs {Cropland}).
-# ============================================================================
+# Kategorische Variablen als Faktor setzen also kein One-Hot-Encoding
+# Das party Paket verarbeitet Faktoren nativ und kann direkt auf
+# Kategorie Gruppen splitten (z.B. {Woodland, Grassland} vs {Cropland}).
 df_clean$land_use     <- as.factor(df_clean$land_use)
 df_clean$land_cover   <- as.factor(df_clean$land_cover)
 df_clean$climate_name <- as.factor(df_clean$climate_name)
@@ -205,9 +178,11 @@ cat(sprintf("  climate_name : %d Levels\n", nlevels(df_clean$climate_name)))
 df_model <- df_clean[, !(names(df_clean) %in% c("kg_climate_class"))]
 ```
 
+
 ---
 
 # 2. EXPLORATIVE DATENANALYSE (EDA)
+
 ```{r explorative}
 cat("\n--- Schritt 2: Explorative Datenanalyse (EDA) ---\n")
 
@@ -217,7 +192,7 @@ corr_matrix <- cor(df_clean[, numerical_cols], use = "complete.obs")
 cat("Korrelationsmatrix der numerischen Variablen:\n")
 print(round(corr_matrix, 3))
 
-# Heatmap
+
 corr_melt <- melt(corr_matrix)
 corr_melt$Var1 <- factor(var_translations[as.character(corr_melt$Var1)],
                          levels = var_translations[numerical_cols])
@@ -286,9 +261,11 @@ ggsave(file.path(output_png_dir, "shi_distribution.png"), p_hist,
 p_hist
 ```
 
+
 ---
 
 # 3. HYPERPARAMETER-OPTIMIERUNG (Grid Search über OOB-Fehler)
+
 ```{r hyperparameter_optimierung}
 cat("\n--- Schritt 3: Hyperparameter-Optimierung ---\n")
 
@@ -297,7 +274,7 @@ feature_vars <- setdiff(names(df_model), "SHI")
 fml <- as.formula(paste("SHI ~", paste(feature_vars, collapse = " + ")))
 cat(sprintf("Modellformel: %s\n", deparse(fml)))
 
-# Grid-Parameter für cforest
+# Grid Parameter für cforest
 # mtry: Anzahl der zufällig ausgewählten Variablen pro Split
 # mincriterion: Signifikanzniveau (1 - p-Wert) für den Split-Test
 param_grid <- expand.grid(
@@ -329,11 +306,11 @@ for (i in seq_len(nrow(param_grid))) {
 
   cf <- cforest(fml, data = df_model, controls = ctrl)
 
-  # OOB-Vorhersagen
+  # OOB Vorhersagen
   oob_preds <- predict(cf, OOB = TRUE)
   oob_preds <- as.numeric(oob_preds)
 
-  # OOB-Metriken
+  # OOB Metriken
   ss_res <- sum((df_model$SHI - oob_preds)^2)
   ss_tot <- sum((df_model$SHI - mean(df_model$SHI))^2)
   oob_r2 <- 1 - ss_res / ss_tot
@@ -351,7 +328,7 @@ for (i in seq_len(nrow(param_grid))) {
 }
 
 # Ergebnisse speichern
-write.csv(results_list, file.path(output_dir, "parameter_grid_results.csv"),
+write.csv(results_list, file.path(output_dir, "parameter_grid_ergebnisse.csv"),
           row.names = FALSE)
 
 # Bestes Modell identifizieren
@@ -393,9 +370,11 @@ ggsave(file.path(output_png_dir, "parameter_optimization.png"), p_opt,
 p_opt
 ```
 
+
 ---
 
 # 4. MODELLEVALUATION
+
 ```{r modellevaluation}
 cat("\n--- Schritt 4: Modellevaluation ---\n")
 
@@ -406,12 +385,8 @@ ss_tot_train <- sum((df_model$SHI - mean(df_model$SHI))^2)
 train_r2  <- 1 - ss_res_train / ss_tot_train
 train_rmse <- sqrt(mean((df_model$SHI - train_preds)^2))
 
-cat(sprintf("Modell-Performance auf Trainingsdaten:\n"))
-cat(sprintf("  Train R²: %.4f\n", train_r2))
-cat(sprintf("  Train RMSE: %.4f\n", train_rmse))
-cat(sprintf("Modell-Performance auf Out-of-Bag (OOB) Daten:\n"))
-cat(sprintf("  OOB R²: %.4f\n", best_oob_r2))
-cat(sprintf("  OOB RMSE: %.4f\n", best_oob_rmse))
+cat(sprintf("Train R²:   %.4f  |  Train RMSE: %.4f\n", train_r2, train_rmse))
+cat(sprintf("OOB R²:     %.4f  |  OOB RMSE:   %.4f\n", best_oob_r2, best_oob_rmse))
 
 # OOB vs. Observed Scatterplot
 pred_df <- data.frame(observed = df_model$SHI, predicted = best_oob_preds)
@@ -448,15 +423,138 @@ ggsave(file.path(output_png_dir, "residuals_plot.png"), p_resid,
 p_resid
 ```
 
+
 ---
 
-# 5. VARIABLE IMPORTANCE (Permutationsbasiert, unbiased)
+# 4b. SPATIAL CROSS-VALIDATION
+
+```{r spatial_cv_laufen}
+cat("\n--- Schritt 4b: Spatial Cross-Validation ---\n\n")
+
+n_folds <- 10
+coords_for_cv <- coords_df
+stopifnot(nrow(coords_for_cv) == nrow(df_model))
+
+set.seed(42)
+km_blocks <- kmeans(coords_for_cv, centers = n_folds, nstart = 25, iter.max = 100)
+block_ids <- km_blocks$cluster
+
+block_sizes <- table(block_ids)
+block_centers <- as.data.frame(km_blocks$centers)
+names(block_centers) <- c("X", "Y")
+block_centers$block <- 1:n_folds
+block_centers$n_pts <- as.integer(block_sizes)
+
+cat(sprintf("Anzahl Blöcke: %d\nPunkte/Block: min=%d, max=%d, median=%d\n",
+  n_folds, as.integer(min(block_sizes)), as.integer(max(block_sizes)), as.integer(median(block_sizes))))
+
+# Karte der Blöcke
+p_blocks <- ggplot(
+  cbind(coords_df, block = factor(block_ids)),
+  aes(x = X, y = Y, color = block)
+) +
+  geom_point(size = 0.8, alpha = 0.6) +
+  geom_point(
+    data = block_centers,
+    aes(x = X, y = Y, color = factor(block)),
+    shape = 4, size = 5, stroke = 2, inherit.aes = FALSE
+  ) +
+  coord_equal() +
+  scale_color_viridis_d(option = "turbo", name = "Block") +
+  labs(
+    title = "Spatial CV — Block-Design (k-means)",
+    subtitle = sprintf("%d Blöcke", n_folds),
+    x = "X", y = "Y", caption = "Kreuze = Blockmittelpunkte"
+  )
+ggsave(file.path(output_png_dir, "spatial_cv_blocks.png"), p_blocks, width = 12, height = 8, dpi = 150)
+p_blocks
+
+cat(sprintf("\nStarte %d-fache Leave-One-Block-Out CV...\n", n_folds))
+
+cv_ctrl <- cforest_control(
+  teststat = "quad", testtype = "Univ",
+  mincriterion = best_params$mincriterion,
+  ntree = ntree, mtry = as.integer(best_params$mtry),
+  replace = FALSE, fraction = 0.632
+)
+
+cv_results <- data.frame(fold = integer(), n_test = integer(), r2 = numeric(), rmse = numeric())
+all_obs <- numeric(nrow(df_model))
+all_preds <- numeric(nrow(df_model))
+
+for (fold in 1:n_folds) {
+  test_idx <- which(block_ids == fold)
+  train_idx <- which(block_ids != fold)
+  df_train <- df_model[train_idx, ]
+  df_test <- df_model[test_idx, ]
+
+  cf_fold <- cforest(fml, data = df_train, controls = cv_ctrl)
+  fold_preds <- as.numeric(predict(cf_fold, newdata = df_test))
+
+  ss_res <- sum((df_test$SHI - fold_preds)^2)
+  ss_tot <- sum((df_test$SHI - mean(df_train$SHI))^2)
+  fold_r2 <- 1 - ss_res / ss_tot
+  fold_rmse <- sqrt(mean((df_test$SHI - fold_preds)^2))
+  
+  cat(sprintf("  Fold %2d: R²=%.4f\n", fold, fold_r2))
+
+  cv_results <- rbind(cv_results, data.frame(fold = fold, n_test = nrow(df_test), r2 = fold_r2, rmse = fold_rmse))
+  all_obs[test_idx] <- df_test$SHI
+  all_preds[test_idx] <- fold_preds
+}
+
+ss_res_total <- sum((all_obs - all_preds)^2)
+ss_tot_total <- sum((all_obs - mean(df_model$SHI))^2)
+spatial_cv_r2 <- 1 - ss_res_total / ss_tot_total
+spatial_cv_rmse <- sqrt(mean((all_obs - all_preds)^2))
+optimism_bias <- best_oob_r2 - spatial_cv_r2
+
+cat(sprintf("\n--- Spatial CV Ergebnisse ---\n"))
+cat(sprintf("  Gesamt Spatial CV R²:   %.4f\n", spatial_cv_r2))
+cat(sprintf("  Gesamt Spatial CV RMSE: %.4f\n", spatial_cv_rmse))
+cat(sprintf("  OOB R²:                 %.4f\n", best_oob_r2))
+cat(sprintf("  Optimismus-Bias:        %.4f\n", optimism_bias))
+```
+
+```{r spatial_cv_plot}
+p_cv_r2 <- ggplot(cv_results, aes(x = factor(fold), y = r2)) +
+  geom_col(aes(fill = r2), show.legend = FALSE) +
+  scale_fill_gradient(low = "#FDAE61", high = "#1A9641") +
+  geom_hline(yintercept = spatial_cv_r2, color = "#08519C", linetype = "dashed", linewidth = 1) +
+  geom_hline(yintercept = best_oob_r2, color = "red", linetype = "dotted", linewidth = 1) +
+  annotate("text",
+    x = 0.7, y = spatial_cv_r2 + 0.01,
+    label = sprintf("Spatial CV R² = %.3f", spatial_cv_r2),
+    hjust = 0, size = 3.8, color = "#08519C", fontface = "bold"
+  ) +
+  annotate("text",
+    x = 0.7, y = best_oob_r2 + 0.01,
+    label = sprintf("OOB R² = %.3f", best_oob_r2),
+    hjust = 0, size = 3.8, color = "red"
+  ) +
+  labs(
+    title = "Spatial CV — R² pro geographischem Block",
+    subtitle = sprintf(
+      "%d-fache Leave-One-Block-Out CV | Gesamt R²=%.3f, RMSE=%.4f",
+      n_folds, spatial_cv_r2, spatial_cv_rmse
+    ),
+    x = "Fold (geographischer Block)", y = "R² (Testblock)"
+  )
+ggsave(file.path(output_png_dir, "spatial_cv_r2_per_fold.png"), p_cv_r2, width = 10, height = 6, dpi = 150)
+p_cv_r2
+```
+
+
+---
+
+# 5. VARIABLE IMPORTANCE (Permutationsbasiert)
+
 ```{r variable}
 cat("\n--- Schritt 5: Variable Importance ---\n")
 cat("Berechne permutationsbasierte Variable Importance (kann einige Minuten dauern)...\n")
 
-# party::varimp() liefert direkt die Importance pro Variable —
-# auch für Faktoren als EINE Variable (nicht aufgesplittet in Dummies!)
+# party::varimp() liefert direkt die Importance pro Variable
+# auch für Faktoren als eine Variable
 vi <- varimp(best_model, conditional = FALSE)
 
 df_imp <- data.frame(
@@ -466,7 +564,7 @@ df_imp <- data.frame(
 df_imp <- df_imp[order(df_imp$Importance, decreasing = TRUE), ]
 df_imp$Importance_Pct <- (df_imp$Importance / sum(df_imp$Importance)) * 100
 
-cat("\nVariable Importance (Permutation, unbiased):\n")
+cat("\nVariable Importance (Permutation):\n")
 print(df_imp, row.names = FALSE)
 
 # Barplot
@@ -523,26 +621,113 @@ save_variable_legend <- function(df, translations, output_path) {
   }
   writeLines(lines, output_path)
 }
-save_variable_legend(df_model, var_translations, file.path(output_mod_dir, "variable_legend.md"))
+save_variable_legend(df_model, var_translations, file.path(output_mod_dir, "variablen_legende.md"))
 ```
+
 
 ---
 
-# 6. PARTIAL DEPENDENCE PLOTS (Übersprungen)
+# 6. PARTIAL DEPENDENCE PLOTS (PDP)
+
 ```{r partial}
-cat("\n--- Schritt 6: Partial Dependence Plots (übersprungen wegen Laufzeit) ---\n")
-# Bei cforest dauert die PDP-Berechnung über predict() sehr lange.
-# Da die Ergebnisse der Variableneinflüsse (siehe Variable Importance und Decision Tree)
-# bereits ausreichen, wird dieser Schritt zur Performanceoptimierung weggelassen.
+cat("\n--- Schritt 6: Partial Dependence Plots ---\n\n")
+
+# Subsampling für Geschwindigkeit (cforest predict() ist langsam)
+set.seed(42)
+n_pdp <- min(500, nrow(df_model))
+pdp_idx <- sample(nrow(df_model), n_pdp)
+df_pdp <- df_model[pdp_idx, ]
+
+# Hilfsfunktion 1D-PDP für eine numerische Variable
+compute_pdp_num <- function(model, data, varname, n_grid = 30) {
+  grid_vals <- seq(min(data[[varname]], na.rm = TRUE),
+                   max(data[[varname]], na.rm = TRUE),
+                   length.out = n_grid)
+  pd_vals <- sapply(grid_vals, function(val) {
+    df_tmp <- data
+    df_tmp[[varname]] <- val
+    mean(as.numeric(predict(model, newdata = df_tmp)))
+  })
+  data.frame(x = grid_vals, y = pd_vals)
+}
+
+# Hilfsfunktion 1D-PDP für eine kategorische Variable
+compute_pdp_cat <- function(model, data, varname) {
+  levs <- levels(data[[varname]])
+  pd_vals <- sapply(levs, function(lv) {
+    df_tmp <- data
+    df_tmp[[varname]] <- factor(lv, levels = levs)
+    mean(as.numeric(predict(model, newdata = df_tmp)))
+  })
+  data.frame(x = levs, y = pd_vals)
+}
+
+# PDP: Niederschlag
+cat("Berechne PDP für Niederschlag...\n")
+pdp_rain <- compute_pdp_num(best_model, df_pdp, "rain_mmsqm_mean_1995_2024")
+p_pdp_rain <- ggplot(pdp_rain, aes(x = x, y = y)) +
+  geom_line(color = "#168B85", linewidth = 1.5) +
+  geom_ribbon(aes(ymin = min(y), ymax = y), fill = "#168B85", alpha = 0.1) +
+  labs(title = "PDP: Niederschlag (1995-2024)",
+       subtitle = "Marginaler Effekt auf SHI — Wirkungsrichtung & Sättigungseffekte",
+       x = "Mittlerer Jahresniederschlag (mm/m²)", y = "SHI (PD-Schätzer)")
+ggsave(file.path(output_png_dir, "pdp_niederschlag.png"), p_pdp_rain, width = 8, height = 5, dpi = 150)
+cat(sprintf("  Niederschlag: SHI steigt von %.3f (min) auf %.3f (max)\n", min(pdp_rain$y), max(pdp_rain$y)))
+
+# PDP: Temperatur
+cat("Berechne PDP für Temperatur...\n")
+pdp_temp <- compute_pdp_num(best_model, df_pdp, "temp_c_mean_1995_2024")
+p_pdp_temp <- ggplot(pdp_temp, aes(x = x, y = y)) +
+  geom_line(color = "#C0392B", linewidth = 1.5) +
+  geom_ribbon(aes(ymin = min(y), ymax = y), fill = "#C0392B", alpha = 0.1) +
+  labs(title = "PDP: Temperatur (1995-2024)",
+       subtitle = "Marginaler Effekt auf SHI",
+       x = "Mittlere Jahrestemperatur (°C)", y = "SHI (PD-Schätzer)")
+ggsave(file.path(output_png_dir, "pdp_temperatur.png"), p_pdp_temp, width = 8, height = 5, dpi = 150)
+cat(sprintf("  Temperatur: SHI Spanne von %.3f bis %.3f\n", min(pdp_temp$y), max(pdp_temp$y)))
+
+# PDP: Höhe
+cat("Berechne PDP für Höhe...\n")
+pdp_height <- compute_pdp_num(best_model, df_pdp, "height_m")
+p_pdp_height <- ggplot(pdp_height, aes(x = x, y = y)) +
+  geom_line(color = "#8E44AD", linewidth = 1.5) +
+  geom_ribbon(aes(ymin = min(y), ymax = y), fill = "#8E44AD", alpha = 0.1) +
+  labs(title = "PDP: Höhenlage",
+       subtitle = "Marginaler Effekt auf SHI",
+       x = "Höhe (m ü. NN)", y = "SHI (PD-Schätzer)")
+ggsave(file.path(output_png_dir, "pdp_hoehe.png"), p_pdp_height, width = 8, height = 5, dpi = 150)
+cat(sprintf("  Höhe: SHI Spanne von %.3f bis %.3f\n", min(pdp_height$y), max(pdp_height$y)))
+
+# PDP: Landbedeckung (kategorisch)
+cat("Berechne PDP für Landbedeckung...\n")
+pdp_lc <- compute_pdp_cat(best_model, df_pdp, "land_cover")
+pdp_lc$x <- factor(pdp_lc$x, levels = pdp_lc$x[order(pdp_lc$y)])
+p_pdp_lc <- ggplot(pdp_lc, aes(x = y, y = x, fill = y)) +
+  geom_col(show.legend = FALSE) +
+  scale_fill_gradient(low = "#C0E0DE", high = "#168B85") +
+  geom_vline(xintercept = mean(df_model$SHI), color = "#D4A33E", linetype = "dashed", linewidth = 1) +
+  labs(title = "PDP: Landbedeckung",
+       subtitle = "Marginaler Effekt auf SHI (gemittelt über alle anderen Variablen)",
+       x = "SHI (PD-Schätzer)", y = "Landbedeckung")
+ggsave(file.path(output_png_dir, "pdp_landbedeckung.png"), p_pdp_lc, width = 8, height = 5, dpi = 150)
+cat("  Landbedeckung PD-Werte:\n")
+for (i in seq_len(nrow(pdp_lc))) {
+  cat(sprintf("    %-15s: %.4f\n", as.character(pdp_lc$x[i]), pdp_lc$y[i]))
+}
+
+cat("\n--- PDP-Plots gespeichert ---\n")
+p_pdp_rain
 ```
+
 
 ---
 
 # 7. DECISION TREE VISUALISIERUNG (Conditional Inference Tree mit partykit)
+
 ```{r decision}
 cat("\n--- Schritt 7: Decision Tree (ctree) ---\n")
 
-# Für den Plot lesbare (kurze) Namen erzeugen, damit der Text nicht überlappt
+# Für den Plot lesbare kurze Namen erzeugen, damit der Text nicht überlappt
 df_tree <- df_model
 
 # Klimanamen kürzen (nur den Code, z.B. "Cfa")
@@ -555,7 +740,7 @@ levels(df_tree$land_use) <- gsub("Fallow land", "Fallow", levels(df_tree$land_us
 
 fml_tree <- as.formula(paste("SHI ~", paste(setdiff(names(df_tree), "SHI"), collapse = " + ")))
 
-# partykit liefert wesentlich schönere Plots und zeigt das 'n' auch in den inneren Knoten!
+# partykit liefert wesentlich schönere Plots und zeigt das 'n' auch in den inneren Knoten
 # Wir nutzen partykit::ctree nur für diese eine Visualisierung.
 if (!requireNamespace("partykit", quietly = TRUE)) {
   install.packages("partykit", repos = "https://cloud.r-project.org")
@@ -569,17 +754,20 @@ fml_tree_trans <- as.formula(paste("`Bodengesundheit (SHI)` ~", paste(paste0("`"
 ct_kit_trans <- partykit::ctree(fml_tree_trans, data = df_tree_trans, 
                           control = partykit::ctree_control(maxdepth = 4, alpha = 0.05))
 
-png(file.path(output_png_dir, "decision_tree.png"), width = 2800, height = 1400, res = 180)
+png(file.path(output_png_dir, "decision_tree.png"), width = 5000, height = 1800, res = 150)
 plot(ct_kit_trans, main = "Entscheidungsbaum für Bodengesundheit",
      ip_args = list(pval = TRUE),
-     ep_args = list(justmin = 15))
+     ep_args = list(justmin = 15),
+     gp = grid::gpar(fontsize = 14))
 dev.off()
 cat("Entscheidungsbaum (mit gekürzten Labels und n in Knoten) als 'decision_tree.png' gespeichert.\n")
 ```
 
+
 ---
 
 # 8. AUTOMATISIERTE ZUSAMMENFASSUNG (als Markdown)
+
 ```{r automatisierte}
 cat("\n--- Schritt 8: Ergebnisse zusammenfassen ---\n")
 
@@ -588,8 +776,8 @@ md_text <- sprintf(
 
 ## Modell-Informationen
 - **Modell-Algorithmus:** Conditional Inference Forest (party)
-- **Vorteil:** Native kategorische Verarbeitung — KEIN One-Hot-Encoding nötig!
-- **Datenpunkte verwendet:** %d (nach Ausschluss von Klassen mit < 30 Punkten)
+- **Vorteil:** Integrierte Verarbeitung kategorischer Variablen, wodurch kein One-Hot-Encoding nötig ist.
+- **Datenpunkte verwendet:** %d (nach Ausschluss von seltenen Klassen mit weniger als 30 Beobachtungen)
 
 ## Ergebnisse der Modellgüte (OOB-Validierung)
 - **Out-of-Bag R² (Erklärte Varianz):** %.4f (%.2f%%)
@@ -621,41 +809,30 @@ for (i in 1:top_n) {
   md_text <- paste0(md_text, sprintf("%d. **%s** (%.1f%% Erklärungsbeitrag)\n", i, df_imp$Variable[i], df_imp$Importance_Pct[i]))
 }
 
-md_text <- paste0(md_text, sprintf("
+md_text <- paste0(md_text, "
 ### Frage 2: Welche Faktoren wirken positiv, welche negativ?
-**POSITIVE Effekte (erhöhen den SHI):**
-- Höherer Niederschlag → Mehr Wasser für Pflanzen & Bodenbiologie
-- Wald/Grünland-Bedeckung → Stabile Bodenstruktur, Humusaufbau
-- Temperate Klimazonen (mild, nicht zu trocken)
+**POSITIVE Effekte die den SHI erhöhen:**
+- Höherer Niederschlag → Mehr Wasser für Pflanzen und Bodenbiologie
+- Wald und Grünlandbedeckung → Stabile Bodenstruktur, Humusaufbau
+- Milde und nicht zu trockene Klimazonen
 
-**NEGATIVE Effekte (senken den SHI):**
-- Hohe Temperaturen in Trockengebieten
-- Niedriger Niederschlag / Trockenheit
-- Intensive Ackerbau-Nutzung
+**NEGATIVE Effekte die den SHI senken:**
+- Hohe Temperaturen und Trockenheit
+- Niedriger Niederschlag und Trockenheit
+- Intensive Ackerbaunutzung
 
 ### Frage 3: Gibt es Interaktionen zwischen den Einflussfaktoren?
-JA! Der Entscheidungsbaum zeigt Interaktionen.
-- **Niederschlag × Landbedeckung:** In feuchten Gebieten ist die Landbedeckung anders relevant als in trockenen.
-- **Temperatur × Niederschlag:** Zusammen definieren sie die wirksamen Klimazonen.
+Ja und zwar zeigt der Entscheidungsbaum Interaktionen. Zum Beispiel ist bei Niederschlag die Relevanz der Landbedeckung in feuchten Gebieten eine andere als in trockenen. Des Weiteren definieren Temperatur und Niederschlag zusammen die wirksamen Klimazonen.
 
-### Frage 4: Gibt es lokale/regionale/klimatische Unterschiede?
-JA! Sehr deutlich in den Boxplots nach Klimazone.
-- Atlantische Westküsten (Cfb): höchste SHI-Werte.
-- Mediterrane & trockene Regionen: deutlich geringere SHI-Werte.
+### Frage 4: Gibt es lokale oder regionale Unterschiede?
+Ja und zwar sehr deutlich in den Boxplots nach Klimazone.
+- Atlantische Westküsten (Cfb) weisen die höchsten SHI-Werte auf.
+- Mediterrane & trockene Regionen haben deutlich geringere SHI-Werte.
+")
 
-## Fazit und Empfehlungen
-- **Modellqualität:** ★★★★☆ (4/5)
-  OOB R² = %.4f — für ökologische Komplexsysteme sehr gut.
-- **Zuverlässigkeit:** ★★★★★ (5/5)
-  OOB-Validierung: kein Overfitting.
-- **Interpretierbarkeit:** ★★★★☆ (4/5)
-  Variable Importance und Decision Tree klar interpretierbar.
-", best_oob_r2))
-
-md_out <- file.path(output_mod_dir, "model_summary.md")
+md_out <- file.path(output_mod_dir, "modell_zusammenfassung.md")
 writeLines(md_text, md_out)
 cat(sprintf("Markdown-Zusammenfassung erstellt unter '%s'.\n", md_out))
 cat("Alle Diagramme im Ordner 'output/' gespeichert.\n")
 cat("--- Analyse erfolgreich abgeschlossen! ---\n")
 ```
-

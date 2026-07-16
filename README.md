@@ -1,154 +1,55 @@
 # Random Forest zur Bewertung der Bodengesundheit (SHI)
 
-Analyse des Soil Health Index (SHI) in Europa mithilfe eines Conditional Inference Forest (R‑Paket `party`). Das Modell untersucht den Einfluss von Klima, Topografie, Landnutzung und Landbedeckung auf die Bodengesundheit. Zusätzlich wird in einer erweiterten Variante der räumliche Hintergrundtrend per GAM‑Spline einbezogen.
+Analyse des Soil Health Index (SHI) in Europa mithilfe eines Conditional Inference Forest (`party`). Das Modell untersucht den Einfluss von Klima, Topografie, Landnutzung und Landbedeckung.
 
 ---
 
-## 1. Setup
-
-### 1.1 Repository klonen
+## 1. Quickstart
 
 ```bash
 git clone https://github.com/Gianni-BIM/Geo-Projektarbeit.git
 cd Geo-Projektarbeit
 git checkout ML-rf-Ioannis
 cd RandomForest_R
-```
 
-### 1.2. R installieren
-
-- [R herunterladen](https://cran.r-project.org/) (Version ≥ 4.2)
-- Optional: [RStudio](https://posit.co/downloads/) als IDE
-
-### 1.3. R‑Pakete installieren
-
-```bash
+# Pakete installieren & Modell ausführen
+cd Modell 
 Rscript install_packages.R
-```
-
-Oder manuell in R:
-```R
-install.packages(c("party", "mgcv", "ggplot2", "reshape2",
-                   "gridExtra", "GGally", "spdep", "partykit"))
-```
-
-### 1.4. Skripte ausführen
-
-```bash
-# Basismodell (ohne räumlichen Trend)
-cd Modell
-Rscript cforest_shi.rmd
-cd ..
-
-# Erweitertes Modell (mit GAM lat/lon → spatial_trend)
-cd Modell_LatLong
-Rscript cforest_shi_latlong.rmd
+Rscript cforest_shi.rmd 
 cd ..
 ```
 
 ---
 
-## 2. Gegeben
+## 2. Daten & Methodik
 
-Räumliche Stichproben (Punkte in Europa) mit folgenden Umweltparametern:
-
-| Variable | Bezeichnung | Typ |
-|----------|-------------|-----|
-| `height_m` | Topografische Höhe (m) | numerisch |
-| `temp_c_mean_1995_2024` | Mittlere Temperatur (°C) | numerisch |
-| `rain_mmsqm_mean_1995_2024` | Mittlerer Niederschlag (mm) | numerisch |
-| `land_use` | Landnutzung | kategorial |
-| `land_cover` | Landbedeckung | kategorial |
-| `climate_name` | Köppen‑Geiger‑Klimazone | kategorial |
-
-Im erweiterten Skript (`lat-long`) kommt zusätzlich `spatial_trend` hinzu — ein per GAM erzeugtes Feature, das den räumlichen Hintergrundtrend codiert.
-
-## 3. Gesucht
-
-- **Vorhersage** des Soil Health Index (SHI)
-- **Einflussfaktoren** — welche Umweltparameter bestimmen die Bodengesundheit am stärksten?
-- **Interaktionen** — wie wirken Klima, Landnutzung und Geografie zusammen?
+**Eingabedaten:** Höhe (m), Temperatur (°C), Niederschlag (mm), Landnutzung, Landbedeckung und Klimazone.
+**Ziel:** Vorhersage des SHI und Analyse der wichtigsten Einflussfaktoren.
+**Methodik:** Conditional Inference Forest (`party::cforest`) nach Datenbereinigung (Ausschluss von Klassen < 30 Beobachtungen) und Hyperparameter-Tuning.
 
 ---
 
-## 4. Methodik
+## 3. Ergebnisse
 
-1. **Datenaufbereitung** — Entfernen von IDs/Koordinaten, Hobley‑Filterung (Kategorien < 30 Beobachtungen), Faktorisierung.
-2. **Feature Engineering** (nur lat‑long) — GAM‑Thin‑Plate‑Spline über Koordinaten → `spatial_trend`.
-3. **Hyperparameter‑Optimierung** — Grid Search über `mtry` und `mincriterion` mit OOB‑R² als Metrik.
-4. **Modelltraining** — Conditional Inference Forest (`party::cforest`, 500 Bäume).
-5. **Evaluation** — Out‑of‑Bag‑Validierung (R², RMSE), Residualanalyse.
-6. **Interpretation** — Permutationsbasierte Variable Importance, Entscheidungsbaum‑Visualisierung.
+| Metrik | Wert |
+|---|---|
+| **OOB R²** | 0.3727 (37.27%) |
+| **OOB RMSE** | 0.3546 |
 
----
+**Top-Einflussfaktoren:**
+1. Niederschlag (34.0%)
+2. Landbedeckung (30.9%)
+3. Temperatur (12.6%)
 
-## 5. Ergebnisse
-
-### Vergleich: Basismodell vs. erweitertes Modell (lat‑long)
-
-| Metrik | Basismodell | Lat‑Long (+ GAM) |
-|--------|------------|-------------------|
-| **OOB R²** | ~0.37 (37 %) | ~0.40 (40 %) |
-| **OOB RMSE** | ~0.355 | ~0.347 |
-| **Prädiktoren** | 6 | 7 (+ spatial_trend) |
-
-### Wichtigste Einflussfaktoren (Variable Importance)
-
-**Basismodell:**
-1. Niederschlag (~34 %)
-2. Landbedeckung (~31 %)
-3. Temperatur (~13 %)
-
-**Erweitertes Modell (lat‑long):**
-1. Landbedeckung (~32 %)
-2. Räumlicher Trend / spatial_trend (~27 %)
-3. Niederschlag (~18 %)
-
-> Der räumliche Trend (GAM) verbessert das Modell um ca. 3 Prozentpunkte R² und zeigt, dass geografische Lage (z. B. atlantisch vs. kontinental) einen eigenständigen Einfluss auf die Bodengesundheit hat.
-
-### Kernaussagen
-
-- **Feuchte, gemäßigte Klimazonen** (Cfb) zeigen die höchsten SHI‑Werte.
-- **Waldbedeckung und naturnahe Flächen** fördern die Bodengesundheit.
-- **Intensive Landwirtschaft** senkt den SHI messbar.
-- Der **räumliche Trend** codiert großräumige West‑Ost‑ und Nord‑Süd‑Gradienten, die über reine Klima‑ und Landnutzungsdaten hinausgehen.
+**Kernaussagen:**
+- **Positive Effekte:** Höherer Niederschlag, Wald-/Grünlandbedeckung und milde Klimazonen (z.B. atlantische Westküsten) fördern den SHI.
+- **Negative Effekte:** Hohe Temperaturen, Trockenheit und intensive Ackerbaunutzung senken den SHI.
+- **Interaktionen:** Die Relevanz der Landbedeckung variiert je nach Feuchtigkeit; Temperatur und Niederschlag definieren gemeinsam die wirksamen Klimazonen.
 
 ---
-## 6. Visuelle Erklärung des Skriptes `cforest_shi_latlong.rmd`
 
-https://codesplain.ai/share/3e44c29bb29f99337efd5cdf1465804d
+## 4. Projektstruktur & Ergebnisse
 
-![alt text](Dokumentation/README_Bilder/image4.png)
-![alt text](Dokumentation/README_Bilder/image-1.png)
-![alt text](Dokumentation/README_Bilder/image-2.png)
-
-
-## 7. Projektstruktur
-
-```
-RandomForest_R
-
-├── Dokumentation/                       # Glossar, Erklärungen und Visualisierungen
-│   ├── glossar.html                     # Ausführliches Glossar und Begriffsdefinitionen
-│   ├── DATEN_DOKUMENTATION.md
-│   ├── DATEN_DOKUMENTATION_LAT-LONG.md
-│   ├── tps_fitting/                     # Thin-Plate-Spline Fitts (2D/3D-Plots)
-│   └── README_Bilder/                   # Bilder für das README
-│
-├── Modell/                              # Basismodell (ohne GAM)
-│   ├── input/                           # Eingabedaten (points.csv, legend.txt)
-│   ├── output/                          # Ergebnisse, Grafiken, Zusammenfassung
-│   ├── cforest_shi.rmd                  # Hauptskript Basismodell
-│   └── install_packages.R
-│
-├── Modell_LatLong/                      # Erweitertes Modell (mit GAM / LatLong)
-│   ├── input/                           # Eingabedaten (Kopie)
-│   ├── output/                          # Ergebnisse, Grafiken, Zusammenfassung, Interpretation
-│   ├── cforest_shi_latlong.rmd          # Hauptskript Erweitertes Modell
-│   └── install_packages.R
-│
-├── Archiv/                              # Log-Dateien und alte Ausgaben
-│
-├── shi_diagnostik.Rmd                   # Voranalyse und Datendiagnostik
-└── .gitignore
-```
+- **`Modell/`**: R-Skript, Ergebnisse und Diagramme
+- **`Modell/output/Modell_Zusammenfassung/modell_zusammenfassung.md`**: Die automatisch generierte Modell Zusammenfassung mit der Beantwortung der Forschungsfragen.
+- **`Modell/output/Modell_Zusammenfassung/variablen_legende.md`**: Legende und Erklärung aller vom Modell verwendeten Variablen.
