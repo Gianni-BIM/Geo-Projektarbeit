@@ -1,24 +1,40 @@
-# Geo-Projektarbeit
+# Geo-Projektarbeit Datenaufbereitung
 
 ## Setup
+
+Requirements:
+
+- Python 3.12 or newer 
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) 
 
 Install uv from [uv homepage](https://docs.astral.sh/uv/getting-started/installation/)
 
 Clone the repository [github repository](https://github.com/Gianni-BIM/Geo-Projektarbeit)
 
+Navigate to Datenaufbereitung `cd Datenaufbereitung`
+
 Run `uv sync` to install project dependencies
+
+Run `uv run python -m ipykernel install --user --name geo-projektarbeit --display-name "Python (geo-projektarbeit)"` to create the Jupyter kernel used by the project notebooks.
+
 Run `uv run nbstripout --install` to keep Jupyter notebooks clean in Git (i.e. remove outputs and execution metadata).
 
 ## Info
 
 The repository uses .gitattributes to enforce consistent LF line endings across operating systems.
 
-## Running in VS Code
+## Running the Data Preparation Jupyter Notebooks in VS Code
 
-### Data Processing Workflow
+### A) Auto Run
+**Navigate to data-prep folder inside Datenaufbereitung.**
+
+run a_auto_run_all_notebooks.ipynb --> all data preparation is done (Step 1 to 5)
+
+Note: On submission of this project all inputs and outputs are already saved in 01_input and 03_output, you don't need to run the notebooks if you are only interested in their resulting files.
+
+### B) Run Data Processing Workflow Step By Step
 **Open the project in VS Code and select the project `.venv` interpreter if prompted.**
-
-**AUTO RUN: If you see a file called a_auto_run_all_notebooks.ipynb, you can use it to run all following steps at once.**
+When running notebooks manually, select the `Python (geo-projektarbeit)` kernel.
 
 **Step 1**: run data-prep/explore_indicator_data.ipynb --> several CSV-files used for inspection and transformation are produced in the output folder
 
@@ -38,9 +54,9 @@ If you want to use jupyter lab to serve ipynb-files run: `uv run --with jupyter 
 
 If Jupyter Lab cannot find project dependencies, register the project's virtual environment as a Jupyter kernel:
 
-`uv run python -m ipykernel install --user --name project-env --display-name "Project Environment"`
+`uv run python -m ipykernel install --user --name geo-projektarbeit --display-name "Python (geo-projektarbeit)"`
 
-The kernel name can be chosen freely. This only needs to be done once per machine.
+This only needs to be done once per machine. When opening the notebooks manually, select the Python (geo-projektarbeit) kernel.
 
 For further information [uv documentation jupyter lab](https://docs.astral.sh/uv/guides/integration/jupyter/#using-jupyter-within-a-project).
 
